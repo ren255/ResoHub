@@ -1,0 +1,40 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: vike-frontend
+    ports:
+      - 3000:5173
+    volumes:
+      - ./frontend/:/app
+      - /app/node_modules
+      - ./README.md:/app/readme/README.md
+      - ./frontend/README.md:/app/readme/frontend-README.md
+      - ./backend/README.md:/app/readme/backend-README.md
+    environment:
+      - NODE_ENV=development
+      - VITE_HOST=0.0.0.0
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+  
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fastapi-backend
+    ports:
+      - 3001:80
+    volumes:
+      - ./backend/:/code
+      - /dev:/dev
+    env_file:
+      - .env
+    privileged: true
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+networks: {}
