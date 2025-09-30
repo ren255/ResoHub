@@ -1,11 +1,11 @@
-FROM python:3.9
-WORKDIR /code
+FROM python:3.9-slim
+WORKDIR /app
 
 # 依存関係のインストール
-COPY ./requirements.txt /code/requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./app /code/app
+COPY . .
 
-EXPOSE 80
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+EXPOSE 8000
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

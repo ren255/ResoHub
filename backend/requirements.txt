@@ -1,0 +1,9 @@
+# Core
+Django
+djangorestframework
+
+# CORS (for React frontend)
+django-cors-headers
+
+# For production (optional, useful if using gunicorn/nginx)
+gunicorn
