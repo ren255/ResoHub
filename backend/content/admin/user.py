@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext, gettext_lazy as _
-from .models import User
+from ..models import User
 
 
 @admin.register(User)
@@ -23,17 +23,6 @@ class UserAdmin(UserAdmin):
                     "is_active",
                     "is_staff",
                     "is_superuser",
-                )
-            },
-        ),
-        (
-            _(
-                "Password",
-            ),
-            {
-                "fields": (
-                    "password_changed",
-                    "password_changed_date",
                 )
             },
         ),

@@ -39,8 +39,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     """Custom User"""
 
     class Meta:
-        verbose_name = "ユーザ"
-        verbose_name_plural = "ユーザ"
+        verbose_name = "user"
+        verbose_name_plural = "user"
 
     uuid = models.UUIDField(
         default=uuid_lib.uuid4, primary_key=True, editable=False
@@ -54,12 +54,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=True)  # スタッフ権限
     is_superuser = models.BooleanField(default=False)  # 管理者権限
     date_joined = models.DateTimeField(default=timezone.now)  # アカウント作成日時
-    password_changed = models.BooleanField(
-        default=False
-    )  # パスワードを変更したかどうかのフラグ
-    password_changed_date = models.DateTimeField(
-        blank=True, null=True
-    )  # 最終パスワード変更日時
 
     objects = UserManager()
 
