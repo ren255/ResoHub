@@ -19,6 +19,8 @@ services:
       - .env
     stdin_open: true
     tty: true
+    networks:
+      - app-network
     restart: unless-stopped
   
   backend:
@@ -34,5 +36,10 @@ services:
       - .env
     stdin_open: true
     tty: true
+    networks:
+      - app-network
     restart: unless-stopped
-networks: {}
+
+networks:
+  app-network:
+    driver: bridge
