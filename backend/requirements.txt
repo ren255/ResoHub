@@ -7,3 +7,6 @@ django-cors-headers
 
 # For production (optional, useful if using gunicorn/nginx)
 gunicorn
+
+# env
+python-decouple
