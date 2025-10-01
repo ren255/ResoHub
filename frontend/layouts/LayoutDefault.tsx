@@ -4,12 +4,17 @@ import "./tailwind.css";
 import logoUrl from "../assets/logo.svg";
 import { Link } from "../components/Link.js";
 
-export default function LayoutDefault({ children }: { children: React.ReactNode }) {
+export default function LayoutDefault({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <div className={"flex max-w-5xl m-auto"}>
       <Sidebar>
         <Logo />
         <Link href="/">Welcome</Link>
+        <Link href="/users">users</Link>
         <Link href="/todo">Todo</Link>
         <Link href="/star-wars">Data Fetching</Link>
       </Sidebar>
@@ -20,7 +25,10 @@ export default function LayoutDefault({ children }: { children: React.ReactNode 
 
 function Sidebar({ children }: { children: React.ReactNode }) {
   return (
-    <div id="sidebar" className={"p-5 flex flex-col shrink-0 border-r-2 border-r-gray-200"}>
+    <div
+      id="sidebar"
+      className={"p-5 flex flex-col shrink-0 border-r-2 border-r-gray-200"}
+    >
       {children}
     </div>
   );
