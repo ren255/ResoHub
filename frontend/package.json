@@ -7,21 +7,22 @@
     "format": "biome format --write ."
   },
   "dependencies": {
-    "vike": "^0.4.239",
     "@vitejs/plugin-react": "^5.0.2",
+    "axios": "^1.12.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "vike": "^0.4.239",
     "vike-react": "^0.6.5"
   },
   "devDependencies": {
-    "typescript": "^5.9.2",
-    "vite": "^7.1.4",
     "@biomejs/biome": "2.2.3",
+    "@tailwindcss/vite": "^4.1.13",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
+    "daisyui": "^5.1.8",
     "tailwindcss": "^4.1.13",
-    "@tailwindcss/vite": "^4.1.13",
-    "daisyui": "^5.1.8"
+    "typescript": "^5.9.2",
+    "vite": "^7.1.4"
   },
   "type": "module"
 }

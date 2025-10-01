@@ -8,4 +8,10 @@ export default defineConfig({
   build: {
     target: "es2022",
   },
-});
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://resohub-backend:8000",
+        changeOrigin: true,        
+    }}
+}});
