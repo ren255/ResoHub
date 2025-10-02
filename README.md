@@ -19,8 +19,7 @@
 ## Quick Start
 
 ### docker install
-windowsの場合WSLとdocker desktop  
-
+windowsの場合WSLとdocker desktop
 linuxの場合はdocker
 
 ### git install
@@ -44,8 +43,8 @@ python manager.py migrate
 cd ../
 ```
 
-- docker起動
-- 機密設定読み込み
+# 起動
+- 機密設定
   `.evn`を`ResoHub/`へ配置する
 - docker 起動 
 ```sh
