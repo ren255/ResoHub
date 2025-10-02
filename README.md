@@ -16,10 +16,41 @@
 ![MinIO](https://img.shields.io/badge/-minio-C72E49?logo=minio&logoColor=black)
 ![MySql](https://img.shields.io/badge/-mysql-4479A1?logo=mysql&logoColor=black)
 
-```
+## Quick Start
+
+### docker install
+windowsの場合WSLとdocker desktop  
+
+linuxの場合はdocker
+
+### git install
+
+### clone repo
+```sh
 git clone https://github.com/ren255/ResoHub/
-cd ResoHub
+cd ResoHub/backend
+```
+
+### backend初期化
+- python 仮想環境構築
+```sh
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+- db初期化
+```sh
+python manager.py migrate
+cd ../
+```
+
+- docker起動
+- 機密設定読み込み
+  `.evn`を`ResoHub/`へ配置する
+- docker 起動 
+```sh
 docker compose up --build
 ```
 
+https://localhost:8080 へアクセスすると以下のようなサイトが見れたらOK
 https://resohub.rentoda.com
