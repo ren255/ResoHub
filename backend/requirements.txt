@@ -6,6 +6,7 @@ djangorestframework
 mysqlclient
 django-storages
 boto3
+python-magic
 
 # CORS (for React frontend)
 django-cors-headers

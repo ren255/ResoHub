@@ -2,24 +2,23 @@ from django.db import models
 from content.models import User
 from django.utils import timezone
 import os
-import mimetypes
+import magic
 import uuid
 
 
 def upload_to_uuid(instance, filename):
-    """
-    UUIDベースの安全なファイルパス生成
-    例: uploads/abc123-def456-789.pdf
-    """
-    ext = filename.split(".")[-1]
+    """media/{year}/{username}/{uuid}"""
+    now = timezone.now()
+    ext = filename.split(".")[-1].lower()
     new_filename = f"{uuid.uuid4()}.{ext}"
-    return os.path.join("uploads", new_filename)
+    username = instance.uploaded_by.username
+    return os.path.join("media", str(now.year), username, new_filename)
 
 
 class File(models.Model):
     """
     ファイル管理モデル
-    MinIO (S3互換ストレージ) に保存される
+    MinIO (S3互換ストレージ) に保存されるまずは media/{year}/{user_name}/
     """
 
     # ファイル本体（MinIOに自動保存）
@@ -72,22 +71,19 @@ class File(models.Model):
         )
 
     def save(self, *args, **kwargs):
-        """
-        保存時に自動でメタデータを設定
-        """
-        # original_filenameが未設定の場合
         if not self.original_filename and self.file:
             self.original_filename = os.path.basename(self.file.name)
 
-        # file_sizeを自動設定
         if self.file:
             self.file_size = self.file.size
-
-        # content_typeを自動判定
-        if not self.content_type and self.original_filename:
-            guessed_type = mimetypes.guess_type(self.original_filename)[0]
-            if guessed_type:
-                self.content_type = guessed_type
+            if not self.content_type:
+                try:
+                    self.file.seek(0)
+                    mime_type = magic.from_buffer(self.file.read(2048), mime=True)
+                    self.content_type = mime_type
+                    self.file.seek(0)
+                except Exception:
+                    self.content_type = "application/octet-stream"
 
         super().save(*args, **kwargs)
 
