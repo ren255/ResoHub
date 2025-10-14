@@ -2,6 +2,9 @@
 Django
 djangorestframework
 
+# database
+mysqlclient
+
 # CORS (for React frontend)
 django-cors-headers
 
