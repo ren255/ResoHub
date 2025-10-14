@@ -10,3 +10,10 @@ gunicorn
 
 # env
 python-decouple
+
+# scraping
+pandas
+lxml
+requests
+beautifulsoup4
+scrapy
