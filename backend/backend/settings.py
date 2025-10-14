@@ -130,12 +130,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 import os
 
-STATIC_URL = "/static/"
 STATICFILES_LOCATION = "static"
-STATICFILES_STORAGE = "core.storage.StaticS3Boto3Storage"
-
-MEDIA_URL = "/media/"
-DEFAULT_FILE_STORAGE = "core.storage.S3MediaStorage"
+STORAGES = {
+    "default": {
+        "BACKEND": "core.storage.S3MediaStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "core.storage.StaticS3Boto3Storage",
+    },
+}
 
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
@@ -143,6 +146,15 @@ AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
 
 AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_URL")
 MINIO_ACCESS_URL = os.getenv("MINIO_ACCESS_URL")
+AWS_S3_REGION_NAME = "us-east-1"  # MinIOだから適当に
+
+AWS_DEFAULT_ACL = "public-read"
+SECURE_SSL_REDIRECT = False
+SECURE_PROXY_SSL_HEADER = None
+
+STATIC_URL = f"{AWS_S3_ENDPOINT_URL}/{STATICFILES_LOCATION}/"
+MEDIA_URL = "/media/"
+
 
 DATA_FILE_MAX_MEMORY_SIZE = 104857600  # 100MB in bytes
 FILE_UPLOAD_MAX_MEMORY_SIZE = 104857600  # 100MB in bytes

@@ -1,9 +1,10 @@
 from storages.backends.s3boto3 import S3Boto3Storage
-from ..backend import settings
+from backend import settings
 
 
 class StaticS3Boto3Storage(S3Boto3Storage):
-    location = settings.STATICFILES_LOCATION
+    location = "static"
+    querystring_auth = False
 
     def __init__(self, *args, **kwargs):
         if settings.MINIO_ACCESS_URL:

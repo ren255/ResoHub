@@ -62,6 +62,7 @@ services:
   minio:
     image: minio/minio:latest
     ports:
+      - 9000:9000
       - 9001:9001
     environment:
       MINIO_ACCESS_KEY: minio
@@ -71,16 +72,36 @@ services:
       - minio-data:/data
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
   minio-client:
     image: minio/mc:latest
     entrypoint: >
-      /bin/sh -c "  
-      /usr/bin/mc config host rm expo;  
-      /usr/bin/mc config host add --quiet --api s3v4 local http://minio:9000 minio minio123;  
-      /usr/bin/mc rb --force local/<your-bucket-name>/;  
-      /usr/bin/mc mb --quiet local/<your-bucket-name>/;  
-      /usr/bin/mc policy set public local/<your-bucket-name>;  
-      "
+      /bin/sh -c "
+      /usr/bin/mc alias rm expo || true;
+      /usr/bin/mc alias set local http://localhost:9000 minio minio123 --api s3v4;
+      /usr/bin/mc mb local/resohub-bucket --ignore-existing;
+      /usr/bin/mc anonymous set public local/resohub-bucket;
+      echo 'Bucket setup completed successfully';
+      "m
+    depends_on:
+      minio: 
+        condition: service_healthy
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "9009:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
     depends_on:
       - minio
     networks:
