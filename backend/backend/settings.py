@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
+    "storages",
+    # local
+    "core",
     "content",
 ]
 
@@ -125,8 +128,21 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
+import os
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATICFILES_LOCATION = "static"
+STATICFILES_STORAGE = "core.storage.StaticS3Boto3Storage"
+
+MEDIA_URL = "/media/"
+DEFAULT_FILE_STORAGE = "core.storage.S3MediaStorage"
+
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+
+AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_URL")
+MINIO_ACCESS_URL = os.getenv("MINIO_ACCESS_URL")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

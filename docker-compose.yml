@@ -59,6 +59,35 @@ services:
       retries: 20
     networks:
       - app-network
+  minio:
+    image: minio/minio:latest
+    ports:
+      - 9001:9001
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio-data:/data
+    networks:
+      - app-network
+  minio-client:
+    image: minio/mc:latest
+    entrypoint: >
+      /bin/sh -c "  
+      /usr/bin/mc config host rm expo;  
+      /usr/bin/mc config host add --quiet --api s3v4 local http://minio:9000 minio minio123;  
+      /usr/bin/mc rb --force local/<your-bucket-name>/;  
+      /usr/bin/mc mb --quiet local/<your-bucket-name>/;  
+      /usr/bin/mc policy set public local/<your-bucket-name>;  
+      "
+    depends_on:
+      - minio
+    networks:
+      - app-network
+
+volumes:
+  minio-data:
 
 networks:
   app-network:
