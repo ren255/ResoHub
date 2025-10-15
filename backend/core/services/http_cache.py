@@ -3,11 +3,6 @@ import json
 import requests
 from django.core.cache import cache
 
-import os
-import django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
-django.setup()
-
 class CachedHttpClient:
     def __init__(self, expire_after=60*60*24*30):
         # month

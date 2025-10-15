@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # local
     "core",
     "content",
+    "scraper",
 ]
 
 AUTH_USER_MODEL = "content.User"
