@@ -1,6 +1,5 @@
 from storages.backends.s3boto3 import S3Boto3Storage
-from backend import settings
-
+from django.conf import settings
 
 class StaticS3Boto3Storage(S3Boto3Storage):
     location = "static"

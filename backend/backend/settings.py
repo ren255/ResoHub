@@ -141,10 +141,10 @@ import os
 STATICFILES_LOCATION = "static"
 STORAGES = {
     "default": {
-        "BACKEND": "core.storage.S3MediaStorage",
+        "BACKEND": "core.services.storage.S3MediaStorage",
     },
     "staticfiles": {
-        "BACKEND": "core.storage.StaticS3Boto3Storage",
+        "BACKEND": "core.services.storage.StaticS3Boto3Storage",
     },
 }
 

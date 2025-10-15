@@ -2,7 +2,7 @@ from django.test import TestCase
 
 # Create your tests here.
 import time
-from .http_cache import CachedHttpClient
+from services import CachedHttpClient
 
 session = CachedHttpClient()
 
