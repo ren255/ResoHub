@@ -5,8 +5,10 @@ django-cors-headers
 gunicorn
 django-extensions
 
+# doc
 pydotplus
 pygraphviz
+docutils
 
 # database
 mysqlclient

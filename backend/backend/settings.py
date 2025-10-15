@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "storages",
     "django_extensions",
+    "django.contrib.admindocs",
     # local
     "core",
     "content",
@@ -59,6 +60,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    'django.contrib.admindocs.middleware.XViewMiddleware',
 ]
 
 ROOT_URLCONF = "backend.urls"
