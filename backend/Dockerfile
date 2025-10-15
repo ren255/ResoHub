@@ -12,7 +12,7 @@ COPY . .
 
 RUN apt-get install -yq zsh terminator
 RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.2.1/zsh-in-docker.sh)" -- -t robbyrussell
-chsh -s $(which zsh)
+RUN chsh -s $(which zsh)
 
 EXPOSE 8000
 

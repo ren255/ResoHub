@@ -7,6 +7,7 @@ django.setup()
 import pandas as pd
 from core.models import TextFileStorage
 from core.services import CachedHttpClient
+from content.models import User
 
 session = CachedHttpClient()
 
@@ -63,22 +64,13 @@ df = df.reset_index(drop=True)
 print("\nクリーニング後のデータ:")
 print(df)
 
-# %%
-# TextFileStorageに保存
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
-
-# 保存するユーザーを取得（適切なユーザーIDまたは取得方法に変更してください）
-user = User.objects.first()  # または特定のユーザーを取得
-if not user:
-    raise ValueError("保存するユーザーが見つかりません")
+user = User.objects.get(username="ren255")
 
 # CSVデータを文字列として生成
 csv_content = df.to_csv(index=False, encoding="utf-8")
 
 # ファイルキーを設定
-file_key = "tables/table_4_cleaned.csv"
+file_key = "table_4_cleaned.csv"
 
 # 既存のレコードを検索（更新または新規作成）
 text_file, created = TextFileStorage.objects.update_or_create(
@@ -86,7 +78,6 @@ text_file, created = TextFileStorage.objects.update_or_create(
     defaults={
         'body': csv_content,
         'created_by': user,
-        'mine_type': 'text/csv',  # CSVファイルのMIMEタイプ
         'is_deleted': False,
     }
 )
