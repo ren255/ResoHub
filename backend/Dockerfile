@@ -6,6 +6,7 @@ COPY requirements.txt .
 
 RUN apt-get update 
 RUN apt install -yq default-libmysqlclient-dev build-essential pkg-config
+RUN apt-get install -yq graphviz libgraphviz-dev graphviz-dev pkg-config
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 COPY . .

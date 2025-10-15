@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "storages",
+    "django_extensions",
     # local
     "core",
     "content",

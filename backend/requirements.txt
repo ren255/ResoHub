@@ -1,19 +1,18 @@
 # Core
 Django
 djangorestframework
+django-cors-headers
+gunicorn
+django-extensions
+
+pydotplus
+pygraphviz
 
 # database
 mysqlclient
 django-storages
 boto3
 python-magic
-requests
-
-# CORS (for React frontend)
-django-cors-headers
-
-# For production (optional, useful if using gunicorn/nginx)
-gunicorn
 
 # env
 python-decouple
