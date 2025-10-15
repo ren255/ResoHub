@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "storages",
     "django_extensions",
     "django.contrib.admindocs",
+    "drf_spectacular",
     # local
     "core",
     "content",
@@ -175,3 +176,13 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 104857600  # 100MB in bytes
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'ResoHub API',
+    'DESCRIPTION': 'API for resohub. scraping results and getting the data from database and static file server',
+    'VERSION': '1.0.0',
+}
