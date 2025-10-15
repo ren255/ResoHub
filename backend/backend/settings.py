@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
+    "storages",
+    # local
+    "core",
     "content",
 ]
 
@@ -82,8 +85,20 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "django-db",
+        "USER": "django",
+        "PASSWORD": "django",
+        "HOST": "db",
+        "PORT": "3306",
+    }
+}
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'http_cache_table',
     }
 }
 
@@ -121,8 +136,36 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
+import os
 
-STATIC_URL = "static/"
+STATICFILES_LOCATION = "static"
+STORAGES = {
+    "default": {
+        "BACKEND": "core.services.storage.S3MediaStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "core.services.storage.StaticS3Boto3Storage",
+    },
+}
+
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+
+AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_URL")
+MINIO_ACCESS_URL = os.getenv("MINIO_ACCESS_URL")
+AWS_S3_REGION_NAME = "us-east-1"  # MinIOだから適当に
+
+AWS_DEFAULT_ACL = "public-read"
+SECURE_SSL_REDIRECT = False
+SECURE_PROXY_SSL_HEADER = None
+
+STATIC_URL = f"{AWS_S3_ENDPOINT_URL}/{STATICFILES_LOCATION}/"
+MEDIA_URL = "/media/"
+
+
+DATA_FILE_MAX_MEMORY_SIZE = 104857600  # 100MB in bytes
+FILE_UPLOAD_MAX_MEMORY_SIZE = 104857600  # 100MB in bytes
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
