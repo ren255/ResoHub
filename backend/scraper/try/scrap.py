@@ -7,7 +7,7 @@ django.setup()
 
 from core.services import CachedHttpClient
 
-from ..services.selector_extractor import (
+from ..services.html_extract import (
     ElementAttrEnum,
     InstructionField,
     CssSelectExtractor,
