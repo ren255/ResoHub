@@ -26,3 +26,4 @@ lxml
 requests
 beautifulsoup4
 scrapy
+pydantic

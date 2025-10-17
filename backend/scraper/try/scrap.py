@@ -1,38 +1,45 @@
 # %%
 import os
 import django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
 django.setup()
 
-from scrapy.selector import Selector
 from core.services import CachedHttpClient
 
-# HTMLを取得
+from ..services.selector_extractor import (
+    ElementAttrEnum,
+    InstructionField,
+    CssSelectExtractor,
+)
+
+# 抽出指示の作成
+instructions = {
+    "links": InstructionField(
+        css_selector="a.globalnav-submenu-trigger-link", attr=ElementAttrEnum.HREF
+    ),
+    "texts": InstructionField(
+        css_selector="a.rf-productnav-card-title", attr=ElementAttrEnum.TEXT
+    ),
+}
+
+# CssSelectExtractor の初期化
+extractor = CssSelectExtractor(instructions)
+
+# HTMLの取得（元のコードの通り）
 session = CachedHttpClient()
 html = session.get("https://www.apple.com/jp/store")
 
-# Scrapyのセレクタを作成
-selector = Selector(text=html)
+from time import time
 
-# CSS セレクタでスクレイピング
-css_selectors = [
-    'a.globalnav-submenu-trigger-link',
-    'a.rf-productnav-card-title'
-]
+start = time()
+result = extractor.extract(html)
+end = time()
 
-
-# 1つ目のセレクタ: a.globalnav-submenu-trigger-link
-elements = selector.css('a.globalnav-submenu-trigger-link')
-print("\n[1] globalnav-submenu-trigger-link")
-print("-" * 80)
-print([elem.css('::attr(href)').get() for elem in elements])
-print()
+print("Extraction result:", result)
+print("Elapsed time:", end - start, "seconds")
 
 
-# 2つ目のセレクタ: a.rf-productnav-card-title
-elements = selector.css('a.rf-productnav-card-title')
-print("\n[2] rf-productnav-card-title")
-print("-" * 80)
-print([elem.css('::text').get().strip() for elem in elements])
-print()
+from pprint import pprint
 
+pprint(result)
