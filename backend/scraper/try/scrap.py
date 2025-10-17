@@ -1,57 +1,38 @@
 # %%
-import scrapy
-from scrapy.crawler import CrawlerProcess
+import os
+import django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
+django.setup()
+
+from scrapy.selector import Selector
+from core.services import CachedHttpClient
+
+# HTMLを取得
+session = CachedHttpClient()
+html = session.get("https://www.apple.com/jp/store")
+
+# Scrapyのセレクタを作成
+selector = Selector(text=html)
+
+# CSS セレクタでスクレイピング
+css_selectors = [
+    'a.globalnav-submenu-trigger-link',
+    'a.rf-productnav-card-title'
+]
 
 
-class GoogleSpider(scrapy.Spider):
-    name = "google_spider"
-    allowed_domains = ["google.com"]
-    start_urls = ["https://www.google.com"]
-
-    custom_settings = {
-        "USER_AGENT": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-        "ROBOTSTXT_OBEY": True,
-        "CONCURRENT_REQUESTS": 1,
-        "DOWNLOAD_DELAY": 2,
-    }
-
-    def parse(self, response):
-        """メインページの解析"""
-        self.logger.info(f'ページタイトル: {response.css("title::text").get()}')
-
-        # ページの基本情報を抽出
-        yield {
-            "url": response.url,
-            "title": response.css("title::text").get(),
-            "status": response.status,
-        }
-
-        # リンクを抽出（最大5件）
-        links = response.css("a::attr(href)").getall()[:5]
-        for link in links:
-            if link and link.startswith("http"):
-                self.logger.info(f"リンク発見: {link}")
-                yield {"link": link}
+# 1つ目のセレクタ: a.globalnav-submenu-trigger-link
+elements = selector.css('a.globalnav-submenu-trigger-link')
+print("\n[1] globalnav-submenu-trigger-link")
+print("-" * 80)
+print([elem.css('::attr(href)').get() for elem in elements])
+print()
 
 
-def main():
-    """Scrapyクローラーを実行"""
-    process = CrawlerProcess(
-        {
-            "LOG_LEVEL": "INFO",
-            "FEEDS": {
-                "output.json": {
-                    "format": "json",
-                    "encoding": "utf8",
-                    "overwrite": True,
-                },
-            },
-        }
-    )
+# 2つ目のセレクタ: a.rf-productnav-card-title
+elements = selector.css('a.rf-productnav-card-title')
+print("\n[2] rf-productnav-card-title")
+print("-" * 80)
+print([elem.css('::text').get().strip() for elem in elements])
+print()
 
-    process.crawl(GoogleSpider)
-    process.start()
-
-
-if __name__ == "__main__":
-    main()
