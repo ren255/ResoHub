@@ -15,6 +15,8 @@ class ElementAttrEnum(str, Enum):
     TITLE = "title"
     ALT = "alt"
     VALUE = "value"
+    PASS = "pass"
+    HTML = "innerHTML"
 
 
 class InstructionField(BaseModel):
@@ -87,6 +89,8 @@ class CssSelectExtractor:
         for element in elements:
             if instruction.attr == ElementAttrEnum.TEXT:
                 value = element.get_text(strip=True)
+            elif instruction.attr == ElementAttrEnum.PASS:
+                value = element
             else:
                 value = element.get(instruction.attr.value)
 
