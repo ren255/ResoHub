@@ -12,6 +12,9 @@ export default defineConfig({
     proxy: {
       "/api": {
         target: "http://resohub-backend:8000",
-        changeOrigin: true,        
-    }}
-}});
+        changeOrigin: true,
+      }
+    },
+    allowedHosts: ["resohub.rentoda.com"], 
+  }
+});
