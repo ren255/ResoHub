@@ -32,6 +32,7 @@ services:
       - 8001:8000
     volumes:
       - ./backend/:/app
+      - .:/workspace
     env_file:
       - .env
     stdin_open: true
