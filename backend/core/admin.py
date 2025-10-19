@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import File
-
+from .models import ScrapyItem
 
 @admin.register(File)
 class FileAdmin(admin.ModelAdmin):
@@ -132,3 +132,27 @@ class TextFileStorageAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         """論理削除を使用するため、物理削除は制限"""
         return request.user.is_superuser
+    
+
+@admin.register(ScrapyItem)
+class ScrapyItemAdmin(admin.ModelAdmin):
+    list_display = ('unique_id', 'date', 'data_preview')
+    list_filter = ('date',)
+    search_fields = ('unique_id', 'data')
+    readonly_fields = ('date',)
+    ordering = ('-date',)
+    
+    def data_preview(self, obj):
+        """データの最初の100文字を表示"""
+        return obj.data[:100] + '...' if len(obj.data) > 100 else obj.data
+    data_preview.short_description = 'Data Preview'
+    
+    fieldsets = (
+        ('基本情報', {
+            'fields': ('unique_id', 'date')
+        }),
+        ('クロールデータ', {
+            'fields': ('data',),
+            'classes': ('wide',)
+        }),
+    )
