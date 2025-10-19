@@ -1,3 +1,15 @@
+import os
+import sys
+
+# DJANGO INTEGRATION
+
+sys.path.append(os.path.dirname(os.path.abspath('.')))
+os.environ['DJANGO_SETTINGS_MODULE'] = 'backend.settings'
+
+import django
+django.setup()
+
+
 # Scrapy settings for syllabus_scraper project
 #
 # For simplicity, this file contains only settings considered important or
@@ -58,9 +70,9 @@ DOWNLOAD_DELAY = 1
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    "syllabus_scraper.pipelines.SyllabusScraperPipeline": 300,
-#}
+ITEM_PIPELINES = {
+   "syllabus_scraper.pipelines.SyllabusScraperPipeline": 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html

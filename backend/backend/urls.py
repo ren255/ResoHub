@@ -30,8 +30,6 @@ from django.views.generic import TemplateView
 from core import views
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="index.html"), name="home"),
-    path("api/crawl/", views.crawl, name="crawl"),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
         "api/docs/",
@@ -42,4 +40,6 @@ urlpatterns = [
     path("admin/doc/", include("django.contrib.admindocs.urls")),
     path("admin/", admin.site.urls),
     path("api/", include("content.urls")),
+    
+    path("api/crawl/", views.crawl, name="crawl"),
 ]
