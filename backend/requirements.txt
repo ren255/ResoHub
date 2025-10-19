@@ -25,5 +25,7 @@ pandas
 lxml
 requests
 beautifulsoup4
-scrapy
 pydantic
+scrapy
+scrapyd
+python-scrapyd-api
