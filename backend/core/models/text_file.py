@@ -14,21 +14,15 @@ class TextFileStorage(models.Model):
 
     # 主キー
     id = models.AutoField(primary_key=True)
-
-    # 作成者
     created_by = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="text_files"
     )
-
-    # ファイルキー（ユニークなファイル識別子）
     key = models.CharField(
         max_length=255,
         unique=True,
         db_index=True,
         help_text="ファイル名やパス（英数字、ハイフン、アンダースコア、ドット）",
     )
-
-    # ファイル本体（テキストコンテンツ）
     body = models.TextField(blank=True, null=True, help_text="ファイルの内容")
 
     # MIMEタイプ

@@ -11,13 +11,13 @@ class CollegesOverviewItem(scrapy.Item):
     scrape_id = scrapy.Field()
     name = scrapy.Field()
     url_college = scrapy.Field()
-    prefecture = scrapy.Field()
-    prefectural_region = scrapy.Field()
+    school_id = scrapy.Field()
 
 
 class DepartmentsOverviewItem(scrapy.Item):
     url_source = scrapy.Field()
     scrape_id = scrapy.Field()
+    department_id = scrapy.Field()  # URL生成用
     name = scrapy.Field()
     url_subject_catalog = scrapy.Field()
     url_curriculum_map = scrapy.Field()
@@ -26,6 +26,7 @@ class DepartmentsOverviewItem(scrapy.Item):
 class SubjectCatalogItem(scrapy.Item):
     url_source = scrapy.Field()
     scrape_id = scrapy.Field()
+    subject_code = scrapy.Field()  # URL生成用
     name = scrapy.Field()
     url_subject = scrapy.Field()
     subject_type = scrapy.Field()
@@ -43,6 +44,7 @@ class SubjectCatalogItem(scrapy.Item):
 class SubjectDetailItem(scrapy.Item):
     url_source = scrapy.Field()
     scrape_id = scrapy.Field()
+    subject_code = scrapy.Field()  # URL生成用
     name = scrapy.Field()
     subject_type = scrapy.Field()
     subject_classification = scrapy.Field()
@@ -62,6 +64,7 @@ class SubjectDetailItem(scrapy.Item):
 class SubjectContentItem(scrapy.Item):
     url_source = scrapy.Field()
     scrape_id = scrapy.Field()
+    subject_code = scrapy.Field()  # URL生成用
     term = scrapy.Field()
     quarter = scrapy.Field()
     week = scrapy.Field()
