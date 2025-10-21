@@ -25,10 +25,6 @@ from drf_spectacular.views import (
     SpectacularRedocView,
 )
 
-from django.conf import settings
-from django.views.generic import TemplateView
-from core import views
-
 urlpatterns = [
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
@@ -37,8 +33,7 @@ urlpatterns = [
         name="swagger-ui",
     ),
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
+    path("api/", include("content.urls")),
     path("admin/doc/", include("django.contrib.admindocs.urls")),
     path("admin/", admin.site.urls),
-    path("api/", include("content.urls")),
-    path("api/crawl/", views.crawl, name="crawl"),
 ]

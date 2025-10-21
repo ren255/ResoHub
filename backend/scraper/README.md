@@ -1,0 +1,5 @@
+colleges_overview
+departments_overview
+subject_catalog
+curriculum_map
+subject_detail
