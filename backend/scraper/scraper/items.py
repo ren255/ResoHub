@@ -6,7 +6,64 @@
 import scrapy
 
 
-class ScraperItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+class CollegesOverviewItem(scrapy.Item):
+    url_source = scrapy.Field()
+    scrape_id = scrapy.Field()
+    name = scrapy.Field()
+    url_college = scrapy.Field()
+    prefecture = scrapy.Field()
+    prefectural_region = scrapy.Field()
+
+
+class DepartmentsOverviewItem(scrapy.Item):
+    url_source = scrapy.Field()
+    scrape_id = scrapy.Field()
+    name = scrapy.Field()
+    url_subject_catalog = scrapy.Field()
+    url_curriculum_map = scrapy.Field()
+
+
+class SubjectCatalogItem(scrapy.Item):
+    url_source = scrapy.Field()
+    scrape_id = scrapy.Field()
+    name = scrapy.Field()
+    url_subject = scrapy.Field()
+    subject_type = scrapy.Field()
+    subject_classification = scrapy.Field()
+    subject_name = scrapy.Field()
+    subject_id = scrapy.Field()
+    credit_type = scrapy.Field()
+    credits = scrapy.Field()
+
+
+# class CurriculumMapItem(scrapy.Item):
+#     name = scrapy.Field()
+
+
+class SubjectDetailItem(scrapy.Item):
+    url_source = scrapy.Field()
+    scrape_id = scrapy.Field()
+    name = scrapy.Field()
+    subject_type = scrapy.Field()
+    subject_classification = scrapy.Field()
+    subject_name = scrapy.Field()
+    subject_id = scrapy.Field()
+    credit_type = scrapy.Field()
+    credits = scrapy.Field()
+    # new
+    year = scrapy.Field()
+    grade = scrapy.Field()
+    teachers = scrapy.Field()
+    textbooks = scrapy.Field()
+    week_hour = scrapy.Field()
+    open_period = scrapy.Field()
+
+
+class SubjectContentItem(scrapy.Item):
+    url_source = scrapy.Field()
+    scrape_id = scrapy.Field()
+    term = scrapy.Field()
+    quarter = scrapy.Field()
+    week = scrapy.Field()
+    content = scrapy.Field()
+    goal = scrapy.Field()
