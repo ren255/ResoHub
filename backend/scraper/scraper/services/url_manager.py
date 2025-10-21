@@ -29,9 +29,9 @@ class PageType(Enum):
 
 def url_generator(
     page: PageType,
-    school_id: Optional[int] = None,
-    department_id: Optional[int] = None,
-    year: Optional[int] = None,
+    school_id: Optional[str] = None,
+    department_id: Optional[str] = None,
+    year: Optional[str] = None,
     subject_code: Optional[str] = None,
     lang: str = "ja",
 ) -> str:

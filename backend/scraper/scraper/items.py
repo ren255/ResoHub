@@ -6,7 +6,7 @@
 import scrapy
 
 
-class CollegesOverviewItem(scrapy.Item):
+class CollegesOverviewItem(scrapy.Item):  # 各高専ごと
     url_source = scrapy.Field()
     scrape_id = scrapy.Field()
     name = scrapy.Field()
@@ -14,13 +14,12 @@ class CollegesOverviewItem(scrapy.Item):
     school_id = scrapy.Field()
 
 
-class DepartmentsOverviewItem(scrapy.Item):
+class DepartmentsOverviewItem(scrapy.Item):  # 各学科ごと
     url_source = scrapy.Field()
     scrape_id = scrapy.Field()
-    department_id = scrapy.Field()  # URLより
     name = scrapy.Field()
-    url_subject_catalog = scrapy.Field()
-    url_curriculum_map = scrapy.Field()
+    department_id = scrapy.Field()  # URLより
+    school_id = scrapy.Field()
 
 
 class SubjectCatalogItem(scrapy.Item):
