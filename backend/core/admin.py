@@ -51,7 +51,7 @@ class TextFileStorageAdmin(admin.ModelAdmin):
         "id",
         "key",
         "extension_display",
-        "created_by",
+        "created_by__username",
         "file_size_display",
         "mine_type",
         "status_display",

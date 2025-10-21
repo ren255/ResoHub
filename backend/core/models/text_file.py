@@ -91,24 +91,19 @@ class TextFileStorage(models.Model):
         """
         super().clean()
         self.validate_key(self.key)
-
-        # bodyが存在する場合、file_sizeを自動計算
-        if self.body:
-            self.file_size = len(self.body.encode("utf-8"))
+        self.file_size = len(self.body.encode("utf-8")) if self.body else 0
 
     def save(self, *args, **kwargs):
         """
         保存前にバリデーションとサイズ計算を実行
         """
         self.full_clean()
-        if not self.mine_type:
-            try:
-                # text型をbytesに変換
-                buffer = self.body.encode("utf-8")
-                mine_type = magic.from_buffer(buffer[:2048], mime=True)
-                self.mine_type = mine_type
-            except Exception:
-                self.mine_type = "application/x"
+        try:
+            buffer = self.body.encode("utf-8")
+            mine_type = magic.from_buffer(buffer[:2048], mime=True)
+            self.mine_type = mine_type
+        except Exception:
+            self.mine_type = "application/x"
 
         super().save(*args, **kwargs)
 
