@@ -40,6 +40,5 @@ urlpatterns = [
     path("admin/doc/", include("django.contrib.admindocs.urls")),
     path("admin/", admin.site.urls),
     path("api/", include("content.urls")),
-    
     path("api/crawl/", views.crawl, name="crawl"),
 ]

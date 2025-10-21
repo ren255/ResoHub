@@ -16,23 +16,79 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='File',
+            name="File",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file', models.FileField(upload_to=core.models.file.upload_to_uuid, verbose_name='ファイル')),
-                ('original_filename', models.CharField(max_length=255, verbose_name='元のファイル名')),
-                ('file_size', models.BigIntegerField(default=0, verbose_name='ファイルサイズ')),
-                ('content_type', models.CharField(blank=True, max_length=100, verbose_name='コンテンツタイプ')),
-                ('description', models.TextField(blank=True, null=True, verbose_name='説明')),
-                ('uploaded_at', models.DateTimeField(auto_now_add=True, verbose_name='アップロード日時')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='更新日時')),
-                ('uploaded_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='uploaded_files', to=settings.AUTH_USER_MODEL, verbose_name='アップロードユーザー')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "file",
+                    models.FileField(
+                        upload_to=core.models.file.upload_to_uuid,
+                        verbose_name="ファイル",
+                    ),
+                ),
+                (
+                    "original_filename",
+                    models.CharField(max_length=255, verbose_name="元のファイル名"),
+                ),
+                (
+                    "file_size",
+                    models.BigIntegerField(default=0, verbose_name="ファイルサイズ"),
+                ),
+                (
+                    "content_type",
+                    models.CharField(
+                        blank=True, max_length=100, verbose_name="コンテンツタイプ"
+                    ),
+                ),
+                (
+                    "description",
+                    models.TextField(blank=True, null=True, verbose_name="説明"),
+                ),
+                (
+                    "uploaded_at",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="アップロード日時"
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="更新日時"),
+                ),
+                (
+                    "uploaded_by",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="uploaded_files",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="アップロードユーザー",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'ファイル',
-                'verbose_name_plural': 'ファイル',
-                'ordering': ['-uploaded_at'],
-                'indexes': [models.Index(fields=['-uploaded_at'], name='core_file_uploade_bd9cc5_idx'), models.Index(fields=['uploaded_by'], name='core_file_uploade_4cec07_idx'), models.Index(fields=['content_type'], name='core_file_content_ac8da5_idx')],
+                "verbose_name": "ファイル",
+                "verbose_name_plural": "ファイル",
+                "ordering": ["-uploaded_at"],
+                "indexes": [
+                    models.Index(
+                        fields=["-uploaded_at"], name="core_file_uploade_bd9cc5_idx"
+                    ),
+                    models.Index(
+                        fields=["uploaded_by"], name="core_file_uploade_4cec07_idx"
+                    ),
+                    models.Index(
+                        fields=["content_type"], name="core_file_content_ac8da5_idx"
+                    ),
+                ],
             },
         ),
     ]

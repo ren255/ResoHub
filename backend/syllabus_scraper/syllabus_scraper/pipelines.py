@@ -9,6 +9,7 @@ from core.models import ScrapyItem
 import json
 from asgiref.sync import sync_to_async
 
+
 class SyllabusScraperPipeline(object):
     def __init__(self, unique_id, *args, **kwargs):
         self.unique_id = unique_id
@@ -17,7 +18,7 @@ class SyllabusScraperPipeline(object):
     @classmethod
     def from_crawler(cls, crawler):
         return cls(
-            unique_id=crawler.settings.get('unique_id'),
+            unique_id=crawler.settings.get("unique_id"),
         )
 
     async def close_spider(self, spider):
@@ -32,5 +33,5 @@ class SyllabusScraperPipeline(object):
         item.save()
 
     def process_item(self, item, spider):
-        self.items.append(item['url'])
+        self.items.append(item["url"])
         return item

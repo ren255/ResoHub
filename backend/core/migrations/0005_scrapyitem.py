@@ -7,17 +7,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0004_rename_mime_type_textfilestorage_mine_type'),
+        ("core", "0004_rename_mime_type_textfilestorage_mine_type"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ScrapyItem',
+            name="ScrapyItem",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('unique_id', models.CharField(max_length=100, null=True)),
-                ('data', models.TextField()),
-                ('date', models.DateTimeField(default=django.utils.timezone.now)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("unique_id", models.CharField(max_length=100, null=True)),
+                ("data", models.TextField()),
+                ("date", models.DateTimeField(default=django.utils.timezone.now)),
             ],
         ),
     ]

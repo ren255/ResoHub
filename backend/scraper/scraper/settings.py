@@ -1,17 +1,4 @@
-import os
-import sys
-
-# DJANGO INTEGRATION
-
-sys.path.append(os.path.dirname(os.path.abspath(".")))
-os.environ["DJANGO_SETTINGS_MODULE"] = "backend.settings"
-
-import django
-
-django.setup()
-
-
-# Scrapy settings for syllabus_scraper project
+# Scrapy settings for scraper project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -20,16 +7,16 @@ django.setup()
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = "syllabus_scraper"
+BOT_NAME = "scraper"
 
-SPIDER_MODULES = ["syllabus_scraper.spiders"]
-NEWSPIDER_MODULE = "syllabus_scraper.spiders"
+SPIDER_MODULES = ["scraper.spiders"]
+NEWSPIDER_MODULE = "scraper.spiders"
 
 ADDONS = {}
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-# USER_AGENT = "syllabus_scraper (+http://www.yourdomain.com)"
+# USER_AGENT = "scraper (+http://www.yourdomain.com)"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -54,13 +41,13 @@ DOWNLOAD_DELAY = 1
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 # SPIDER_MIDDLEWARES = {
-#    "syllabus_scraper.middlewares.SyllabusScraperSpiderMiddleware": 543,
+#    "scraper.middlewares.ScraperSpiderMiddleware": 543,
 # }
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 # DOWNLOADER_MIDDLEWARES = {
-#    "syllabus_scraper.middlewares.SyllabusScraperDownloaderMiddleware": 543,
+#    "scraper.middlewares.ScraperDownloaderMiddleware": 543,
 # }
 
 # Enable or disable extensions
@@ -71,9 +58,9 @@ DOWNLOAD_DELAY = 1
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-    "syllabus_scraper.pipelines.SyllabusScraperPipeline": 300,
-}
+# ITEM_PIPELINES = {
+#    "scraper.pipelines.ScraperPipeline": 300,
+# }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
@@ -90,11 +77,11 @@ ITEM_PIPELINES = {
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
-HTTPCACHE_ENABLED = True
-HTTPCACHE_EXPIRATION_SECS = 0
-HTTPCACHE_DIR = "httpcache"
-HTTPCACHE_IGNORE_HTTP_CODES = []
-HTTPCACHE_STORAGE = "scrapy.extensions.httpcache.FilesystemCacheStorage"
+# HTTPCACHE_ENABLED = True
+# HTTPCACHE_EXPIRATION_SECS = 0
+# HTTPCACHE_DIR = "httpcache"
+# HTTPCACHE_IGNORE_HTTP_CODES = []
+# HTTPCACHE_STORAGE = "scrapy.extensions.httpcache.FilesystemCacheStorage"
 
 # Set settings whose default value is deprecated to a future-proof value
 FEED_EXPORT_ENCODING = "utf-8"
