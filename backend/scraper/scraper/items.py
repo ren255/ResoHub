@@ -9,25 +9,28 @@ import scrapy
 class CollegesOverviewItem(scrapy.Item):  # 各高専ごと
     url_source = scrapy.Field()
     scrape_id = scrapy.Field()
+    school_id = scrapy.Field()  # URLより
     name = scrapy.Field()
-    url_college = scrapy.Field()
-    school_id = scrapy.Field()
+    url_college = scrapy.Field()  # URL解析対象
 
 
 class DepartmentsOverviewItem(scrapy.Item):  # 各学科ごと
     url_source = scrapy.Field()
     scrape_id = scrapy.Field()
-    name = scrapy.Field()
+    school_id = scrapy.Field()  # URLより
     department_id = scrapy.Field()  # URLより
-    school_id = scrapy.Field()
+    name = scrapy.Field()
+    department_url = scrapy.Field()  # URL解析対象
 
 
 class SubjectCatalogItem(scrapy.Item):
     url_source = scrapy.Field()
     scrape_id = scrapy.Field()
+    school_id = scrapy.Field()  # URLより
+    department_id = scrapy.Field()  # URLより
     subject_code = scrapy.Field()  # URLより
     name = scrapy.Field()
-    url_subject = scrapy.Field()
+    url_subject = scrapy.Field()  # URL解析対象
     subject_type = scrapy.Field()
     subject_classification = scrapy.Field()
     subject_name = scrapy.Field()
@@ -41,8 +44,10 @@ class SubjectCatalogItem(scrapy.Item):
 
 
 class SubjectDetailItem(scrapy.Item):
-    url_source = scrapy.Field()
+    url_source = scrapy.Field()  # URL解析対象
     scrape_id = scrapy.Field()
+    school_id = scrapy.Field()  # URLより
+    department_id = scrapy.Field()  # URLより
     subject_code = scrapy.Field()  # URLより
     name = scrapy.Field()
     subject_type = scrapy.Field()
@@ -61,8 +66,10 @@ class SubjectDetailItem(scrapy.Item):
 
 
 class SubjectContentItem(scrapy.Item):
-    url_source = scrapy.Field()
+    url_source = scrapy.Field()  # URL解析対象
     scrape_id = scrapy.Field()
+    school_id = scrapy.Field()  # URLより
+    department_id = scrapy.Field()  # URLより
     subject_code = scrapy.Field()  # URLより
     term = scrapy.Field()
     quarter = scrapy.Field()

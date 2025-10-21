@@ -20,19 +20,18 @@ class DepartmentsOverviewSpider(scrapy.Spider):
         schools = await file.read_as_lines()
         for school in schools:
             school = json.loads(school)
-            self.school_id = school["school_id"]
-            self.url = url_generator(PageType.DEPARTMENTS, school_id=self.school_id)
+            self.url = url_generator(
+                PageType.DEPARTMENTS, school_id=school["school_id"]
+            )
             yield scrapy.Request(self.url, callback=self.parse)
 
     def parse(self, response: Response):
         names = response.css(".list-group-item-heading::text").getall()
         links = response.css(".btn-sm:nth-child(1)::attr(href)").getall()
-        ids = [url_analyzer(link)["department_id"] for link in links]
-        for name, id in zip(names, ids):
+        for name, link in zip(names, links):
             yield DepartmentsOverviewItem(
                 url_source=self.url,
                 scrape_id=self.scrape_id,
                 name=name,
-                department_id=id,
-                school_id=self.school_id,
+                department_url=link,
             )

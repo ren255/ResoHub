@@ -23,27 +23,36 @@ class SaveDB:
         return item
 
 
-class Process:
+class ProcessID:
     def process_item(self, item: scrapy.Item, spider: scrapy.Spider):
         adapter = ItemAdapter(item)
         item_name = item.__class__.__name__
 
         if item_name == CollegesOverviewItem.__name__:
             ids = url_analyzer(adapter.get("url_college"))
-            item["school_id"] = ids["school_id"]
+            adapter["school_id"] = ids["school_id"]
+            item.pop("url_college")
 
         if item_name == DepartmentsOverviewItem.__name__:
-            ids = url_analyzer(adapter.get("url_source"))
-            item["school_id"] = ids["school_id"]
+            ids = url_analyzer(adapter.get("department_url"))
+            adapter["school_id"] = ids["school_id"]
+            adapter["department_id"] = ids["department_id"]
+            item.pop("department_url")
 
         if item_name == SubjectCatalogItem.__name__:
-            ids = url_analyzer(adapter.get("url_college"))
-            item["subject_code"] = ids["subject_code"]
+            ids = url_analyzer(adapter.get("url_subject"))
+            adapter["school_id"] = ids["school_id"]
+            adapter["department_id"] = ids["department_id"]
+            adapter["subject_code"] = ids["subject_code"]
+            item.pop("url_subject")
 
         if item_name == SubjectDetailItem.__name__:
             ids = url_analyzer(adapter.get("url_source"))
-            item["subject_code"] = ids["subject_code"]
+            adapter["school_id"] = ids["school_id"]
+            adapter["department_id"] = ids["department_id"]
+            adapter["subject_code"] = ids["subject_code"]
 
+        item.pop("url_source")
         return item
 
 
@@ -53,5 +62,15 @@ class SchoolID:
         if not item.__class__.__name__ == CollegesOverviewItem.__name__:
             return item
         file = TextFile(item["scrape_id"], "school_id", "jsonl")
+        await file.write_line(json.dumps(adapter.asdict(), ensure_ascii=False))
+        return item
+
+
+class DepartmentID:
+    async def process_item(self, item: scrapy.Item, spider: scrapy.Spider):
+        adapter = ItemAdapter(item)
+        if not item.__class__.__name__ == DepartmentsOverviewItem.__name__:
+            return item
+        file = TextFile(item["scrape_id"], "department_id", "jsonl")
         await file.write_line(json.dumps(adapter.asdict(), ensure_ascii=False))
         return item

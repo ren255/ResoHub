@@ -72,8 +72,9 @@ DOWNLOAD_DELAY = 1
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    "scraper.pipelines.Process": 100,
+    "scraper.pipelines.ProcessID": 100,
     "scraper.pipelines.SchoolID": 501,
+    "scraper.pipelines.DepartmentID": 502,
     "scraper.pipelines.SaveDB": 1000,
 }
 
