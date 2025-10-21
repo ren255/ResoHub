@@ -17,6 +17,7 @@ mysqlclient
 django-storages
 boto3
 python-magic
+channels
 
 # env
 python-decouple

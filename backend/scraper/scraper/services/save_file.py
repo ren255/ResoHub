@@ -1,6 +1,7 @@
 from core.models import TextFileStorage
 from content.models import User
 from django.db import transaction
+from channels.db import database_sync_to_async
 
 from asgiref.sync import sync_to_async
 import pandas as pd
@@ -64,13 +65,26 @@ class TextFile:
         await sync_to_async(instance.save)(update_fields=["body"])
 
     async def write_line(self, line: str) -> None:
-        """行を追記する"""
+        """行を追記する（取得→更新を排他ロック）"""
+        # ① 非同期でインスタンスの pk を取得（既にある self._get_instance を利用）
         instance = await self._get_instance()
-        body = instance.body or ""
-        instance.body = body + line + "\n" if body else line + "\n"
-        await sync_to_async(instance.save)(
-            update_fields=["body", "mine_type", "file_size"]
-        )
+        pk = instance.pk
+
+        # ② 同期関数でトランザクション＋select_for_update を行う
+        await self._atomic_append_by_pk(self._storage, pk, line)
+
+    @database_sync_to_async
+    def _atomic_append_by_pk(self, storage_model, pk, line):
+        # ここは同期コード。transaction.atomic は同期コンテキストマネージャ。
+        with transaction.atomic():
+            # select_for_update() で行ロックを取得
+            inst = storage_model.objects.select_for_update().get(pk=pk)
+
+            body = inst.body or ""
+            inst.body = (body + line + "\n") if body else (line + "\n")
+
+            # 必要なフィールドだけ更新して保存
+            inst.save(update_fields=["body", "mine_type", "file_size"])
 
     async def exists(self) -> bool:
         """ファイルが存在するか確認"""
