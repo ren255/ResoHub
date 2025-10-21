@@ -10,6 +10,7 @@ pydotplus
 pygraphviz
 docutils
 drf-spectacular
+black
 
 # database
 mysqlclient
