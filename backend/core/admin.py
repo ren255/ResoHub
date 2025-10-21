@@ -130,13 +130,24 @@ class TextFileStorageAdmin(admin.ModelAdmin):
         return request.user.is_superuser
 
 
+import json
+from django.utils.html import format_html
+
+
 @admin.register(ScrapyItem)
 class ScrapyItemAdmin(admin.ModelAdmin):
-    list_display = ("unique_id", "date", "data_preview")
-    list_filter = ("date",)
-    search_fields = ("unique_id", "data")
-    readonly_fields = ("date",)
-    ordering = ("-date",)
+    list_display = ("item_name", "spider_name", "data_preview")
+    list_filter = ("item_name", "spider_name", "scrape_id")
+    search_fields = ("data",)
+    ordering = ("date",)
+
+    def has_add_permission(self, request):
+        """追加権限を無効化"""
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        """変更権限を無効化"""
+        return False
 
     def data_preview(self, obj):
         """データの最初の100文字を表示"""
@@ -144,7 +155,30 @@ class ScrapyItemAdmin(admin.ModelAdmin):
 
     data_preview.short_description = "Data Preview"
 
+    def data_formatted(self, obj):
+        """JSONデータを整形して表示"""
+        try:
+            # JSONとしてパース
+            data_dict = json.loads(obj.data) if isinstance(obj.data, str) else obj.data
+            # インデント付きで整形
+            formatted = json.dumps(data_dict, indent=2, ensure_ascii=False)
+            # HTMLのpreタグで表示
+            return format_html(
+                '<pre style="white-space: pre-wrap; word-wrap: break-word;">{}</pre>',
+                formatted,
+            )
+        except (json.JSONDecodeError, TypeError):
+            # JSONでない場合はそのまま表示
+            return format_html("<pre>{}</pre>", obj.data)
+
+    data_formatted.short_description = "Data (Formatted)"
+
     fieldsets = (
-        ("基本情報", {"fields": ("unique_id", "date")}),
-        ("クロールデータ", {"fields": ("data",), "classes": ("wide",)}),
+        (
+            "基本情報",
+            {"fields": ("unique_id", "scrape_id", "item_name", "spider_name", "date")},
+        ),
+        ("クロールデータ", {"fields": ("data_formatted",), "classes": ("wide",)}),
     )
+
+    readonly_fields = ("data_formatted",)
