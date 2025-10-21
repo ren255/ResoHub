@@ -27,7 +27,7 @@ class PageType(Enum):
     SYLLABUS = "PublicSyllabus"
 
 
-def generate_url(
+def url_generator(
     page: PageType,
     school_id: Optional[int] = None,
     department_id: Optional[int] = None,
@@ -38,24 +38,24 @@ def generate_url(
     base = "https://syllabus.kosen-k.go.jp/Pages"
     params = []
 
-    if page == PageType.PUBLIC_SCHOOLS:
+    if page == PageType.SCHOOLS:
         pass
-    elif page == PageType.PUBLIC_DEPARTMENTS:
+    elif page == PageType.DEPARTMENTS:
         if school_id is None:
             raise ValueError("school_id is required")
         params.append(f"school_id={school_id}")
     elif page in [
-        PageType.PUBLIC_SUBJECTS,
-        PageType.PUBLIC_SUBJECT_MAPPING,
-        PageType.PUBLIC_CURRICULUM_MAP,
-        PageType.PUBLIC_LEARNING_MAP,
+        PageType.SUBJECTS,
+        PageType.SUBJECT_MAPPING,
+        PageType.CURRICULUM_MAP,
+        PageType.LEARNING_MAP,
     ]:
         if None in [school_id, department_id, year]:
             raise ValueError("school_id, department_id, year are required")
         params.extend(
             [f"school_id={school_id}", f"department_id={department_id}", f"year={year}"]
         )
-    elif page == PageType.PUBLIC_SYLLABUS:
+    elif page == PageType.SYLLABUS:
         if None in [school_id, department_id, year, subject_code]:
             raise ValueError(
                 "school_id, department_id, year, subject_code are required"
