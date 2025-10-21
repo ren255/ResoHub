@@ -7,6 +7,7 @@
 # useful for handling different item types with a single interface
 from core.models import ScrapyItem
 import json
+from asgiref.sync import sync_to_async
 
 class SyllabusScraperPipeline(object):
     def __init__(self, unique_id, *args, **kwargs):
@@ -16,11 +17,15 @@ class SyllabusScraperPipeline(object):
     @classmethod
     def from_crawler(cls, crawler):
         return cls(
-            unique_id=crawler.settings.get('unique_id'), # this will be passed from django view
+            unique_id=crawler.settings.get('unique_id'),
         )
 
-    def close_spider(self, spider):
-        # And here we are saving our crawled data with django models.
+    async def close_spider(self, spider):
+        # Wrap the Django ORM operations in sync_to_async
+        await sync_to_async(self._save_items)()
+
+    def _save_items(self):
+        """Synchronous method to save items"""
         item = ScrapyItem()
         item.unique_id = self.unique_id
         item.data = json.dumps(self.items)
