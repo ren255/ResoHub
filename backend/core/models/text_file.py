@@ -26,7 +26,7 @@ class TextFileStorage(models.Model):
     body = models.TextField(blank=True, null=True, help_text="ファイルの内容")
 
     # MIMEタイプ
-    mine_type = models.CharField(
+    mime_type = models.CharField(
         max_length=100,
         blank=True,
         null=True,
@@ -108,10 +108,10 @@ class KeyValidator:
         self.full_clean()
         try:
             buffer = self.body.encode("utf-8")
-            mine_type = magic.from_buffer(buffer[:2048], mime=True)
-            self.mine_type = mine_type
+            mime_type = magic.from_buffer(buffer[:2048], mime=True)
+            self.mime_type = mime_type
         except Exception:
-            self.mine_type = "application/x"
+            self.mime_type = "application/x"
 
         super().save(*args, **kwargs)
 

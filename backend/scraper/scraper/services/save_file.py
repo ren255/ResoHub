@@ -25,7 +25,7 @@ class TextFile:
     @property
     def key(self) -> str:
         """NoSQL用key生成"""
-        return f"{self.scrape_id}_{self.file_type}.{self.extension}"
+        return f"{self.scrape_id}/{self.file_type}.{self.extension}"
 
     @database_sync_to_async
     def _get_or_create_instance(self, created_by):
@@ -89,7 +89,7 @@ class TextFile:
             inst.body = (body + line + "\n") if body else (line + "\n")
 
             # 必要なフィールドだけ更新して保存
-            inst.save(update_fields=["body", "mine_type", "file_size"])
+            inst.save(update_fields=["body", "mime_type", "file_size"])
 
     async def exists(self) -> bool:
         """ファイルが存在するか確認"""

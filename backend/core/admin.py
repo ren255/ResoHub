@@ -9,12 +9,12 @@ class FileAdmin(admin.ModelAdmin):
         "original_filename",
         "uploaded_by",
         "get_human_readable_size",
-        "mine_type",
+        "mime_type",
         "uploaded_at",
     )
 
     list_filter = (
-        "mine_type",
+        "mime_type",
         "uploaded_at",
     )
 
@@ -25,7 +25,7 @@ class FileAdmin(admin.ModelAdmin):
 
     readonly_fields = (
         "file_size",
-        "mine_type",
+        "mime_type",
         "uploaded_at",
         "updated_at",
     )
@@ -53,7 +53,7 @@ class TextFileStorageAdmin(admin.ModelAdmin):
         "extension_display",
         "created_by__username",
         "file_size_display",
-        "mine_type",
+        "mime_type",
         "status_display",
         "created_at",
     ]
@@ -61,7 +61,7 @@ class TextFileStorageAdmin(admin.ModelAdmin):
     # フィルター
     list_filter = [
         "is_deleted",
-        "mine_type",
+        "mime_type",
         "created_at",
     ]
 
@@ -84,7 +84,7 @@ class TextFileStorageAdmin(admin.ModelAdmin):
     # フィールドセット
     fieldsets = (
         ("基本情報", {"fields": ("id", "key", "extension_display", "created_by")}),
-        ("コンテンツ", {"fields": ("body", "mine_type", "file_size")}),
+        ("コンテンツ", {"fields": ("body", "mime_type", "file_size")}),
         ("ステータス", {"fields": ("is_deleted",)}),
         (
             "タイムスタンプ",
