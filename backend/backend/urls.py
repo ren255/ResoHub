@@ -18,21 +18,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from django.urls import path
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView,
     SpectacularRedocView,
 )
-
-from django.urls import path
-
-
-def trigger_error(request):
-    division_by_zero = 1 / 0
-
-
-from django.urls import path
 
 
 def trigger_error(request):

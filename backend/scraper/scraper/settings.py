@@ -5,7 +5,6 @@ sentry_sdk.init(
     debug=True,
 )
 
-
 import os
 import sys
 

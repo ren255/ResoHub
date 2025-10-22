@@ -191,7 +191,7 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
 sentry_sdk.init(
-    dsn="https://7614c40f3b964ee58ffa8705496aa71b@glitchtip:8000/1",
+    dsn="http://7614c40f3b964ee58ffa8705496aa71b@web:8000/1",
     integrations=[DjangoIntegration()],
     auto_session_tracking=False,
     traces_sample_rate=0,
