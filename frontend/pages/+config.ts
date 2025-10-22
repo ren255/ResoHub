@@ -5,8 +5,7 @@ import * as Sentry from "@sentry/browser";
 
 // Sentryの初期化
 Sentry.init({
-  dsn: "https://76a0d90506c14728b646ea7542901ebd@localhost:8122/2",
-  tracesSampleRate: 1.0,
+  dsn: "https://76a0d90506c14728b646ea7542901ebd@glitchtip:8000/2",
 });
 
 // Default config (can be overridden by pages)
