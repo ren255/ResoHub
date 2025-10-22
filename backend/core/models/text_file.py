@@ -21,7 +21,7 @@ class TextFileStorage(models.Model):
         max_length=255,
         unique=True,
         db_index=True,
-        help_text="ファイル名やパス（英数字、ハイフン、アンダースコア、ドット）",
+        help_text="キーに使用できるのは英数字、(-), (_), (:), (/), (.)のみ",
     )
     body = models.TextField(blank=True, null=True, help_text="ファイルの内容")
 
@@ -30,14 +30,13 @@ class TextFileStorage(models.Model):
         max_length=100,
         blank=True,
         null=True,
-        help_text="例: text/plain, application/json",
     )
 
     # ファイルサイズ（バイト）
-    file_size = models.IntegerField(default=0, help_text="ファイルサイズ（バイト単位）")
+    file_size = models.IntegerField(default=0)
 
     # 削除フラグ
-    is_deleted = models.BooleanField(default=False, help_text="論理削除フラグ")
+    is_deleted = models.BooleanField(default=False)
 
     # タイムスタンプ
     created_at = models.DateTimeField(auto_now_add=True)
@@ -62,24 +61,33 @@ class TextFileStorage(models.Model):
         _, ext = os.path.splitext(self.key)
         return ext.lower() if ext else ""
 
+
+class KeyValidator:
     @staticmethod
     def validate_key(key):
         """
         keyのバリデーション
-        英数字、ハイフン、アンダースコア、ドットのみ許可
+
+        許可される文字:
+        - 英数字 (a-z, A-Z, 0-9)
+        - (-), (_), (:), (/), (.)
+
+        禁止事項:
+        - (\)などの特殊記号
+        - ASCII以外の文字
+        - 先頭がドットで始まる文字列
         """
         if not key:
             raise ValidationError("keyは必須です")
 
-        # 許可する文字: 英数字、ハイフン、アンダースコア、ドット
-        pattern = r"^[a-zA-Z0-9._-]+$"
-
+        # 許可する文字: 英数字、ハイフン、アンダースコア、コロン、スラッシュ、ドット
+        pattern = r"^[a-zA-Z0-9._\-:/]+$"
         if not re.match(pattern, key):
             raise ValidationError(
-                "Only alphanumeric characters, hyphens (-), underscores (_), and dots (.) can be used in the key."
+                "キーに使用できるのは英数字、(-), (_), (:), (/), (.)のみです"
             )
 
-        # 先頭がドットで始まらないようにチェック（隠しファイル防止）
+        # 先頭がドットで始まらないようにチェック(隠しファイル防止)
         if key.startswith("."):
             raise ValidationError("keyはドットで始めることはできません")
 

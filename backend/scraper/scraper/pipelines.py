@@ -83,4 +83,5 @@ class SubjectID:
         adapter["name"] = adapter["name"].split("  ")[0]
         file = TextFile(item["scrape_id"], "subject_id", "jsonl")
         await file.write_line(json.dumps(adapter.asdict(), ensure_ascii=False))
+        print(f"write {adapter.asdict()}")
         return item
