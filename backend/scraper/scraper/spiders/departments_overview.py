@@ -1,6 +1,5 @@
 import scrapy, json
 from scrapy.http.response import Response
-from core.models import ScrapyItem
 
 from scraper.items import DepartmentsOverviewItem
 from ..services.url_manager import url_analyzer, url_generator, PageType

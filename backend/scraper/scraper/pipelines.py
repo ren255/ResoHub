@@ -40,11 +40,10 @@ class ProcessID:
             item.pop("department_url")
 
         if item_name == SubjectCatalogItem.__name__:
-            ids = url_analyzer(adapter.get("url_subject"))
+            ids = url_analyzer(adapter.get("url_source"))
             adapter["school_id"] = ids["school_id"]
             adapter["department_id"] = ids["department_id"]
-            adapter["subject_code"] = ids["subject_code"]
-            item.pop("url_subject")
+            # subject_codeはtableからとり、tableのあるurlを解析対象
 
         if item_name == SubjectDetailItem.__name__:
             ids = url_analyzer(adapter.get("url_source"))
@@ -72,5 +71,16 @@ class DepartmentID:
         if not item.__class__.__name__ == DepartmentsOverviewItem.__name__:
             return item
         file = TextFile(item["scrape_id"], "department_id", "jsonl")
+        await file.write_line(json.dumps(adapter.asdict(), ensure_ascii=False))
+        return item
+
+
+class SubjectID:
+    async def process_item(self, item: scrapy.Item, spider: scrapy.Spider):
+        adapter = ItemAdapter(item)
+        if not item.__class__.__name__ == SubjectCatalogItem.__name__:
+            return item
+        adapter["name"] = adapter["name"].split("  ")[0]
+        file = TextFile(item["scrape_id"], "subject_id", "jsonl")
         await file.write_line(json.dumps(adapter.asdict(), ensure_ascii=False))
         return item

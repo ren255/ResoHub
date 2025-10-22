@@ -27,12 +27,17 @@ class TextFile:
         """NoSQL用key生成"""
         return f"{self.scrape_id}_{self.file_type}.{self.extension}"
 
+    @database_sync_to_async
+    def _get_or_create_instance(self, created_by):
+        with transaction.atomic():
+            instance, _ = self._storage.objects.get_or_create(
+                key=self.key, defaults={"created_by": created_by, "body": ""}
+            )
+        return instance
+
     async def _get_instance(self):
-        """インスタンスをキャッシュして取得"""
         created_by = await self._get_created_by()
-        instance, _ = await sync_to_async(self._storage.objects.get_or_create)(
-            key=self.key, defaults={"created_by": created_by, "body": ""}
-        )
+        instance = await self._get_or_create_instance(created_by)
         return instance
 
     async def _get_body(self) -> str:

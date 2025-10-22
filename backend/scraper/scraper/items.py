@@ -24,13 +24,12 @@ class DepartmentsOverviewItem(scrapy.Item):  # 各学科ごと
 
 
 class SubjectCatalogItem(scrapy.Item):
-    url_source = scrapy.Field()
+    url_source = scrapy.Field()  # URL解析対象
     scrape_id = scrapy.Field()
     school_id = scrapy.Field()  # URLより
     department_id = scrapy.Field()  # URLより
-    subject_code = scrapy.Field()  # URLより
+    subject_code = scrapy.Field()  # tableより
     name = scrapy.Field()
-    url_subject = scrapy.Field()  # URL解析対象
     subject_type = scrapy.Field()
     subject_classification = scrapy.Field()
     subject_name = scrapy.Field()
