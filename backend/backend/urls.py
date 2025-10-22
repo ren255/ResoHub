@@ -25,7 +25,22 @@ from drf_spectacular.views import (
     SpectacularRedocView,
 )
 
+from django.urls import path
+
+
+def trigger_error(request):
+    division_by_zero = 1 / 0
+
+
+from django.urls import path
+
+
+def trigger_error(request):
+    division_by_zero = 1 / 0
+
+
 urlpatterns = [
+    path("glitchtip-debug/", trigger_error),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
         "api/docs/",
@@ -33,6 +48,8 @@ urlpatterns = [
         name="swagger-ui",
     ),
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
+    path("admin/doc/", include("django.contrib.admindocs.urls")),
+    path("admin/", admin.site.urls),
     path("api/", include("content.urls")),
     path("admin/doc/", include("django.contrib.admindocs.urls")),
     path("admin/", admin.site.urls),

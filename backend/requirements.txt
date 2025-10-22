@@ -4,6 +4,7 @@ djangorestframework
 django-cors-headers
 gunicorn
 django-extensions
+sentry-sdk
 
 # doc
 pydotplus

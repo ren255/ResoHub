@@ -186,3 +186,13 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "API for resohub. scraping results and getting the data from database and static file server",
     "VERSION": "1.0.0",
 }
+
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+sentry_sdk.init(
+    dsn="https://7614c40f3b964ee58ffa8705496aa71b@glitchtip:8000/1",
+    integrations=[DjangoIntegration()],
+    auto_session_tracking=False,
+    traces_sample_rate=0,
+)
