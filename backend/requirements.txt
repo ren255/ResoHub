@@ -11,6 +11,7 @@ pygraphviz
 docutils
 drf-spectacular
 black
+sentry_sdk
 
 # database
 mysqlclient
