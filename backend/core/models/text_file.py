@@ -61,8 +61,6 @@ class TextFileStorage(models.Model):
         _, ext = os.path.splitext(self.key)
         return ext.lower() if ext else ""
 
-
-class KeyValidator:
     @staticmethod
     def validate_key(key):
         """
