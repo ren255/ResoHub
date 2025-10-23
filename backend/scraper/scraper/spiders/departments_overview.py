@@ -10,9 +10,9 @@ class DepartmentsOverviewSpider(scrapy.Spider):
     name = "departments_overview"
     allowed_domains = ["syllabus.kosen-k.go.jp"]
 
-    def __init__(self, param1, name=None, **kwargs):
+    def __init__(self, uuid, name=None, **kwargs):
         super().__init__(name, **kwargs)
-        self.scrape_id = param1
+        self.scrape_id = uuid
 
     async def start(self):
         file = TextFile(self.scrape_id, "school_id", "jsonl")

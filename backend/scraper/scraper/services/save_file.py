@@ -6,13 +6,17 @@ from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
 import pandas as pd
 from io import StringIO
+from typing import List
 
 
 class TextFile:
-    def __init__(self, scrape_id: str, file_type: str, extension: str):
+    def __init__(
+        self, scrape_id: str, file_type: str, extension: str, worker_id: str = None
+    ):
         self.scrape_id = scrape_id
         self.file_type = file_type
         self.extension = extension
+        self.worker_id = worker_id
         self._created_by = None
         self._storage = TextFileStorage
 
@@ -24,7 +28,10 @@ class TextFile:
 
     @property
     def key(self) -> str:
-        """NoSQL用key生成"""
+        if self.worker_id:
+            return (
+                f"{self.scrape_id}/{self.file_type}/{self.worker_id}.{self.extension}"
+            )
         return f"{self.scrape_id}/{self.file_type}.{self.extension}"
 
     @database_sync_to_async
@@ -98,3 +105,59 @@ class TextFile:
     async def delete(self) -> None:
         """ファイルを削除"""
         await sync_to_async(self._storage.objects.filter(key=self.key).delete)()
+
+
+class TextFileCollection:
+    def __init__(self, prefix: str):
+        self.prefix = prefix
+        self.keys = []
+        self._storage = TextFileStorage
+
+    async def update_keys(self) -> List[str]:
+        """prefix配下の全keyを取得してself.keysに格納"""
+        self.keys = await sync_to_async(list)(
+            self._storage.objects.filter(key__startswith=self.prefix)
+            .order_by("key")
+            .values_list("key", flat=True)
+        )
+        return self.keys
+
+    async def get_bodies(self) -> List[str]:
+        """self.keys配下の全bodyをリストで返す"""
+        if not self.keys:
+            return []
+
+        bodies = await sync_to_async(list)(
+            self._storage.objects.filter(key__in=self.keys)
+            .order_by("key")
+            .values_list("body", flat=True)
+        )
+        return bodies
+
+    async def delete_all(self) -> None:
+        """self.keys配下を全削除"""
+        if not self.keys:
+            return
+
+        await sync_to_async(self._storage.objects.filter(key__in=self.keys).delete)()
+        self.keys = []
+
+    async def bulk_update_bodies(self, new_bodies: List[str]) -> None:
+        """self.keys配下のbodyを一括更新"""
+        if not self.keys or len(self.keys) != len(new_bodies):
+            raise ValueError("keys and bodies length mismatch")
+
+        @database_sync_to_async
+        def _bulk_update():
+            instances = list(
+                self._storage.objects.filter(key__in=self.keys).order_by("key")
+            )
+
+            for instance, new_body in zip(instances, new_bodies):
+                instance.body = new_body
+
+            self._storage.objects.bulk_update(
+                instances, fields=["body", "mime_type", "file_size"]
+            )
+
+        await _bulk_update()

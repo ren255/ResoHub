@@ -1,6 +1,7 @@
 import scrapy
 from scraper.items import CollegesOverviewItem
-from ..services.url_manager import url_generator,PageType
+from ..services.url_manager import url_generator, PageType
+
 
 class CollegesOverviewSpider(scrapy.Spider):
     name = "colleges_overview"
@@ -8,13 +9,12 @@ class CollegesOverviewSpider(scrapy.Spider):
     base_url = "https://syllabus.kosen-k.go.jp/"
     url = url_generator(PageType.SCHOOLS)
 
-    def __init__(self, param1, name=None, **kwargs):
+    def __init__(self, uuid, name=None, **kwargs):
         super().__init__(name, **kwargs)
-        self.scrape_id = param1
-        
+        self.scrape_id = uuid
+
     def start_requests(self):
         yield scrapy.Request(self.url, callback=self.parse)
-
 
     def parse(self, response):
         schools = response.css(".btn-default")

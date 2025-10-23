@@ -20,6 +20,7 @@ django-storages
 boto3
 python-magic
 channels
+shortuuid
 
 # env
 python-decouple
