@@ -1,6 +1,8 @@
 import scrapy
+from scrapy import signals
 from scraper.items import CollegesOverviewItem
-from ..services.url_manager import url_generator, PageType
+from ..services import url_generator, PageType, ItemCollection, TextFile
+from time import time
 
 
 class CollegesOverviewSpider(scrapy.Spider):
@@ -13,7 +15,12 @@ class CollegesOverviewSpider(scrapy.Spider):
         super().__init__(name, **kwargs)
         self.scrape_id = uuid
 
-    def start_requests(self):
+    async def start(self):
+        self.start_time = time()
+        items = ItemCollection(self.scrape_id, CollegesOverviewItem.__name__)
+        await items.delete_all()
+        file = TextFile(self.scrape_id, "school_id", "jsonl")
+        await file.delete()
         yield scrapy.Request(self.url, callback=self.parse)
 
     def parse(self, response):
@@ -31,3 +38,21 @@ class CollegesOverviewSpider(scrapy.Spider):
                 name=name,
                 url_college=url,
             )
+
+    @classmethod
+    def from_crawler(cls, crawler, *args, **kwargs):
+        spider = super(CollegesOverviewSpider, cls).from_crawler(
+            crawler, *args, **kwargs
+        )
+        crawler.signals.connect(spider.spider_closed, signal=signals.spider_closed)
+        return spider
+
+    async def spider_closed(self, spider):
+        items = ItemCollection(self.scrape_id, CollegesOverviewItem.__name__)
+        file = TextFile(self.scrape_id, "school_id", "jsonl")
+        jsons = await items.get_data()
+        await file.write_file("/n".join(jsons))
+
+        print(
+            f"CollegesOverviewSpider done ------------\ntook: {time() - self.start_time:.2f}"
+        )
