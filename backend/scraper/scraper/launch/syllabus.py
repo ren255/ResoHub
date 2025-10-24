@@ -1,4 +1,8 @@
 import scraper.settings
+from scrapy.utils.log import configure_logging
+
+configure_logging()
+
 from twisted.internet import defer
 from scrapy.crawler import CrawlerRunner
 from scrapy.crawler import CrawlerProcess

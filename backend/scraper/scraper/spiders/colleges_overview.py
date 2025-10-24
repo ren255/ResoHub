@@ -14,9 +14,9 @@ class CollegesOverviewSpider(scrapy.Spider):
     def __init__(self, uuid, name=None, **kwargs):
         super().__init__(name, **kwargs)
         self.scrape_id = uuid
+        self.start_time = time()
 
     async def start(self):
-        self.start_time = time()
         items = ItemCollection(self.scrape_id, CollegesOverviewItem.__name__)
         await items.delete_all()
         file = TextFile(self.scrape_id, "school_id", "jsonl")
@@ -51,8 +51,8 @@ class CollegesOverviewSpider(scrapy.Spider):
         items = ItemCollection(self.scrape_id, CollegesOverviewItem.__name__)
         file = TextFile(self.scrape_id, "school_id", "jsonl")
         jsons = await items.get_data()
-        await file.write_file("/n".join(jsons))
+        await file.write_file("\n".join(jsons))
 
         print(
-            f"CollegesOverviewSpider done ------------\ntook: {time() - self.start_time:.2f}"
+            f"\nCollegesOverviewSpider:{self.scrape_id} done ------------\ntook: {time() - self.start_time:.2f}"
         )

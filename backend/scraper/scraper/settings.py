@@ -42,11 +42,11 @@ ADDONS = {}
 ROBOTSTXT_OBEY = True
 
 # Concurrency and throttling settings
-CONCURRENT_REQUESTS = 8
-CONCURRENT_REQUESTS_PER_DOMAIN = 1.5
-DOWNLOAD_DELAY = 0.3
+CONCURRENT_REQUESTS = 64
+CONCURRENT_REQUESTS_PER_DOMAIN = 16
+DOWNLOAD_DELAY = 0.2
 
-CONCURRENT_ITEMS = 1
+CONCURRENT_ITEMS = 250
 
 
 # Disable cookies (enabled by default)
@@ -83,9 +83,9 @@ CONCURRENT_ITEMS = 1
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     "scraper.pipelines.ProcessID": 100,
-    "scraper.pipelines.SchoolID": 501,
-    "scraper.pipelines.DepartmentID": 502,
-    "scraper.pipelines.SubjectID": 503,
+    # "scraper.pipelines.SchoolID": 501,
+    # "scraper.pipelines.DepartmentID": 502,
+    # "scraper.pipelines.SubjectID": 503,
     "scraper.pipelines.SaveDB": 1000,
 }
 
@@ -116,3 +116,7 @@ FEED_EXPORT_ENCODING = "utf-8"
 MEMDEBUG_ENABLED = True
 MEMUSAGE_LIMIT_MB = 4096
 MEMUSAGE_WARNING_MB = 3072
+
+
+LOG_LEVEL = "INFO"
+LOG_FILE = "scrapy.log"

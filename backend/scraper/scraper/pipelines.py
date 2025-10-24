@@ -9,8 +9,17 @@ from .services.save_file import TextFile
 
 import json
 
+from time import time
+
 
 class SaveDB:
+    def __init__(self):
+        self.timestamps = []
+        self.start_time = time()
+        self.last_log = time()
+        self.log_interval = 10
+        self.last_tick = time()
+
     async def process_item(self, item: scrapy.Item, spider: scrapy.Spider):
         adapter = ItemAdapter(item)
 
@@ -20,6 +29,26 @@ class SaveDB:
             spider_name=spider.name,
             data=json.dumps(adapter.asdict(), ensure_ascii=False),
         )
+        self.timestamps.append(time())
+
+        if time() - self.last_log > self.log_interval:
+            total = len(self.timestamps)
+            last = len(
+                [
+                    True
+                    for timestamp in self.timestamps
+                    if time() - timestamp < self.log_interval
+                ]
+            )
+            time_passed = time() - self.last_log
+            print(
+                f"processed:{total}(+{last}) {last/time_passed:.2f}items/s in last {time_passed:.2f}s "
+            )
+            delay = time_passed - self.log_interval
+            if delay > 1:
+                print(f"warning!:{delay:.2f}s delay")
+            self.last_log = time()
+
         return item
 
 
@@ -55,33 +84,21 @@ class ProcessID:
         return item
 
 
-class SchoolID:
-    async def process_item(self, item: scrapy.Item, spider: scrapy.Spider):
-        adapter = ItemAdapter(item)
-        if not item.__class__.__name__ == CollegesOverviewItem.__name__:
-            return item
-        file = TextFile(item["scrape_id"], "school_id", "jsonl")
-        await file.write_line(json.dumps(adapter.asdict(), ensure_ascii=False))
-        return item
+# class SchoolID:
+#     async def process_item(self, item: scrapy.Item, spider: scrapy.Spider):
+#         adapter = ItemAdapter(item)
+#         if not item.__class__.__name__ == CollegesOverviewItem.__name__:
+#             return item
+#         file = TextFile(item["scrape_id"], "school_id", "jsonl")
+#         await file.write_line(json.dumps(adapter.asdict(), ensure_ascii=False))
+#         return item
 
 
-class DepartmentID:
-    async def process_item(self, item: scrapy.Item, spider: scrapy.Spider):
-        adapter = ItemAdapter(item)
-        if not item.__class__.__name__ == DepartmentsOverviewItem.__name__:
-            return item
-        file = TextFile(item["scrape_id"], "department_id", "jsonl")
-        await file.write_line(json.dumps(adapter.asdict(), ensure_ascii=False))
-        return item
-
-
-class SubjectID:
-    async def process_item(self, item: scrapy.Item, spider: scrapy.Spider):
-        adapter = ItemAdapter(item)
-        if not item.__class__.__name__ == SubjectCatalogItem.__name__:
-            return item
-        adapter["name"] = adapter["name"].split("  ")[0]
-        file = TextFile(item["scrape_id"], "subject_id", "jsonl")
-        await file.write_line(json.dumps(adapter.asdict(), ensure_ascii=False))
-        print(f"write {adapter.asdict()}")
-        return item
+# class DepartmentID:
+#     async def process_item(self, item: scrapy.Item, spider: scrapy.Spider):
+#         adapter = ItemAdapter(item)
+#         if not item.__class__.__name__ == DepartmentsOverviewItem.__name__:
+#             return item
+#         file = TextFile(item["scrape_id"], "department_id", "jsonl")
+#         await file.write_line(json.dumps(adapter.asdict(), ensure_ascii=False))
+#         return item
