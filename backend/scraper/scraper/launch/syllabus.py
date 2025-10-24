@@ -24,6 +24,7 @@ def crawl():
     yield runner.crawl(CollegesOverviewSpider, uuid=scrape_id)
     yield runner.crawl(DepartmentsOverviewSpider, uuid=scrape_id)
     yield runner.crawl(SubjectCatalogSpider, uuid=scrape_id)
+    yield runner.crawl(SubjectDetailSpider,uuid=scrape_id)
     from twisted.internet import reactor
 
     reactor.stop()

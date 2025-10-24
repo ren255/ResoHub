@@ -33,7 +33,7 @@ class CollegesOverviewSpider(scrapy.Spider):
             url = self.base_url + school.css("::attr(href)").get()
 
             yield CollegesOverviewItem(
-                url_source=self.url,
+                url_source=response.url,
                 scrape_id=self.scrape_id,
                 name=name,
                 url_college=url,

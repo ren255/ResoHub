@@ -39,8 +39,7 @@ services:
     tty: true
     networks:
       - app-network
-      - glitchtip_default   # ← 追加
-    restart: unless-stopped
+      - glitchtip_default
     depends_on:
       db:
         condition: service_healthy

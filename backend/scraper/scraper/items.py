@@ -48,11 +48,9 @@ class SubjectDetailItem(scrapy.Item):
     school_id = scrapy.Field()  # URLより
     department_id = scrapy.Field()  # URLより
     subject_code = scrapy.Field()  # URLより
-    name = scrapy.Field()
     subject_type = scrapy.Field()
     subject_classification = scrapy.Field()
     subject_name = scrapy.Field()
-    subject_id = scrapy.Field()
     credit_type = scrapy.Field()
     credits = scrapy.Field()
     # new
@@ -70,8 +68,8 @@ class SubjectContentItem(scrapy.Item):
     school_id = scrapy.Field()  # URLより
     department_id = scrapy.Field()  # URLより
     subject_code = scrapy.Field()  # URLより
-    term = scrapy.Field()
     quarter = scrapy.Field()
     week = scrapy.Field()
     content = scrapy.Field()
     goal = scrapy.Field()
+    is_exam = scrapy.Field()

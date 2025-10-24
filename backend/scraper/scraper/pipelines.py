@@ -22,12 +22,12 @@ class SaveDB:
 
     async def process_item(self, item: scrapy.Item, spider: scrapy.Spider):
         adapter = ItemAdapter(item)
-
+        data = json.dumps(adapter.asdict(), ensure_ascii=False)
         await sync_to_async(ScrapyItem.objects.create)(
             scrape_id=adapter.get("scrape_id"),
             item_name=item.__class__.__name__,
             spider_name=spider.name,
-            data=json.dumps(adapter.asdict(), ensure_ascii=False),
+            data=data,
         )
         self.timestamps.append(time())
 
@@ -41,11 +41,13 @@ class SaveDB:
                 ]
             )
             time_passed = time() - self.last_log
+            current_speed = last/time_passed
+            speed = (time()-self.start_time)/ len(self.timestamps)
             print(
-                f"processed:{total}(+{last}) {last/time_passed:.2f}items/s in last {time_passed:.2f}s "
+                f"processed:{total}(+{last}) {current_speed:.2f}items/s({speed:.2f}) in last {time_passed:.2f}s  sample: {data}"
             )
             delay = time_passed - self.log_interval
-            if delay > 1:
+            if delay > 5:
                 print(f"warning!:{delay:.2f}s delay")
             self.last_log = time()
 
@@ -82,23 +84,3 @@ class ProcessID:
 
         item.pop("url_source")
         return item
-
-
-# class SchoolID:
-#     async def process_item(self, item: scrapy.Item, spider: scrapy.Spider):
-#         adapter = ItemAdapter(item)
-#         if not item.__class__.__name__ == CollegesOverviewItem.__name__:
-#             return item
-#         file = TextFile(item["scrape_id"], "school_id", "jsonl")
-#         await file.write_line(json.dumps(adapter.asdict(), ensure_ascii=False))
-#         return item
-
-
-# class DepartmentID:
-#     async def process_item(self, item: scrapy.Item, spider: scrapy.Spider):
-#         adapter = ItemAdapter(item)
-#         if not item.__class__.__name__ == DepartmentsOverviewItem.__name__:
-#             return item
-#         file = TextFile(item["scrape_id"], "department_id", "jsonl")
-#         await file.write_line(json.dumps(adapter.asdict(), ensure_ascii=False))
-#         return item
