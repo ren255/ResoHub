@@ -15,7 +15,7 @@ class SubjectCatalogSpider(scrapy.Spider):
     name = "subject_catalog"
     allowed_domains = ["syllabus.kosen-k.go.jp"]
 
-    def __init__(self, uuid, name=None, **kwargs):
+    def __init__(self, uuid,name=None, **kwargs):
         super().__init__(name, **kwargs)
         self.scrape_id = uuid
         self.start_time = time()

@@ -15,15 +15,20 @@ class SubjectDetailSpider(scrapy.Spider):
     name = "subject_detail"
     allowed_domains = ["syllabus.kosen-k.go.jp"]
 
-    def __init__(self, uuid, name=None, **kwargs):
+    def __init__(self, uuid,school_id=None, name=None, **kwargs):
         super().__init__(name, **kwargs)
         self.scrape_id = uuid
+        self.school_id = school_id
         self.start_time = time()
 
     async def start(self):
         subjects_file = TextFile(self.scrape_id, "subject_id", "jsonl")
         subject_details_file = TextFile(self.scrape_id, "subject_detail", "jsonl")
+        file = TextFile(self.scrape_id, "subject_contents", "jsonl")
+        file.delete()
         subjects = await subjects_file.read_as_lines()
+        if self.school_id:
+            subjects = [subject for subject in subjects if json.loads(subject)["school_id"]==self.school_id]
         await subject_details_file.delete()
 
         for subject in subjects:
@@ -57,8 +62,8 @@ class SubjectDetailSpider(scrapy.Spider):
                 open_period=detail_df.loc[0, 3],
             )
 
-            quarters = response.css(".bg-::text").getall()
-            quarters = [quarter.strip("rdQ") for quarter in quarters]
+            quarters = response.css("th.bg-::text").getall()
+            # quarters = [quarter.strip("Q") for quarter in quarters]
             weeks = response.css(".week_number::text").getall()
             weeks = [week.strip("週") for week in weeks]
             course_contents = response.css(".week_number+ td::text").getall()

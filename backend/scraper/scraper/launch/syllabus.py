@@ -35,7 +35,7 @@ def parallel():
     process = CrawlerProcess(get_project_settings())
     process.crawl(CollegesOverviewSpider, uuid=scrape_id)
     process.crawl(DepartmentsOverviewSpider, uuid=scrape_id)
-    process.crawl(SubjectCatalogSpider, uuid=scrape_id)
+    process.crawl(SubjectCatalogSpider, uuid=scrape_id,school_id="14")
     process.start()
 
 

@@ -42,10 +42,11 @@ class SaveDB:
             )
             time_passed = time() - self.last_log
             current_speed = last/time_passed
-            speed = (time()-self.start_time)/ len(self.timestamps)
+            speed =  total/(time()-self.start_time)
             print(
-                f"processed:{total}(+{last}) {current_speed:.2f}items/s({speed:.2f}) in last {time_passed:.2f}s  sample: {data}"
+                f"processed:{total}(+{last}) {current_speed:.2f}items/s({speed:.2f}items/s) in last {time_passed:.2f}s"
             )
+            print(f"sample: {data}")
             delay = time_passed - self.log_interval
             if delay > 5:
                 print(f"warning!:{delay:.2f}s delay")
