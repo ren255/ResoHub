@@ -2,16 +2,23 @@ import scrapy
 from scrapy import signals
 from scrapy.http.response import Response
 
-from scraper.items import SubjectCatalogItem
+from scraper.items import DepartmentDetailItem
 from ..services import url_generator, PageType, TextFile, ItemCollection
 
 import json
 import pandas as pd
 from time import time
 from io import StringIO
+import datetime
 
 
-class SubjectCatalogSpider(scrapy.Spider):
+class DepartmentDetailSpider(scrapy.Spider):
+    """
+    -> department overview
+    各学科の有効な入学年度を特定
+    -> subject catalog
+    """
+
     name = "subject_catalog"
     allowed_domains = ["syllabus.kosen-k.go.jp"]
 
@@ -21,10 +28,8 @@ class SubjectCatalogSpider(scrapy.Spider):
         self.start_time = time()
 
     async def start(self):
-        subjects_file = TextFile(self.scrape_id, "subject_id", "jsonl")
-        departments_file = TextFile(self.scrape_id, "department_id", "jsonl")
+        departments_file = TextFile(self.scrape_id, "department_overview", "jsonl")
         departments = await departments_file.read_as_lines()
-        await subjects_file.delete()
 
         for department in departments:
             dept = json.loads(department)
@@ -32,46 +37,46 @@ class SubjectCatalogSpider(scrapy.Spider):
                 PageType.SUBJECTS,
                 school_id=dept["school_id"],
                 department_id=dept["department_id"],
-                year=dept["admission_year"],
+                year=datetime.date.today().year,
             )
             yield scrapy.Request(url, callback=self.parse)
 
     def parse(self, response: Response):
+        # 教科数を取得し存在する学科か確かめる
         df = pd.read_html(StringIO(response.text), match="学年別週当授業時数")[0]
         skip_first_rows = 4
-        column_names = [
-            "subject_type",
-            "subject_classification",
-            "subject_name",
-            "subject_code",
-            "credit_type",
-            "credits",
-        ]
         df = df.iloc[skip_first_rows:]
-        df.columns = column_names + df.columns.tolist()[len(column_names) :]
-        df["subject_name"] = df["subject_name"].str.split("  ").str[0]
+        subject_count = len(df)
 
-        for row in df.itertuples():
-            # subject urlは無いことがあるため取得しない
-            yield SubjectCatalogItem(
-                url_source=response.url,
+        # 右上の開講年度ドロップダウンから取得
+        urls = response.css(".dropdown-header a::attr(href)").getall()
+        urls = urls[:-1]
+
+        # 存在しない学科の場合存在する開催年から取得し直す
+        if not subject_count:
+            yield scrapy.Request(response.urljoin(urls[-1]), callback=self.parse)
+
+        # pipeline でurlの処理が行われる
+        for url in urls:
+            yield DepartmentDetailItem(
+                url_source=url,
                 scrape_id=self.scrape_id,
-                name=row.subject_name,
-                subject_code=row.subject_code,
             )
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
-        spider = super(SubjectCatalogSpider, cls).from_crawler(crawler, *args, **kwargs)
+        spider = super(DepartmentDetailSpider, cls).from_crawler(
+            crawler, *args, **kwargs
+        )
         crawler.signals.connect(spider.spider_closed, signal=signals.spider_closed)
         return spider
 
     async def spider_closed(self, spider):
-        items = ItemCollection(self.scrape_id, SubjectCatalogItem.__name__)
-        file = TextFile(self.scrape_id, "subject_id", "jsonl")
+        items = ItemCollection(self.scrape_id, DepartmentDetailItem.__name__)
+        file = TextFile(self.scrape_id, "department_id", "jsonl")
         jsons = await items.get_data()
         await file.write_file("\n".join(jsons))
 
         print(
-            f"\nSubjectCatalogSpider:{self.scrape_id} done ------------\ntook: {time() - self.start_time:.2f}"
+            f"\n{DepartmentDetailSpider.__name__}:{self.scrape_id} done ------------\ntook: {time() - self.start_time:.2f}"
         )

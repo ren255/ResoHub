@@ -21,9 +21,7 @@ class DepartmentsOverviewSpider(scrapy.Spider):
         schools = await file.read_as_lines()
         for school in schools:
             school = json.loads(school)
-            url = url_generator(
-                PageType.DEPARTMENTS, school_id=school["school_id"]
-            )
+            url = url_generator(PageType.DEPARTMENTS, school_id=school["school_id"])
             yield scrapy.Request(url, callback=self.parse)
 
     def parse(self, response: Response):
@@ -47,7 +45,7 @@ class DepartmentsOverviewSpider(scrapy.Spider):
 
     async def spider_closed(self, spider):
         items = ItemCollection(self.scrape_id, DepartmentsOverviewItem.__name__)
-        file = TextFile(self.scrape_id, "department_id", "jsonl")
+        file = TextFile(self.scrape_id, "department_overview", "jsonl")
         jsons = await items.get_data()
         await file.write_file("\n".join(jsons))
 

@@ -41,8 +41,8 @@ class SaveDB:
                 ]
             )
             time_passed = time() - self.last_log
-            current_speed = last/time_passed
-            speed =  total/(time()-self.start_time)
+            current_speed = last / time_passed
+            speed = total / (time() - self.start_time)
             print(
                 f"processed:{total}(+{last}) {current_speed:.2f}items/s({speed:.2f}items/s) in last {time_passed:.2f}s"
             )
@@ -71,16 +71,25 @@ class ProcessID:
             adapter["department_id"] = ids["department_id"]
             item.pop("department_url")
 
+        if item_name == DepartmentDetailItem.__name__:
+            ids = url_analyzer(adapter.get("url_source"))
+            adapter["school_id"] = ids["school_id"]
+            adapter["department_id"] = ids["department_id"]
+            adapter["admission_year"] = ids["year"]
+            item.pop("url_source")
+
         if item_name == SubjectCatalogItem.__name__:
             ids = url_analyzer(adapter.get("url_source"))
             adapter["school_id"] = ids["school_id"]
             adapter["department_id"] = ids["department_id"]
+            adapter["admission_year"] = ids["year"]
             # subject_codeはtableからとり、tableのあるurlを解析対象
 
         if item_name == SubjectDetailItem.__name__:
             ids = url_analyzer(adapter.get("url_source"))
             adapter["school_id"] = ids["school_id"]
             adapter["department_id"] = ids["department_id"]
+            adapter["admission_year"] = ids["year"]
             adapter["subject_code"] = ids["subject_code"]
 
         item.pop("url_source")

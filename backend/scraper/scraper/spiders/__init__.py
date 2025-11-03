@@ -5,5 +5,6 @@
 from .colleges_overview import CollegesOverviewSpider
 from .curriculum_map import CurriculumMapSpider
 from .departments_overview import DepartmentsOverviewSpider
+from .department_detail import DepartmentDetailSpider
 from .subject_catalog import SubjectCatalogSpider
 from .subject_detail import SubjectDetailSpider

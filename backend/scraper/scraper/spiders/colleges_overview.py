@@ -1,7 +1,7 @@
 import scrapy
 from scrapy import signals
 from scraper.items import CollegesOverviewItem
-from ..services import url_generator, PageType, ItemCollection, TextFile
+from ..services import url_generator, url_analyzer, PageType, ItemCollection, TextFile
 from time import time
 
 
@@ -11,9 +11,10 @@ class CollegesOverviewSpider(scrapy.Spider):
     base_url = "https://syllabus.kosen-k.go.jp/"
     url = url_generator(PageType.SCHOOLS)
 
-    def __init__(self, uuid, name=None, **kwargs):
+    def __init__(self, uuid, school_id=None, name=None, **kwargs):
         super().__init__(name, **kwargs)
         self.scrape_id = uuid
+        self.school_id = school_id
         self.start_time = time()
 
     async def start(self):
@@ -30,7 +31,10 @@ class CollegesOverviewSpider(scrapy.Spider):
             name = school.css("::text").get()
             if not "高等専門学校" in name:
                 continue
-            url = self.base_url + school.css("::attr(href)").get()
+            url = response.urljoin(school.css("::attr(href)").get())
+
+            if self.school_id and self.school_id != url_analyzer(url)["school_id"]:
+                continue
 
             yield CollegesOverviewItem(
                 url_source=response.url,
