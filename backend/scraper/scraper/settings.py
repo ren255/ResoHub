@@ -86,7 +86,8 @@ ITEM_PIPELINES = {
     # "scraper.pipelines.SchoolID": 501,
     # "scraper.pipelines.DepartmentID": 502,
     # "scraper.pipelines.SubjectID": 503,
-    "scraper.pipelines.SaveDB": 1000,
+    "scraper.pipelines.SaveDB": 900,
+    "scraper.pipelines.PerformanceMonitor": 901,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

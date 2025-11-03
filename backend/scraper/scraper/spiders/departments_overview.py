@@ -3,7 +3,13 @@ from scrapy import signals
 from scrapy.http.response import Response
 
 from scraper.items import DepartmentsOverviewItem
-from ..services import url_generator, PageType, TextFile, ItemCollection
+from ..services import (
+    url_generator,
+    PageType,
+    TextFile,
+    ItemCollection,
+    SpiderProcessLogger,
+)
 from time import time
 
 
@@ -14,9 +20,10 @@ class DepartmentsOverviewSpider(scrapy.Spider):
     def __init__(self, uuid, name=None, **kwargs):
         super().__init__(name, **kwargs)
         self.scrape_id = uuid
-        self.start_time = time()
+        self.process_logger = SpiderProcessLogger(self)
 
     async def start(self):
+        self.process_logger.start()
         file = TextFile(self.scrape_id, "school_id", "jsonl")
         schools = await file.read_as_lines()
         for school in schools:
@@ -34,6 +41,7 @@ class DepartmentsOverviewSpider(scrapy.Spider):
                 url_source=response.url,
                 department_url=link,
             )
+            self.process_logger.processed()
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
@@ -49,6 +57,4 @@ class DepartmentsOverviewSpider(scrapy.Spider):
         jsons = await items.get_data()
         await file.write_file("\n".join(jsons))
 
-        print(
-            f"\nDepartmentsOverviewSpider: {self.scrape_id} done ------------\ntook: {time() - self.start_time:.2f}"
-        )
+        self.process_logger.complete()

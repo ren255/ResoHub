@@ -3,7 +3,13 @@ from scrapy import signals
 from scrapy.http.response import Response
 
 from scraper.items import DepartmentDetailItem
-from ..services import url_generator, PageType, TextFile, ItemCollection
+from ..services import (
+    url_generator,
+    PageType,
+    TextFile,
+    ItemCollection,
+    SpiderProcessLogger,
+)
 
 import json
 import pandas as pd
@@ -19,15 +25,16 @@ class DepartmentDetailSpider(scrapy.Spider):
     -> subject catalog
     """
 
-    name = "subject_catalog"
+    name = "department_detail"
     allowed_domains = ["syllabus.kosen-k.go.jp"]
 
     def __init__(self, uuid, name=None, **kwargs):
         super().__init__(name, **kwargs)
         self.scrape_id = uuid
-        self.start_time = time()
+        self.process_logger = SpiderProcessLogger(self)
 
     async def start(self):
+        self.process_logger.start()
         departments_file = TextFile(self.scrape_id, "department_overview", "jsonl")
         departments = await departments_file.read_as_lines()
 
@@ -63,6 +70,7 @@ class DepartmentDetailSpider(scrapy.Spider):
                 scrape_id=self.scrape_id,
                 url_source=url,
             )
+            self.process_logger.processed()
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
@@ -78,6 +86,4 @@ class DepartmentDetailSpider(scrapy.Spider):
         jsons = await items.get_data()
         await file.write_file("\n".join(jsons))
 
-        print(
-            f"\n{DepartmentDetailSpider.__name__}: {self.scrape_id} done ------------\ntook: {time() - self.start_time:.2f}"
-        )
+        self.process_logger.complete()

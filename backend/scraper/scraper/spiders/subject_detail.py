@@ -3,7 +3,13 @@ from scrapy import signals
 from scrapy.http.response import Response
 
 from scraper.items import SubjectDetailItem, SubjectContentItem
-from ..services import url_generator, PageType, TextFile, ItemCollection
+from ..services import (
+    url_generator,
+    PageType,
+    TextFile,
+    ItemCollection,
+    SpiderProcessLogger,
+)
 
 import json
 import pandas as pd
@@ -19,9 +25,10 @@ class SubjectDetailSpider(scrapy.Spider):
         super().__init__(name, **kwargs)
         self.scrape_id = uuid
         self.school_id = school_id
-        self.start_time = time()
+        self.process_logger = SpiderProcessLogger(self)
 
     async def start(self):
+        self.process_logger.start()
         subjects_file = TextFile(self.scrape_id, "subject_id", "jsonl")
         subject_details_file = TextFile(self.scrape_id, "subject_detail", "jsonl")
         file = TextFile(self.scrape_id, "subject_contents", "jsonl")
@@ -67,6 +74,7 @@ class SubjectDetailSpider(scrapy.Spider):
                 open_period=detail_df.loc[0, 3],
                 url_source=response.url,
             )
+            self.process_logger.processed()
 
             quarters = response.css("th.bg-::text").getall()
             # quarters = [quarter.strip("Q") for quarter in quarters]
@@ -92,6 +100,7 @@ class SubjectDetailSpider(scrapy.Spider):
                     goal=goal,
                     is_exam=is_exsam,
                 )
+                self.process_logger.processed()
 
             score_dest = pd.read_html(StringIO(response.text), match="総合評価割合")[0]
         except Exception as e:
@@ -114,6 +123,4 @@ class SubjectDetailSpider(scrapy.Spider):
         jsons = await items.get_data()
         await file.write_file("\n".join(jsons))
 
-        print(
-            f"\nSubjectDetailSpider: {self.scrape_id} done ------------\ntook: {time() - self.start_time:.2f}"
-        )
+        self.process_logger.complete()

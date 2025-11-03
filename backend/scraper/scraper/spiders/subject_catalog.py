@@ -3,7 +3,13 @@ from scrapy import signals
 from scrapy.http.response import Response
 
 from scraper.items import SubjectCatalogItem
-from ..services import url_generator, PageType, TextFile, ItemCollection
+from ..services import (
+    url_generator,
+    PageType,
+    TextFile,
+    ItemCollection,
+    SpiderProcessLogger,
+)
 
 import json
 import pandas as pd
@@ -18,9 +24,10 @@ class SubjectCatalogSpider(scrapy.Spider):
     def __init__(self, uuid, name=None, **kwargs):
         super().__init__(name, **kwargs)
         self.scrape_id = uuid
-        self.start_time = time()
+        self.process_logger = SpiderProcessLogger(self)
 
     async def start(self):
+        self.process_logger.start()
         subjects_file = TextFile(self.scrape_id, "subject_id", "jsonl")
         departments_file = TextFile(self.scrape_id, "department_id", "jsonl")
         departments = await departments_file.read_as_lines()
@@ -62,6 +69,7 @@ class SubjectCatalogSpider(scrapy.Spider):
                 url_source=response.url,
                 subject_url=url,
             )
+            self.process_logger.processed()
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
@@ -75,6 +83,4 @@ class SubjectCatalogSpider(scrapy.Spider):
         jsons = await items.get_data()
         await file.write_file("\n".join(jsons))
 
-        print(
-            f"\nSubjectCatalogSpider: {self.scrape_id} done ------------\ntook: {time() - self.start_time:.2f}"
-        )
+        self.process_logger.complete()
