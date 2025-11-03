@@ -51,13 +51,16 @@ class SubjectCatalogSpider(scrapy.Spider):
         df.columns = column_names + df.columns.tolist()[len(column_names) :]
         df["subject_name"] = df["subject_name"].str.split("  ").str[0]
 
-        for row in df.itertuples():
+        urls = response.css(".mcc-show::attr(href)").getall()
+        urls = [response.urljoin(url) for url in urls]
+        for row, url in zip(df.itertuples(), urls):
             # subject urlは無いことがあるため取得しない
             yield SubjectCatalogItem(
-                url_source=response.url,
                 scrape_id=self.scrape_id,
                 name=row.subject_name,
                 subject_code=row.subject_code,
+                url_source=response.url,
+                subject_url=url,
             )
 
     @classmethod
@@ -73,5 +76,5 @@ class SubjectCatalogSpider(scrapy.Spider):
         await file.write_file("\n".join(jsons))
 
         print(
-            f"\nSubjectCatalogSpider:{self.scrape_id} done ------------\ntook: {time() - self.start_time:.2f}"
+            f"\nSubjectCatalogSpider: {self.scrape_id} done ------------\ntook: {time() - self.start_time:.2f}"
         )

@@ -25,7 +25,7 @@ class SubjectDetailSpider(scrapy.Spider):
         subjects_file = TextFile(self.scrape_id, "subject_id", "jsonl")
         subject_details_file = TextFile(self.scrape_id, "subject_detail", "jsonl")
         file = TextFile(self.scrape_id, "subject_contents", "jsonl")
-        file.delete()
+        await file.delete()
         subjects = await subjects_file.read_as_lines()
         if self.school_id:
             subjects = [
@@ -42,7 +42,7 @@ class SubjectDetailSpider(scrapy.Spider):
                 school_id=sub["school_id"],
                 department_id=sub["department_id"],
                 subject_code=sub["subject_code"],
-                year=2025,
+                year=sub["admission_year"],
             )
             yield scrapy.Request(url, callback=self.parse)
 
@@ -53,7 +53,6 @@ class SubjectDetailSpider(scrapy.Spider):
             )[0]
             credit_type, credits = detail_df.loc[3, 3].split(": ")
             yield SubjectDetailItem(
-                url_source=response.url,
                 scrape_id=self.scrape_id,
                 subject_name=detail_df.loc[1, 1],
                 subject_type=detail_df.loc[3, 1],
@@ -66,6 +65,7 @@ class SubjectDetailSpider(scrapy.Spider):
                 textbooks=detail_df.loc[6, 1],
                 week_hour=detail_df.loc[5, 3],
                 open_period=detail_df.loc[0, 3],
+                url_source=response.url,
             )
 
             quarters = response.css("th.bg-::text").getall()

@@ -37,9 +37,9 @@ class CollegesOverviewSpider(scrapy.Spider):
                 continue
 
             yield CollegesOverviewItem(
-                url_source=response.url,
                 scrape_id=self.scrape_id,
                 name=name,
+                url_source=response.url,
                 url_college=url,
             )
 
@@ -58,5 +58,5 @@ class CollegesOverviewSpider(scrapy.Spider):
         await file.write_file("\n".join(jsons))
 
         print(
-            f"\nCollegesOverviewSpider:{self.scrape_id} done ------------\ntook: {time() - self.start_time:.2f}"
+            f"\nCollegesOverviewSpider: {self.scrape_id} done ------------\ntook: {time() - self.start_time:.2f}"
         )

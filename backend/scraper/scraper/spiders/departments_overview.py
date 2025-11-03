@@ -29,9 +29,9 @@ class DepartmentsOverviewSpider(scrapy.Spider):
         links = response.css(".btn-sm:nth-child(1)::attr(href)").getall()
         for name, link in zip(names, links):
             yield DepartmentsOverviewItem(
-                url_source=response.url,
                 scrape_id=self.scrape_id,
                 name=name,
+                url_source=response.url,
                 department_url=link,
             )
 
@@ -50,5 +50,5 @@ class DepartmentsOverviewSpider(scrapy.Spider):
         await file.write_file("\n".join(jsons))
 
         print(
-            f"\nDepartmentsOverviewSpider:{self.scrape_id} done ------------\ntook: {time() - self.start_time:.2f}"
+            f"\nDepartmentsOverviewSpider: {self.scrape_id} done ------------\ntook: {time() - self.start_time:.2f}"
         )

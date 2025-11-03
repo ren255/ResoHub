@@ -69,21 +69,20 @@ class ProcessID:
             ids = url_analyzer(adapter.get("department_url"))
             adapter["school_id"] = ids["school_id"]
             adapter["department_id"] = ids["department_id"]
-            item.pop("department_url")
+            # item.pop("department_url")
 
         if item_name == DepartmentDetailItem.__name__:
             ids = url_analyzer(adapter.get("url_source"))
             adapter["school_id"] = ids["school_id"]
             adapter["department_id"] = ids["department_id"]
             adapter["admission_year"] = ids["year"]
-            item.pop("url_source")
 
         if item_name == SubjectCatalogItem.__name__:
-            ids = url_analyzer(adapter.get("url_source"))
+            ids = url_analyzer(adapter.get("subject_url"))
+            # subject_codeはtableからとり、tableのあるurlを解析対象
             adapter["school_id"] = ids["school_id"]
             adapter["department_id"] = ids["department_id"]
             adapter["admission_year"] = ids["year"]
-            # subject_codeはtableからとり、tableのあるurlを解析対象
 
         if item_name == SubjectDetailItem.__name__:
             ids = url_analyzer(adapter.get("url_source"))
@@ -92,5 +91,5 @@ class ProcessID:
             adapter["admission_year"] = ids["year"]
             adapter["subject_code"] = ids["subject_code"]
 
-        item.pop("url_source")
+        # item.pop("url_source")
         return item

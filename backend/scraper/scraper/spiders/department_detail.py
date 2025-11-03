@@ -51,16 +51,17 @@ class DepartmentDetailSpider(scrapy.Spider):
         # 右上の開講年度ドロップダウンから取得
         urls = response.css(".dropdown-header a::attr(href)").getall()
         urls = urls[:-1]
+        urls = [response.urljoin(url) for url in urls]
 
-        # 存在しない学科の場合存在する開催年から取得し直す
+        # 存在しない学科の場合最古の開催年から取得し直す
         if not subject_count:
             yield scrapy.Request(response.urljoin(urls[-1]), callback=self.parse)
 
         # pipeline でurlの処理が行われる
         for url in urls:
             yield DepartmentDetailItem(
-                url_source=url,
                 scrape_id=self.scrape_id,
+                url_source=url,
             )
 
     @classmethod
@@ -78,5 +79,5 @@ class DepartmentDetailSpider(scrapy.Spider):
         await file.write_file("\n".join(jsons))
 
         print(
-            f"\n{DepartmentDetailSpider.__name__}:{self.scrape_id} done ------------\ntook: {time() - self.start_time:.2f}"
+            f"\n{DepartmentDetailSpider.__name__}: {self.scrape_id} done ------------\ntook: {time() - self.start_time:.2f}"
         )

@@ -32,7 +32,8 @@ class DepartmentDetailItem(scrapy.Item):
 
 
 class SubjectCatalogItem(scrapy.Item):
-    url_source = scrapy.Field()  # URL解析対象
+    url_source = scrapy.Field()
+    subject_url = scrapy.Field()  # URL解析対象
     scrape_id = scrapy.Field()
     school_id = scrapy.Field()  # URLより
     department_id = scrapy.Field()  # URLより

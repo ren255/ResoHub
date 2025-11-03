@@ -1,9 +1,9 @@
-import sentry_sdk
+# import sentry_sdk
 
-sentry_sdk.init(
-    "http://e128fce8b736454d892628750ac6484b@web:8000/3",
-    debug=True,
-)
+# sentry_sdk.init(
+#     "http://e128fce8b736454d892628750ac6484b@web:8000/3",
+#     debug=True,
+# )
 
 import os
 import sys
