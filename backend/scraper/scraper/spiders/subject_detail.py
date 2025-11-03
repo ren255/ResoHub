@@ -66,7 +66,7 @@ class SubjectDetailSpider(scrapy.Spider):
                 subject_classification=detail_df.loc[2, 3],
                 credit_type=credit_type,
                 credits=credits,
-                year=detail_df.loc[0, 3],
+                admission_year=detail_df.loc[0, 3],
                 grade=detail_df.loc[4, 3],
                 teachers=detail_df.loc[7, 1],
                 textbooks=detail_df.loc[6, 1],

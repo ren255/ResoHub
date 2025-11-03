@@ -4,8 +4,8 @@ from asgiref.sync import sync_to_async
 
 from core.models import ScrapyItem
 from .items import *
-from .services.url_manager import url_analyzer, PageType, url_generator
-from .services.save_file import TextFile
+from .services.url_manager import url_analyzer
+from .services.string_utl import extract_year
 
 import json
 
@@ -105,20 +105,22 @@ class ProcessID:
             ids = url_analyzer(adapter.get("url_source"))
             adapter["school_id"] = ids["school_id"]
             adapter["department_id"] = ids["department_id"]
-            adapter["admission_year"] = ids["year"]
+            adapter["url_year"] = ids["year"]
+
+            adapter["admission_year"] = extract_year(adapter["admission_year"])
 
         if item_name == SubjectCatalogItem.__name__:
             ids = url_analyzer(adapter.get("subject_url"))
             # subject_codeはtableからとり、tableのあるurlを解析対象
             adapter["school_id"] = ids["school_id"]
             adapter["department_id"] = ids["department_id"]
-            adapter["admission_year"] = ids["year"]
+            adapter["url_year"] = ids["year"]
 
         if item_name == SubjectDetailItem.__name__:
             ids = url_analyzer(adapter.get("url_source"))
             adapter["school_id"] = ids["school_id"]
             adapter["department_id"] = ids["department_id"]
-            adapter["admission_year"] = ids["year"]
+            adapter["url_year"] = ids["year"]
             adapter["subject_code"] = ids["subject_code"]
 
         # item.pop("url_source")
