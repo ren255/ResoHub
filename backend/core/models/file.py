@@ -41,7 +41,7 @@ class File(models.Model):
     file_size = models.BigIntegerField(default=0, verbose_name="ファイルサイズ")
 
     # MIMEタイプ（image/png, application/pdf等）
-    mine_type = models.CharField(
+    mime_type = models.CharField(
         max_length=100, blank=True, verbose_name="コンテンツタイプ"
     )
 
@@ -60,7 +60,7 @@ class File(models.Model):
         indexes = [
             models.Index(fields=["-uploaded_at"]),
             models.Index(fields=["uploaded_by"]),
-            models.Index(fields=["mine_type"]),
+            models.Index(fields=["mime_type"]),
         ]
         verbose_name = "ファイル"
         verbose_name_plural = "ファイル"
@@ -76,14 +76,14 @@ class File(models.Model):
 
         if self.file:
             self.file_size = self.file.size
-            if not self.mine_type:
+            if not self.mime_type:
                 try:
                     self.file.seek(0)
                     mime_type = magic.from_buffer(self.file.read(2048), mime=True)
-                    self.mine_type = mime_type
+                    self.mime_type = mime_type
                     self.file.seek(0)
                 except Exception:
-                    self.mine_type = "application/x"
+                    self.mime_type = "application/x"
 
         super().save(*args, **kwargs)
 
@@ -97,7 +97,7 @@ class File(models.Model):
         """
         画像ファイルかどうか判定
         """
-        return self.mine_type.startswith("image/") if self.mine_type else False
+        return self.mime_type.startswith("image/") if self.mime_type else False
 
     def get_human_readable_size(self):
         """

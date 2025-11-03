@@ -39,10 +39,11 @@ services:
     tty: true
     networks:
       - app-network
-    restart: unless-stopped
+      - glitchtip_default
     depends_on:
       db:
         condition: service_healthy
+
   db:
     image: mysql:9.4.0
     container_name: resohub-db
@@ -60,6 +61,7 @@ services:
       retries: 20
     networks:
       - app-network
+
   minio:
     image: minio/minio:latest
     ports:
@@ -79,6 +81,7 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+
   minio-client:
     image: minio/mc:latest
     entrypoint: >
@@ -88,7 +91,7 @@ services:
       /usr/bin/mc mb local/resohub-bucket --ignore-existing;
       /usr/bin/mc anonymous set public local/resohub-bucket;
       echo 'Bucket setup completed successfully';
-      "m
+      "
     depends_on:
       minio: 
         condition: service_healthy
@@ -114,3 +117,5 @@ volumes:
 networks:
   app-network:
     driver: bridge
+  glitchtip_default:
+    external: true

@@ -4,18 +4,23 @@ djangorestframework
 django-cors-headers
 gunicorn
 django-extensions
+sentry-sdk
 
 # doc
 pydotplus
 pygraphviz
 docutils
 drf-spectacular
+black
+sentry_sdk
 
 # database
 mysqlclient
 django-storages
 boto3
 python-magic
+channels
+shortuuid
 
 # env
 python-decouple
@@ -25,5 +30,8 @@ pandas
 lxml
 requests
 beautifulsoup4
-scrapy
 pydantic
+scrapy
+scrapyd
+python-scrapyd-api
+html5lib

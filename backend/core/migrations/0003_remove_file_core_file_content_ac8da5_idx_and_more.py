@@ -7,22 +7,24 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0002_textfilestorage'),
+        ("core", "0002_textfilestorage"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.RemoveIndex(
-            model_name='file',
-            name='core_file_content_ac8da5_idx',
+            model_name="file",
+            name="core_file_content_ac8da5_idx",
         ),
         migrations.RenameField(
-            model_name='file',
-            old_name='content_type',
-            new_name='mine_type',
+            model_name="file",
+            old_name="content_type",
+            new_name="mine_type",
         ),
         migrations.AddIndex(
-            model_name='file',
-            index=models.Index(fields=['mine_type'], name='core_file_mine_ty_ddc73e_idx'),
+            model_name="file",
+            index=models.Index(
+                fields=["mine_type"], name="core_file_mine_ty_ddc73e_idx"
+            ),
         ),
     ]

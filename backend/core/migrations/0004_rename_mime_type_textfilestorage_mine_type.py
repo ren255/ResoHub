@@ -6,13 +6,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0003_remove_file_core_file_content_ac8da5_idx_and_more'),
+        ("core", "0003_remove_file_core_file_content_ac8da5_idx_and_more"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='textfilestorage',
-            old_name='mime_type',
-            new_name='mine_type',
+            model_name="textfilestorage",
+            old_name="mime_type",
+            new_name="mine_type",
         ),
     ]

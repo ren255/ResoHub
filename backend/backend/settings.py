@@ -61,7 +61,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
-    'django.contrib.admindocs.middleware.XViewMiddleware',
+    "django.contrib.admindocs.middleware.XViewMiddleware",
 ]
 
 ROOT_URLCONF = "backend.urls"
@@ -101,9 +101,9 @@ DATABASES = {
 
 
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'http_cache_table',
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "http_cache_table",
     }
 }
 
@@ -178,11 +178,21 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 104857600  # 100MB in bytes
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'ResoHub API',
-    'DESCRIPTION': 'API for resohub. scraping results and getting the data from database and static file server',
-    'VERSION': '1.0.0',
+    "TITLE": "ResoHub API",
+    "DESCRIPTION": "API for resohub. scraping results and getting the data from database and static file server",
+    "VERSION": "1.0.0",
 }
+
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+sentry_sdk.init(
+    dsn="http://7614c40f3b964ee58ffa8705496aa71b@web:8000/1",
+    integrations=[DjangoIntegration()],
+    auto_session_tracking=False,
+    traces_sample_rate=0,
+)

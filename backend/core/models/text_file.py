@@ -11,135 +11,118 @@ class TextFileStorage(models.Model):
     シンプルなテキストファイルストレージモデル
     keyでインデックス化されたファイル情報を管理
     """
-    
+
     # 主キー
     id = models.AutoField(primary_key=True)
-    
-    # 作成者
     created_by = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='text_files'
+        User, on_delete=models.CASCADE, related_name="text_files"
     )
-    
-    # ファイルキー（ユニークなファイル識別子）
     key = models.CharField(
         max_length=255,
         unique=True,
         db_index=True,
-        help_text='ファイル名やパス（英数字、ハイフン、アンダースコア、ドット）'
+        help_text="キーに使用できるのは英数字、(-), (_), (:), (/), (.)のみ",
     )
-    
-    # ファイル本体（テキストコンテンツ）
-    body = models.TextField(
-        blank=True,
-        null=True,
-        help_text='ファイルの内容'
-    )
-    
+    body = models.TextField(blank=True, null=True, help_text="ファイルの内容")
+
     # MIMEタイプ
-    mine_type = models.CharField(
+    mime_type = models.CharField(
         max_length=100,
         blank=True,
         null=True,
-        help_text='例: text/plain, application/json'
     )
-    
+
     # ファイルサイズ（バイト）
-    file_size = models.IntegerField(
-        default=0,
-        help_text='ファイルサイズ（バイト単位）'
-    )
-    
+    file_size = models.IntegerField(default=0)
+
     # 削除フラグ
-    is_deleted = models.BooleanField(
-        default=False,
-        help_text='論理削除フラグ'
-    )
-    
+    is_deleted = models.BooleanField(default=False)
+
     # タイムスタンプ
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
-        db_table = 'text_file_storage'
-        ordering = ['-created_at']
+        db_table = "text_file_storage"
+        ordering = ["-created_at"]
         indexes = [
-            models.Index(fields=['key']),
+            models.Index(fields=["key"]),
         ]
-        verbose_name = 'テキストファイル'
-        verbose_name_plural = 'テキストファイル一覧'
-    
+        verbose_name = "テキストファイル"
+        verbose_name_plural = "テキストファイル一覧"
+
     def __str__(self):
         return f"{self.key} ({self.id})"
-    
+
     def get_extension(self):
         """
         keyから.付きファイル拡張子を取得
         """
         _, ext = os.path.splitext(self.key)
-        return ext.lower() if ext else ''
-    
+        return ext.lower() if ext else ""
+
     @staticmethod
     def validate_key(key):
         """
         keyのバリデーション
-        英数字、ハイフン、アンダースコア、ドットのみ許可
+
+        許可される文字:
+        - 英数字 (a-z, A-Z, 0-9)
+        - (-), (_), (:), (/), (.)
+
+        禁止事項:
+        - (\)などの特殊記号
+        - ASCII以外の文字
+        - 先頭がドットで始まる文字列
         """
         if not key:
-            raise ValidationError('keyは必須です')
-        
-        # 許可する文字: 英数字、ハイフン、アンダースコア、ドット
-        pattern = r'^[a-zA-Z0-9._-]+$'
-        
+            raise ValidationError("keyは必須です")
+
+        # 許可する文字: 英数字、ハイフン、アンダースコア、コロン、スラッシュ、ドット
+        pattern = r"^[a-zA-Z0-9._\-:/]+$"
         if not re.match(pattern, key):
             raise ValidationError(
-                "Only alphanumeric characters, hyphens (-), underscores (_), and dots (.) can be used in the key."
+                "キーに使用できるのは英数字、(-), (_), (:), (/), (.)のみです"
             )
-        
-        # 先頭がドットで始まらないようにチェック（隠しファイル防止）
-        if key.startswith('.'):
-            raise ValidationError('keyはドットで始めることはできません')
-        
+
+        # 先頭がドットで始まらないようにチェック(隠しファイル防止)
+        if key.startswith("."):
+            raise ValidationError("keyはドットで始めることはできません")
+
         return True
-    
+
     def clean(self):
         """
         モデル保存前のバリデーション
         """
         super().clean()
         self.validate_key(self.key)
-        
-        # bodyが存在する場合、file_sizeを自動計算
-        if self.body:
-            self.file_size = len(self.body.encode('utf-8'))
-    
+        self.file_size = len(self.body.encode("utf-8")) if self.body else 0
+
     def save(self, *args, **kwargs):
         """
         保存前にバリデーションとサイズ計算を実行
         """
         self.full_clean()
-        if not self.mine_type:
-            try:
-                # text型をbytesに変換
-                buffer = self.body.encode("utf-8")
-                mine_type = magic.from_buffer(buffer[:2048], mime=True)
-                self.mine_type = mine_type
-            except Exception:
-                self.mine_type = "application/x"
+        try:
+            buffer = self.body.encode("utf-8")
+            mime_type = magic.from_buffer(buffer[:2048], mime=True)
+            self.mime_type = mime_type
+        except Exception:
+            self.mime_type = "application/x"
 
         super().save(*args, **kwargs)
-    
+
     def soft_delete(self):
         """
         論理削除を実行
         """
         self.is_deleted = True
-        self.save(update_fields=['is_deleted', 'updated_at'])
-    
+        self.save(update_fields=["is_deleted", "updated_at"])
+
     def restore(self):
         """
         論理削除を復元
         """
         self.is_deleted = False
-        self.save(update_fields=['is_deleted', 'updated_at'])
+        self.save(update_fields=["is_deleted", "updated_at"])

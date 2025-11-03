@@ -3,9 +3,11 @@ from .selector_extractor import (
     InstructionField,
     CssSelectExtractor,
 )
+from .table_extractor import TableExtractor
 
 __all__ = [
     "ElementAttrEnum",
     "InstructionField",
     "CssSelectExtractor",
+    "TableExtractor",
 ]
