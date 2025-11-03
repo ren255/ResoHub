@@ -84,12 +84,9 @@ class SubjectDetailSpider(scrapy.Spider):
             course_contents = [content.strip() for content in course_contents]
             goals = response.css("#lessonsTable td+ td::text").getall()
             goals = [goal.strip() for goal in goals]
-            is_exsams = [
-                True if "試験" in content else False for content in course_contents
-            ]
 
-            for quarter, week, content, goal, is_exsam in zip(
-                quarters, weeks, course_contents, goals, is_exsams
+            for quarter, week, content, goal in zip(
+                quarters, weeks, course_contents, goals
             ):
                 yield SubjectContentItem(
                     url_source=response.url,
@@ -98,7 +95,6 @@ class SubjectDetailSpider(scrapy.Spider):
                     week=week,
                     content=content,
                     goal=goal,
-                    is_exam=is_exsam,
                 )
                 self.process_logger.processed()
 

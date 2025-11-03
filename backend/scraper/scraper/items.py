@@ -80,4 +80,3 @@ class SubjectContentItem(scrapy.Item):
     week = scrapy.Field()
     content = scrapy.Field()
     goal = scrapy.Field()
-    is_exam = scrapy.Field()
