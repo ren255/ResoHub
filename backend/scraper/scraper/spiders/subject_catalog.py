@@ -61,7 +61,7 @@ class SubjectCatalogSpider(scrapy.Spider):
         urls = response.css(".mcc-show::attr(href)").getall()
         urls = [response.urljoin(url) for url in urls]
         for row, url in zip(df.itertuples(), urls):
-            # subject urlは無いことがあるため取得しない
+            # TODO subject urlは無いことがある
             yield SubjectCatalogItem(
                 scrape_id=self.scrape_id,
                 name=row.subject_name,

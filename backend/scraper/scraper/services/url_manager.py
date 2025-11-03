@@ -9,7 +9,7 @@ def url_analyzer(url: str) -> Dict[str, str]:
         "school_id": query_params.get("school_id", [None])[0],
         "department_id": query_params.get("department_id", [None])[0],
         "year": query_params.get("year", [None])[0],
-        "subject_code": query_params.get("subject_code", [None])[0],
+        "subject_id": query_params.get("subject_id", [None])[0],
     }
 
 

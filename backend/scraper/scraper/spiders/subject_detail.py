@@ -44,13 +44,15 @@ class SubjectDetailSpider(scrapy.Spider):
 
         for subject in subjects:
             sub = json.loads(subject)
-            url = url_generator(
-                PageType.SYLLABUS,
-                school_id=sub["school_id"],
-                department_id=sub["department_id"],
-                subject_code=sub["subject_code"],
-                year=sub["admission_year"],
-            )
+            # TODO
+            url = sub["subject_url"]
+            # url = url_generator(
+            #     PageType.SYLLABUS,
+            #     school_id=sub["school_id"],
+            #     department_id=sub["department_id"],
+            #     subject_code=sub["subject_code"],
+            #     year=sub["url_year"],
+            # )
             yield scrapy.Request(url, callback=self.parse)
 
     def parse(self, response: Response):

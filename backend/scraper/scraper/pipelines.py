@@ -46,8 +46,8 @@ class PerformanceMonitor:
         overall_speed = total / (current_time - self.start_time)
 
         print(
-            f"processed:{total}(+{last}) {current_speed:.2f}items/s"
-            f"({overall_speed:.2f}items/s) in last {time_passed:.2f}s"
+            f"######## processed:{total}(+{last}/{time_passed:.2f}s) "
+            f"with {overall_speed:.2f}items/s({current_speed:.2f}items/s) "
         )
         print(f"sample: {sample_data}")
 
@@ -105,9 +105,7 @@ class ProcessID:
             ids = url_analyzer(adapter.get("url_source"))
             adapter["school_id"] = ids["school_id"]
             adapter["department_id"] = ids["department_id"]
-            adapter["url_year"] = ids["year"]
-
-            adapter["admission_year"] = extract_year(adapter["admission_year"])
+            adapter["admission_year"] = ids["year"]
 
         if item_name == SubjectCatalogItem.__name__:
             ids = url_analyzer(adapter.get("subject_url"))
@@ -121,7 +119,9 @@ class ProcessID:
             adapter["school_id"] = ids["school_id"]
             adapter["department_id"] = ids["department_id"]
             adapter["url_year"] = ids["year"]
-            adapter["subject_code"] = ids["subject_code"]
+            adapter["subject_code"] = ids["subject_id"]
+
+            adapter["admission_year"] = extract_year(adapter["admission_year"])
 
         # item.pop("url_source")
         return item
