@@ -1,12 +1,37 @@
 # Core
 Django
 djangorestframework
-
-# CORS (for React frontend)
 django-cors-headers
-
-# For production (optional, useful if using gunicorn/nginx)
 gunicorn
+django-extensions
+sentry-sdk
+
+# doc
+pydotplus
+pygraphviz
+docutils
+drf-spectacular
+black
+sentry_sdk
+
+# database
+mysqlclient
+django-storages
+boto3
+python-magic
+channels
+shortuuid
 
 # env
 python-decouple
+
+# scraping
+pandas
+lxml
+requests
+beautifulsoup4
+pydantic
+scrapy
+scrapyd
+python-scrapyd-api
+html5lib

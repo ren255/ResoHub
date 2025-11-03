@@ -32,14 +32,90 @@ services:
       - 8001:8000
     volumes:
       - ./backend/:/app
+      - .:/workspace
     env_file:
       - .env
     stdin_open: true
     tty: true
     networks:
       - app-network
-    restart: unless-stopped
+      - glitchtip_default
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:9.4.0
+    container_name: resohub-db
+    environment:                  
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: django-db
+      MYSQL_USER: django
+      MYSQL_PASSWORD: django
+      TZ: 'Asia/Tokyo'
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "django", "-pdjango"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - app-network
+
+  minio:
+    image: minio/minio:latest
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio-data:/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  minio-client:
+    image: minio/mc:latest
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias rm expo || true;
+      /usr/bin/mc alias set local http://localhost:9000 minio minio123 --api s3v4;
+      /usr/bin/mc mb local/resohub-bucket --ignore-existing;
+      /usr/bin/mc anonymous set public local/resohub-bucket;
+      echo 'Bucket setup completed successfully';
+      "
+    depends_on:
+      minio: 
+        condition: service_healthy
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "9009:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - minio
+    networks:
+      - app-network
+
+volumes:
+  minio-data:
 
 networks:
   app-network:
     driver: bridge
+  glitchtip_default:
+    external: true
