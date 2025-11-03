@@ -15,7 +15,7 @@ class SubjectDetailSpider(scrapy.Spider):
     name = "subject_detail"
     allowed_domains = ["syllabus.kosen-k.go.jp"]
 
-    def __init__(self, uuid,school_id=None, name=None, **kwargs):
+    def __init__(self, uuid, school_id=None, name=None, **kwargs):
         super().__init__(name, **kwargs)
         self.scrape_id = uuid
         self.school_id = school_id
@@ -28,7 +28,11 @@ class SubjectDetailSpider(scrapy.Spider):
         file.delete()
         subjects = await subjects_file.read_as_lines()
         if self.school_id:
-            subjects = [subject for subject in subjects if json.loads(subject)["school_id"]==self.school_id]
+            subjects = [
+                subject
+                for subject in subjects
+                if json.loads(subject)["school_id"] == self.school_id
+            ]
         await subject_details_file.delete()
 
         for subject in subjects:
@@ -44,7 +48,9 @@ class SubjectDetailSpider(scrapy.Spider):
 
     def parse(self, response: Response):
         try:
-            detail_df = pd.read_html(StringIO(response.text), match="単位の種別と単位数")[0]
+            detail_df = pd.read_html(
+                StringIO(response.text), match="単位の種別と単位数"
+            )[0]
             credit_type, credits = detail_df.loc[3, 3].split(": ")
             yield SubjectDetailItem(
                 url_source=response.url,
