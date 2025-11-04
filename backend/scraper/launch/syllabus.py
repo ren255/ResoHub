@@ -8,7 +8,7 @@ from scrapy.crawler import CrawlerRunner
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 from scrapy.utils.reactor import install_reactor
-from ..spiders import (
+from scraper.spiders import (
     CollegesOverviewSpider,
     DepartmentsOverviewSpider,
     DepartmentDetailSpider,
