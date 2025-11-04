@@ -41,7 +41,7 @@ class Department(models.Model):
         return f"{self.school.name} - {self.admission_year}"
 
 
-class Class(models.Model):
+class SchoolClass(models.Model):
     """クラスモデル X学年(XXXX年度入学XX学部)"""
 
     unique_id = models.CharField(

@@ -1,4 +1,5 @@
 from django.db import models
+from .organization import SchoolClass
 from .subject import Subject, SubjectGroupe
 from core.models import TextFileStorage
 
@@ -7,6 +8,12 @@ class ExamGroupe(models.Model):
     """試験モデル"""
 
     unique_id = models.CharField(max_length=100, primary_key=True)
+    school_class = models.ForeignKey(
+        SchoolClass,
+        on_delete=models.PROTECT,
+        db_column="school_class_id",
+        verbose_name="教科グループ",
+    )
     subject_groupe = models.ForeignKey(
         SubjectGroupe,
         on_delete=models.PROTECT,
@@ -28,12 +35,14 @@ class Exam(models.Model):
         ExamGroupe,
         on_delete=models.PROTECT,
         db_column="exam_groupe_id",
+        related_name="exams",
         verbose_name="試験グループ",
     )
     subject = models.ForeignKey(
         Subject,
         on_delete=models.PROTECT,
         db_column="subject_id",
+        related_name="exams",
         verbose_name="教科",
     )
     file = models.ForeignKey(
