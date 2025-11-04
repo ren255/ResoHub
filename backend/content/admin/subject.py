@@ -10,6 +10,17 @@ class SubjectGroupeAdmin(admin.ModelAdmin):
 
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
-    list_display = ["id", "subject_groupe"]
-    list_filter = ["subject_groupe"]
+    list_display = [
+        "name",
+        "code",
+        "school_class__grade_str",
+        "school_class",
+        "credits",
+        "url",
+    ]
+    list_filter = [
+        "school_class__department__name",
+        "school_class__department__admission_year",
+        "name",
+    ]
     search_fields = ["id"]

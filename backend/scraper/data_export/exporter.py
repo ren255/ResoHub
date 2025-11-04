@@ -24,7 +24,7 @@ class Exporter:
         await self.delete()
         files, dfs = await loader.load()
         processor = Processor(files, dfs)
-        # await processor.process()
+        await processor.process()
 
     async def delete(self):
         @sync_to_async

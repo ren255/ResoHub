@@ -100,11 +100,10 @@ class Processor:
                 school_class = SchoolClass.objects.get(
                     department=department, grade_str=data["grade"]
                 )
-                # TODO move to scrapy
+                # TODO move to scrapy and fix subject code
                 if not type(data["textbooks"]) == str:
                     data["textbooks"] = str(data["textbooks"])
 
-                print(f"{data}\n")
                 obj = Subject(
                     name=data["subject_name"],
                     code=data["subject_code"] if data["subject_code"] else "",
@@ -116,9 +115,6 @@ class Processor:
                     school_class=school_class,
                 )
                 objects.append(obj)
-            import time
-
-            time.sleep(5)
             Subject.objects.bulk_create(objects)
 
         await create_subjects()
