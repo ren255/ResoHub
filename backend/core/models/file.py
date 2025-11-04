@@ -1,5 +1,4 @@
 from django.db import models
-from content.models import User
 from django.utils import timezone
 import os
 import magic
@@ -26,7 +25,7 @@ class File(models.Model):
 
     # アップロードユーザー（ユーザー削除時もファイルは保持）
     uploaded_by = models.ForeignKey(
-        User,
+        "content.User",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
