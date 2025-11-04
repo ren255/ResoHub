@@ -63,11 +63,13 @@ class DepartmentDetailSpider(scrapy.Spider):
         # 存在しない学科の場合最古の開催年から取得し直す
         if not subject_count:
             yield scrapy.Request(response.urljoin(urls[-1]), callback=self.parse)
+        name = response.css("h1::text").get()
 
         # pipeline でurlの処理が行われる
         for url in urls:
             yield DepartmentDetailItem(
                 scrape_id=self.scrape_id,
+                name=name,
                 url_source=url,
             )
             self.process_logger.processed()

@@ -7,6 +7,7 @@ from asgiref.sync import sync_to_async
 import pandas as pd
 from io import StringIO
 from typing import List
+import sys
 
 
 class TextFile:
@@ -23,7 +24,13 @@ class TextFile:
     async def _get_created_by(self):
         """created_byを遅延初期化"""
         if self._created_by is None:
-            self._created_by = await sync_to_async(User.objects.get)(username="scrapy")
+            try:
+                self._created_by = await sync_to_async(User.objects.get)(
+                    username="scrapy"
+                )
+            except User.DoesNotExist:
+                print("scrapy User not found")
+                sys.exit()
         return self._created_by
 
     @property

@@ -10,8 +10,8 @@ class SchoolAdmin(admin.ModelAdmin):
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
-    list_display = ["id", "school", "admission_year"]
-    list_filter = ["admission_year", "school"]
+    list_display = ["id", "school", "name", "admission_year", "url"]
+    list_filter = ["name", "admission_year"]
     search_fields = ["id"]
 
 

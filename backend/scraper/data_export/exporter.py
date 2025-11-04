@@ -1,8 +1,8 @@
+import scraper.settings
 from content.models import (
     School,
     Department,
     SchoolClass,
-    User,
     Exam,
     ExamGroupe,
     Subject,
@@ -18,26 +18,30 @@ class Exporter:
         self.scrape_id = scrape_id
 
     async def get(self):
-        print("reading school")
-        self.file_school = TextFile(self.scrape_id, "school_id", "jsonl")
-        print("got obj")
-        self.file_school = await self.file_school.read_as_lines()
-        print("done reading school")
+        self.file_school = await TextFile(
+            self.scrape_id, "school_id", "jsonl"
+        ).read_file()
+        print(self.file_school[:50])
         self.file_department_overview = await TextFile(
             self.scrape_id, "department_overview", "jsonl"
         ).read_file()
+        print(self.file_department_overview[:50])
         self.file_department_detail = await TextFile(
             self.scrape_id, "department_id", "jsonl"
         ).read_file()
+        print(self.file_department_detail[:50])
         self.file_subject_catalog = await TextFile(
             self.scrape_id, "subject_id", "jsonl"
         ).read_file()
+        print(self.file_subject_catalog[:50])
         self.file_subject_detail = await TextFile(
             self.scrape_id, "subject_detail", "jsonl"
         ).read_file()
+        print(self.file_subject_detail[:50])
         self.file_subject_content = await TextFile(
             self.scrape_id, "subject_contents", "jsonl"
         ).read_file()
+        print(self.file_subject_content[:50])
 
     async def run(self):
         print("start")
@@ -49,7 +53,7 @@ class Exporter:
         await self.process_class()
         await self.process_exam()
         await self.process_subject()
-        print("start")
+        print("end")
 
     async def delete(self):
         @sync_to_async
@@ -57,7 +61,6 @@ class Exporter:
             School.objects.all().delete()
             Department.objects.all().delete()
             SchoolClass.objects.all().delete()
-            User.objects.all().delete()
             Exam.objects.all().delete()
             ExamGroupe.objects.all().delete()
             Subject.objects.all().delete()
@@ -74,7 +77,7 @@ class Exporter:
                     continue
                 data = json.loads(school)
                 obj = School(
-                    name=data["name"], code=data["scrape_id"], url=data["url_source"]
+                    name=data["name"], code=data["school_id"], url=data["url_source"]
                 )
                 objects.append(obj)
             School.objects.bulk_create(objects)
@@ -84,8 +87,11 @@ class Exporter:
         @sync_to_async
         def create_departments():
             objects = []
-            for department in self.file_department_detail.split("\n"):
-                if not department.strip():
+            for department, department_detail in zip(
+                self.file_department_detail.split("\n"),
+                self.file_department_detail.split("\n"),
+            ):
+                if not department.strip() and not department_detail.strip():
                     continue
                 data = json.loads(department)
                 school = School.objects.get(code=data["school_id"])
@@ -108,3 +114,17 @@ class Exporter:
 
     async def process_subject(self):
         pass
+
+
+import argparse
+import asyncio
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Run data exporter")
+    parser.add_argument(
+        "--scrape-id", type=str, required=True, help="ID of the scrape to export"
+    )
+    args = parser.parse_args()
+
+    exporter = Exporter(scrape_id=args.scrape_id)
+    asyncio.run(exporter.run())
