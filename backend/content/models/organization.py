@@ -4,6 +4,7 @@ from django.db import models
 class School(models.Model):
     """学校モデル"""
 
+    url = models.CharField(max_length=100)
     name = models.CharField(max_length=200, verbose_name="学校名")
     code = models.CharField(max_length=50, verbose_name="学校コード")
     # address = models.CharField(max_length=100, verbose_name="学校住所")
@@ -21,6 +22,9 @@ class School(models.Model):
 class Department(models.Model):
     """学部モデル XXXX年度入学XX学部"""
 
+    url = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+    admission_year = models.IntegerField(verbose_name="入学年度")
     school = models.ForeignKey(
         School,
         on_delete=models.CASCADE,
@@ -28,7 +32,6 @@ class Department(models.Model):
         related_name="departments",
         verbose_name="学校",
     )
-    admission_year = models.IntegerField(verbose_name="入学年度")
 
     class Meta:
         db_table = "department"
