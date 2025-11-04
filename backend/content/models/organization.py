@@ -4,7 +4,6 @@ from django.db import models
 class School(models.Model):
     """学校モデル"""
 
-    unique_id = models.CharField(max_length=100, primary_key=True)
     name = models.CharField(max_length=200, verbose_name="学校名")
     code = models.CharField(max_length=50, verbose_name="学校コード")
     # address = models.CharField(max_length=100, verbose_name="学校住所")
@@ -22,7 +21,6 @@ class School(models.Model):
 class Department(models.Model):
     """学部モデル XXXX年度入学XX学部"""
 
-    unique_id = models.CharField(max_length=100, primary_key=True)
     school = models.ForeignKey(
         School,
         on_delete=models.CASCADE,
@@ -44,9 +42,6 @@ class Department(models.Model):
 class SchoolClass(models.Model):
     """クラスモデル X学年(XXXX年度入学XX学部)"""
 
-    unique_id = models.CharField(
-        max_length=100, primary_key=True, verbose_name="一意ID"
-    )
     department = models.ForeignKey(
         Department,
         on_delete=models.CASCADE,

@@ -7,7 +7,6 @@ from core.models import TextFileStorage
 class ExamGroupe(models.Model):
     """試験モデル"""
 
-    unique_id = models.CharField(max_length=100, primary_key=True)
     school_class = models.ForeignKey(
         SchoolClass,
         on_delete=models.PROTECT,
@@ -30,7 +29,6 @@ class ExamGroupe(models.Model):
 class Exam(models.Model):
     """試験モデル"""
 
-    unique_id = models.CharField(max_length=100, primary_key=True)
     exam_groupe = models.ForeignKey(
         ExamGroupe,
         on_delete=models.PROTECT,
