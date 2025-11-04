@@ -11,6 +11,7 @@ from content.models import (
 from scraper.services import TextFile
 import json
 from asgiref.sync import sync_to_async
+import itertools
 
 
 class Exporter:
@@ -18,30 +19,30 @@ class Exporter:
         self.scrape_id = scrape_id
 
     async def get(self):
-        self.file_school = await TextFile(
-            self.scrape_id, "school_id", "jsonl"
-        ).read_file()
-        print(self.file_school[:50])
-        self.file_department_overview = await TextFile(
+        self.school = TextFile(self.scrape_id, "school_id", "jsonl")
+        self.file_school = await self.school.read_file()
+        self.df_school = await self.school.read_as_dataframe()
+        self.department_overview = TextFile(
             self.scrape_id, "department_overview", "jsonl"
-        ).read_file()
-        print(self.file_department_overview[:50])
-        self.file_department_detail = await TextFile(
-            self.scrape_id, "department_id", "jsonl"
-        ).read_file()
-        print(self.file_department_detail[:50])
-        self.file_subject_catalog = await TextFile(
-            self.scrape_id, "subject_id", "jsonl"
-        ).read_file()
-        print(self.file_subject_catalog[:50])
-        self.file_subject_detail = await TextFile(
-            self.scrape_id, "subject_detail", "jsonl"
-        ).read_file()
-        print(self.file_subject_detail[:50])
-        self.file_subject_content = await TextFile(
-            self.scrape_id, "subject_contents", "jsonl"
-        ).read_file()
-        print(self.file_subject_content[:50])
+        )
+        self.file_department_overview = await self.department_overview.read_file()
+        self.df_department_overview = await self.department_overview.read_as_dataframe()
+
+        self.department_detail = TextFile(self.scrape_id, "department_id", "jsonl")
+        self.file_department_detail = await self.department_detail.read_file()
+        self.df_department_detail = await self.department_detail.read_as_dataframe()
+
+        self.subject_catalog = TextFile(self.scrape_id, "subject_id", "jsonl")
+        self.file_subject_catalog = await self.subject_catalog.read_file()
+        self.df_subject_catalog = await self.subject_catalog.read_as_dataframe()
+
+        self.subject_detail = TextFile(self.scrape_id, "subject_detail", "jsonl")
+        self.file_subject_detail = await self.subject_detail.read_file()
+        self.df_subject_detail = await self.subject_detail.read_as_dataframe()
+
+        self.subject_content = TextFile(self.scrape_id, "subject_contents", "jsonl")
+        self.file_subject_content = await self.subject_content.read_file()
+        self.df_subject_content = await self.subject_content.read_as_dataframe()
 
     async def run(self):
         print("start")
@@ -100,6 +101,7 @@ class Exporter:
                     name=data["name"],
                     admission_year=data["admission_year"],
                     url=data["url_source"],
+                    code=data["department_id"],
                 )
                 objects.append(obj)
             Department.objects.bulk_create(objects)
@@ -107,7 +109,30 @@ class Exporter:
         await create_departments()
 
     async def process_class(self):
-        pass
+        @sync_to_async
+        def create_classes():
+            objects = []
+
+            departments_list = self.df_subject_detail["department_id"].unique()
+            for department_id in departments_list:
+                grades = self.df_subject_detail[
+                    self.df_subject_detail["department_id"] == department_id
+                ]["grade"].unique()
+
+                # TODO remove
+                import re
+
+                grades = [re.sub(r"\D", "", grade) for grade in grades]
+
+                departments = Department.objects.filter(code=department_id)
+
+                for grade, department in itertools.product(grades, departments):
+                    obj = SchoolClass(department=department, grade=grade)
+                    objects.append(obj)
+
+            SchoolClass.objects.bulk_create(objects)
+
+        await create_classes()
 
     async def process_exam(self):
         pass

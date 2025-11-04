@@ -32,6 +32,7 @@ class Department(models.Model):
         related_name="departments",
         verbose_name="学校",
     )
+    code = models.CharField(max_length=10)
 
     class Meta:
         db_table = "department"
@@ -39,7 +40,7 @@ class Department(models.Model):
         verbose_name_plural = "学部"
 
     def __str__(self):
-        return f"{self.school.name} - {self.admission_year}"
+        return f"{self.name} - {self.admission_year}"
 
 
 class SchoolClass(models.Model):
