@@ -23,13 +23,13 @@ class Subject(models.Model):
     url = models.CharField(max_length=200)
     school_class = models.ForeignKey(
         SchoolClass,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         db_column="class_id",
         related_name="subjects",
     )
     subject_groupe = models.ForeignKey(
         SubjectGroupe,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         db_column="subject_groupe_id",
         related_name="subjects",
         verbose_name="教科グループ",

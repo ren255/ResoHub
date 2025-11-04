@@ -9,13 +9,13 @@ class ExamGroupe(models.Model):
 
     school_class = models.ForeignKey(
         SchoolClass,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         db_column="school_class_id",
         verbose_name="教科グループ",
     )
     subject_groupe = models.ForeignKey(
         SubjectGroupe,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         db_column="subject_groupe_id",
         verbose_name="教科グループ",
     )
@@ -31,21 +31,21 @@ class Exam(models.Model):
 
     exam_groupe = models.ForeignKey(
         ExamGroupe,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         db_column="exam_groupe_id",
         related_name="exams",
         verbose_name="試験グループ",
     )
     subject = models.ForeignKey(
         Subject,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         db_column="subject_id",
         related_name="exams",
         verbose_name="教科",
     )
     file = models.ForeignKey(
         TextFileStorage,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         db_column="file_id",
         verbose_name="ファイル",
     )
