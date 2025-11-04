@@ -70,6 +70,10 @@ class TextFile:
     async def read_as_dataframe(self) -> pd.DataFrame:
         """テーブル形式としてDataFrameで読み込む"""
         body = await self._get_body()
+
+        if self.extension == "jsonl":
+            return pd.read_json(StringIO(body), lines=True)
+
         delimiter = "\t" if self.extension == "tsv" else ","
         return pd.read_csv(StringIO(body), delimiter=delimiter)
 
