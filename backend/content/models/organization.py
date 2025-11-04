@@ -53,6 +53,7 @@ class SchoolClass(models.Model):
         related_name="classes",
         verbose_name="学部",
     )
+    grade_str = models.CharField(max_length=10, default="")
     grade = models.IntegerField(verbose_name="学年")
 
     class Meta:

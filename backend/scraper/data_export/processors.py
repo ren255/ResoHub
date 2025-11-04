@@ -72,15 +72,10 @@ class Processor:
                     self.df.subject_detail["department_id"] == department_id
                 ]["grade"].unique()
 
-                # TODO remove
-                import re
-
-                grades = [re.sub(r"\D", "", grade) for grade in grades]
-
                 departments = Department.objects.filter(code=department_id)
 
                 for grade, department in itertools.product(grades, departments):
-                    obj = SchoolClass(department=department, grade=grade)
+                    obj = SchoolClass(department=department, grade_str=grade, grade=0)
                     objects.append(obj)
 
             SchoolClass.objects.bulk_create(objects)
@@ -91,4 +86,39 @@ class Processor:
         pass
 
     async def process_subject(self):
-        pass
+        @sync_to_async
+        def create_subjects():
+            objects = []
+            for subject in self.file.subject_detail.split("\n"):
+                data = json.loads(subject)
+                school = School.objects.get(code=data["school_id"])
+                department = Department.objects.get(
+                    school=school,
+                    code=data["department_id"],
+                    admission_year=data["admission_year"],
+                )
+                school_class = SchoolClass.objects.get(
+                    department=department, grade_str=data["grade"]
+                )
+                # TODO move to scrapy
+                if not type(data["textbooks"]) == str:
+                    data["textbooks"] = str(data["textbooks"])
+
+                print(f"{data}\n")
+                obj = Subject(
+                    name=data["subject_name"],
+                    code=data["subject_code"] if data["subject_code"] else "",
+                    subject_type=data["subject_type"],
+                    url=data["url_source"],
+                    credits=data["credits"],
+                    teachers=data["teachers"],
+                    textbooks=data["textbooks"],
+                    school_class=school_class,
+                )
+                objects.append(obj)
+            import time
+
+            time.sleep(5)
+            Subject.objects.bulk_create(objects)
+
+        await create_subjects()
