@@ -119,7 +119,7 @@ class ProcessID:
             adapter["school_id"] = ids["school_id"]
             adapter["department_id"] = ids["department_id"]
             adapter["url_year"] = ids["year"]
-            adapter["subject_code"] = ids["subject_id"]
+            adapter["subject_code"] = ids["subject_code"]
 
             adapter["admission_year"] = extract_year(adapter["admission_year"])
 

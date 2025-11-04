@@ -10,6 +10,7 @@ from content.models import (
 )
 from scraper.services import TextFile
 import json
+from asgiref.sync import sync_to_async
 
 
 class Exporter:
@@ -17,9 +18,11 @@ class Exporter:
         self.scrape_id = scrape_id
 
     async def get(self):
-        self.file_school = await TextFile(
-            self.scrape_id, "school_id", "jsonl"
-        ).read_file()
+        print("reading school")
+        self.file_school = TextFile(self.scrape_id, "school_id", "jsonl")
+        print("got obj")
+        self.file_school = await self.file_school.read_as_lines()
+        print("done reading school")
         self.file_department_overview = await TextFile(
             self.scrape_id, "department_overview", "jsonl"
         ).read_file()
@@ -37,20 +40,67 @@ class Exporter:
         ).read_file()
 
     async def run(self):
+        print("start")
         await self.get()
-        self.process_school(self.file_school)
-        self.process_department()
-        self.process_exam()
-        self.process_subject()
+        print("got")
+        await self.delete()
+        print("deleted")
+        await self.process_org()
+        await self.process_class()
+        await self.process_exam()
+        await self.process_subject()
+        print("start")
 
-    async def process_school(self):
-        schools = []
-        for school in self.file_school.split("\n"):
-            data = json.loads(school)
-            obj = School.objects.create()
-        School.objects.bulk_create()
+    async def delete(self):
+        @sync_to_async
+        def delete_all():
+            School.objects.all().delete()
+            Department.objects.all().delete()
+            SchoolClass.objects.all().delete()
+            User.objects.all().delete()
+            Exam.objects.all().delete()
+            ExamGroupe.objects.all().delete()
+            Subject.objects.all().delete()
+            SubjectGroupe.objects.all().delete()
 
-    async def process_department(self):
+        await delete_all()
+
+    async def process_org(self):
+        @sync_to_async
+        def create_schools():
+            objects = []
+            for school in self.file_school.split("\n"):
+                if not school.strip():
+                    continue
+                data = json.loads(school)
+                obj = School(
+                    name=data["name"], code=data["scrape_id"], url=data["url_source"]
+                )
+                objects.append(obj)
+            School.objects.bulk_create(objects)
+
+        await create_schools()
+
+        @sync_to_async
+        def create_departments():
+            objects = []
+            for department in self.file_department_detail.split("\n"):
+                if not department.strip():
+                    continue
+                data = json.loads(department)
+                school = School.objects.get(code=data["school_id"])
+                obj = Department(
+                    school=school,
+                    name=data["name"],
+                    admission_year=data["admission_year"],
+                    url=data["url_source"],
+                )
+                objects.append(obj)
+            Department.objects.bulk_create(objects)
+
+        await create_departments()
+
+    async def process_class(self):
         pass
 
     async def process_exam(self):
