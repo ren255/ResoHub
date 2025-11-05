@@ -12,6 +12,7 @@ from .loader import DataFrameData, FileData
 from asgiref.sync import sync_to_async
 import itertools
 import json
+import re
 
 
 class Processor:
@@ -98,11 +99,10 @@ class Processor:
                     admission_year=data["admission_year"],
                 )
                 school_class = SchoolClass.objects.get(
-                    department=department, grade_str=data["grade"]
+                    department=department,
+                    grade_str=data["grade"],
+                    grade=re.sub(r"\D", "", data["grade"]),
                 )
-                # TODO move to scrapy and fix subject code
-                if not type(data["textbooks"]) == str:
-                    data["textbooks"] = str(data["textbooks"])
 
                 obj = Subject(
                     name=data["subject_name"],

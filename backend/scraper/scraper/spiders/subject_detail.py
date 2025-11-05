@@ -71,7 +71,7 @@ class SubjectDetailSpider(scrapy.Spider):
                 admission_year=detail_df.loc[0, 3],
                 grade=detail_df.loc[4, 3],
                 teachers=detail_df.loc[7, 1],
-                textbooks=detail_df.loc[6, 1],
+                textbooks=detail_df.loc[6, 1] if detail_df.loc[6, 1] else "",
                 week_hour=detail_df.loc[5, 3],
                 open_period=detail_df.loc[0, 3],
                 url_source=response.url,

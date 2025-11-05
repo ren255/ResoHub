@@ -5,11 +5,15 @@ from typing import Dict
 def url_analyzer(url: str) -> Dict[str, str]:
     parsed_url = urlparse(url)
     query_params = parse_qs(parsed_url.query)
+
+    # 何故かsubject_codeとsubject_idが両方使われるため
+    subject_code = query_params.get("subject_code", [None])[0]
+    subject_id = query_params.get("subject_id", [None])[0]
     return {
         "school_id": query_params.get("school_id", [None])[0],
         "department_id": query_params.get("department_id", [None])[0],
         "year": query_params.get("year", [None])[0],
-        "subject_code": query_params.get("subject_code", [None])[0],
+        "subject_code": subject_code if subject_code else subject_id,
     }
 
 
