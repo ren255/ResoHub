@@ -3,6 +3,9 @@ import argparse
 
 import scraper.settings
 from scraper.services import TextFile
+import pandas as pd
+
+pd.set_option("display.unicode.east_asian_width", True)
 
 
 async def load_files(scrape_id):

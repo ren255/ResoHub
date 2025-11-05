@@ -76,22 +76,29 @@ class Processor:
                 df_sub_dep = self.df.subject_detail[
                     self.df.subject_detail["department_id"] == department_id
                 ]
+                grade_mapping: dict = df_sub_dep.set_index("fixed_grade")[
+                    "grade_str"
+                ].to_dict()
 
-                # 各unique grade_strの最初の行を取得してリスト化
-                grade_rows = df_sub_dep.drop_duplicates(
-                    subset=["grade_str"], keep="first"
-                ).to_dict("records")
-
-                departments = Department.objects.filter(code=department_id)
-
-                for grade_row, department in itertools.product(grade_rows, departments):
-                    obj = SchoolClass(
-                        department=department,
-                        grade_str=grade_row["grade_str"],
-                        grade=grade_row["fixed_grade"],
-                        year=grade_row["year"],
-                    )
-                    objects.append(obj)
+                for fixed_grade, grade_str in grade_mapping.items():
+                    departments = Department.objects.filter(code=department_id)
+                    for department in departments:
+                        year = int(
+                            self.df.subject_detail[
+                                (
+                                    self.df.subject_detail["admission_year"]
+                                    == department.admission_year
+                                )
+                                & (self.df.subject_detail["fixed_grade"] == fixed_grade)
+                            ].iloc[0]["year"]
+                        )
+                        obj = SchoolClass(
+                            department=department,
+                            grade_str=grade_str,
+                            grade=fixed_grade,
+                            year=year,
+                        )
+                        objects.append(obj)
 
             SchoolClass.objects.bulk_create(objects)
 

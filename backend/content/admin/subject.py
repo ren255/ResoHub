@@ -24,5 +24,6 @@ class SubjectAdmin(admin.ModelAdmin):
         "school_class__department__name",
         "school_class__department__admission_year",
         "name",
+        "teachers",
     ]
     search_fields = ["id"]

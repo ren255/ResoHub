@@ -36,7 +36,6 @@ class SubjectDetailItem(scrapy.Item):
 
         self["admission_year"] = extract_year(self["admission_year"])
 
-        # TODO fix 何故か 2018と2026 や 2025入学3年生2025 year
         try:
             self["fixed_grade"] = int(self["grade_str"])
             self["year"] = self["admission_year"] + self["fixed_grade"] - 1
