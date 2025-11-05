@@ -11,12 +11,14 @@ class SubjectGroupeAdmin(admin.ModelAdmin):
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
     list_display = [
+        "school_class__department__name",
+        "school_class__department__admission_year",
+        "school_class__grade_str",
         "name",
         "code",
-        "school_class__grade_str",
-        "school_class",
         "credits",
-        "url",
+        "teachers",
+        "textbooks",
     ]
     list_filter = [
         "school_class__department__name",

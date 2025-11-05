@@ -23,6 +23,16 @@ class SchoolClassAdmin(admin.ModelAdmin):
         "department__name",
         "department__admission_year",
         "grade",
+        "grade_str",
     ]
     list_filter = ["grade", "department__name", "department__admission_year"]
     search_fields = ["id"]
+
+    readonly_fields = ("display_subjects",)
+
+    def display_subjects(self, obj):
+        return "\n".join(
+            f"{subject.name}  : {subject.teachers}" for subject in obj.subjects.all()
+        )
+
+    display_subjects.short_description = "Subjects"
