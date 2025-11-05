@@ -14,4 +14,3 @@ class DepartmentsOverviewItem(scrapy.Item):  # 各学科ごと
         ids = url_analyzer(self.get("department_url"))
         self["school_id"] = ids["school_id"]
         self["department_id"] = ids["department_id"]
-        # self.pop("department_url")

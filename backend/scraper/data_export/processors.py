@@ -22,9 +22,13 @@ class Processor:
 
     async def process(self):
         await self.process_org()
+        print("org done")
         await self.process_class()
+        print("class done")
         await self.process_subject()
+        print("subject done")
         await self.process_exam()
+        print("subject done")
 
     async def process_org(self):
         @sync_to_async
@@ -69,14 +73,24 @@ class Processor:
 
             departments_list = self.df.subject_detail["department_id"].unique()
             for department_id in departments_list:
-                grades = self.df.subject_detail[
+                df_sub_dep = self.df.subject_detail[
                     self.df.subject_detail["department_id"] == department_id
-                ]["grade"].unique()
+                ]
+
+                # 各unique grade_strの最初の行を取得してリスト化
+                grade_rows = df_sub_dep.drop_duplicates(
+                    subset=["grade_str"], keep="first"
+                ).to_dict("records")
 
                 departments = Department.objects.filter(code=department_id)
 
-                for grade, department in itertools.product(grades, departments):
-                    obj = SchoolClass(department=department, grade_str=grade, grade=0)
+                for grade_row, department in itertools.product(grade_rows, departments):
+                    obj = SchoolClass(
+                        department=department,
+                        grade_str=grade_row["grade_str"],
+                        grade=grade_row["fixed_grade"],
+                        year=grade_row["year"],
+                    )
                     objects.append(obj)
 
             SchoolClass.objects.bulk_create(objects)
@@ -100,13 +114,12 @@ class Processor:
                 )
                 school_class = SchoolClass.objects.get(
                     department=department,
-                    grade_str=data["grade"],
-                    grade=re.sub(r"\D", "", data["grade"]),
+                    grade_str=data["grade_str"],
                 )
 
                 obj = Subject(
                     name=data["subject_name"],
-                    code=data["subject_code"] if data["subject_code"] else "",
+                    code=data["subject_code"],
                     subject_type=data["subject_type"],
                     url=data["url_source"],
                     credits=data["credits"],

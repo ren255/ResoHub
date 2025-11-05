@@ -24,8 +24,14 @@ class SchoolClassAdmin(admin.ModelAdmin):
         "department__admission_year",
         "grade",
         "grade_str",
+        "year",
     ]
-    list_filter = ["grade", "department__name", "department__admission_year"]
+    list_filter = [
+        "grade_str",
+        "department__name",
+        "department__admission_year",
+        "year",
+    ]
     search_fields = ["id"]
 
     readonly_fields = ("display_subjects",)

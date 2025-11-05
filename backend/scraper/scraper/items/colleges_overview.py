@@ -12,4 +12,3 @@ class CollegesOverviewItem(scrapy.Item):  # 各高専ごと
     def process(self):
         ids = url_analyzer(self.get("url_college"))
         self["school_id"] = ids["school_id"]
-        self.pop("url_college")

@@ -1,6 +1,7 @@
 import scrapy
 from ..services.url_manager import url_analyzer
 from ..services.string_utl import extract_year
+import re
 
 
 class SubjectDetailItem(scrapy.Item):
@@ -17,7 +18,9 @@ class SubjectDetailItem(scrapy.Item):
     credits = scrapy.Field()
     # new
     admission_year = scrapy.Field()
-    grade = scrapy.Field()
+    grade_str = scrapy.Field()
+    fixed_grade = scrapy.Field()
+    year = scrapy.Field()
     teachers = scrapy.Field()
     textbooks = scrapy.Field()
     week_hour = scrapy.Field()
@@ -28,9 +31,19 @@ class SubjectDetailItem(scrapy.Item):
         self["school_id"] = ids["school_id"]
         self["department_id"] = ids["department_id"]
         self["url_year"] = ids["year"]
-        self["subject_code"] = ids["subject_code"]
+        self["subject_code"] = ids["subject_code"] if ids["subject_code"] else ""
+        self["textbooks"] = self["textbooks"] if self["textbooks"] else ""
 
         self["admission_year"] = extract_year(self["admission_year"])
+
+        # TODO fix 何故か 2018と2026 や 2025入学3年生2025 year
+        try:
+            self["fixed_grade"] = int(self["grade_str"])
+            self["year"] = self["admission_year"] + self["fixed_grade"] - 1
+        except ValueError:
+            # 専攻科生 "専2" admission_yearはresetされる
+            self["fixed_grade"] = int(self["grade_str"][1:]) + 5
+            self["year"] = self["admission_year"] + int(self["grade_str"][1:]) - 1
 
 
 class SubjectContentItem(scrapy.Item):
@@ -40,3 +53,8 @@ class SubjectContentItem(scrapy.Item):
     week = scrapy.Field()
     content = scrapy.Field()
     goal = scrapy.Field()
+    is_exam = scrapy.Field()
+
+    def process(self):
+        if "試験" in self["content"]:
+            self["is_exam"] = True

@@ -44,7 +44,7 @@ class Department(models.Model):
 
 
 class SchoolClass(models.Model):
-    """クラスモデル X学年(XXXX年度入学XX学部)"""
+    """クラスモデル 学科 * 学年"""
 
     department = models.ForeignKey(
         Department,
