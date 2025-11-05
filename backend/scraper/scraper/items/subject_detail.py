@@ -1,4 +1,6 @@
 import scrapy
+from ..services.url_manager import url_analyzer
+from ..services.string_utl import extract_year
 
 
 class SubjectDetailItem(scrapy.Item):
@@ -20,6 +22,15 @@ class SubjectDetailItem(scrapy.Item):
     textbooks = scrapy.Field()
     week_hour = scrapy.Field()
     open_period = scrapy.Field()
+
+    def process(self):
+        ids = url_analyzer(self.get("url_source"))
+        self["school_id"] = ids["school_id"]
+        self["department_id"] = ids["department_id"]
+        self["url_year"] = ids["year"]
+        self["subject_code"] = ids["subject_code"]
+
+        self["admission_year"] = extract_year(self["admission_year"])
 
 
 class SubjectContentItem(scrapy.Item):

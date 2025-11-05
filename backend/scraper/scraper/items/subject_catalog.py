@@ -1,4 +1,5 @@
 import scrapy
+from ..services.url_manager import url_analyzer
 
 
 class SubjectCatalogItem(scrapy.Item):
@@ -16,3 +17,10 @@ class SubjectCatalogItem(scrapy.Item):
     subject_id = scrapy.Field()
     credit_type = scrapy.Field()
     credits = scrapy.Field()
+
+    def process(self):
+        ids = url_analyzer(self.get("subject_url"))
+        # subject_codeはtableからとり、tableのあるurlを解析対象
+        self["school_id"] = ids["school_id"]
+        self["department_id"] = ids["department_id"]
+        self["url_year"] = ids["year"]
