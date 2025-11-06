@@ -40,3 +40,4 @@ html5lib
 
 matplotlib
 seaborn
+pyvis
