@@ -41,6 +41,7 @@ class UserAdmin(UserAdmin):
 
     list_display = (
         "username",
+        "role",
         "email",
         "is_active",
     )

@@ -138,7 +138,7 @@ class Processor:
                     subject_type=data["subject_type"],
                     url=data["url_source"],
                     credits=data["credits"],
-                    teachers=data["teachers"],
+                    teachers_str=data["teachers"],
                     textbooks=data["textbooks"],
                     school_class=school_class,
                 )

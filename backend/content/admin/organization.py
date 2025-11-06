@@ -1,5 +1,6 @@
 from django.contrib import admin
 from ..models.organization import School, Department, SchoolClass
+from ..models.subject import Subject
 
 
 @admin.register(School)
@@ -15,6 +16,15 @@ class DepartmentAdmin(admin.ModelAdmin):
     search_fields = ["id"]
 
 
+class SubjectInline(admin.TabularInline):
+    model = Subject
+    extra = 0
+    fields = ["name", "code", "subject_type", "credits", "teachers", "subject_groupe"]
+    readonly_fields = []
+    can_delete = True
+    show_change_link = True
+
+
 @admin.register(SchoolClass)
 class SchoolClassAdmin(admin.ModelAdmin):
     list_display = [
@@ -25,6 +35,7 @@ class SchoolClassAdmin(admin.ModelAdmin):
         "grade",
         "grade_str",
         "year",
+        "subject_count",
     ]
     list_filter = [
         "grade_str",
@@ -34,11 +45,9 @@ class SchoolClassAdmin(admin.ModelAdmin):
     ]
     search_fields = ["id"]
 
-    readonly_fields = ("display_subjects",)
+    inlines = [SubjectInline]
 
-    def display_subjects(self, obj):
-        return "\n".join(
-            f"{subject.name}  : {subject.teachers}" for subject in obj.subjects.all()
-        )
+    def subject_count(self, obj):
+        return obj.subjects.count()
 
-    display_subjects.short_description = "Subjects"
+    subject_count.short_description = "教科数"

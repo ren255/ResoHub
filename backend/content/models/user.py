@@ -1,8 +1,9 @@
-from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
-from django.core.mail import send_mail
+
+from django.utils import timezone
 import uuid as uuid_lib
+from django.core.mail import send_mail
 
 
 class UserManager(UserManager):
@@ -35,6 +36,16 @@ class UserManager(UserManager):
         return user
 
 
+class UserRole(models.TextChoices):
+    """ユーザーロール定義"""
+
+    STUDENT = "student", "生徒"
+    TEACHER = "teacher", "教師"
+    STAFF = "staff", "管理者"
+    SYSTEM = "system", "System"
+    OTHER = "other", "その他"
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     """Custom User"""
 
@@ -42,9 +53,15 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = "user"
         verbose_name_plural = "user"
 
-    uuid = models.UUIDField(
-        default=uuid_lib.uuid4, primary_key=True, editable=False
-    )  # 管理ID
+    uuid = models.UUIDField(default=uuid_lib.uuid4, primary_key=True, editable=False)
+    role = models.CharField(
+        max_length=20,
+        choices=UserRole.choices,
+        default=UserRole.OTHER,
+        verbose_name="役割",
+        db_index=True,
+    )
+
     username = models.CharField(max_length=30, unique=False)  # ユーザ氏名
     email = models.EmailField(
         unique=True, blank=True, null=True
@@ -68,11 +85,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def email_user(self, subject, message, from_email=None, **kwargs):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
+    def has_full_access(self):
+        """完全アクセス権限を持つか"""
+        return self.role in [UserRole.TEACHER, UserRole.STAFF, UserRole.SYSTEM]
+
     def __str__(self):
         return self.email
-
-    def get_full_name(self):
-        return self.username
-
-    def get_short_name(self):
-        return self.username

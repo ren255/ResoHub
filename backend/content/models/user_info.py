@@ -1,0 +1,62 @@
+from django.db import models
+from .organization import SchoolClass
+from .subject import Subject
+
+
+class UserSetting(models.Model):
+    """各userごとのカスタムなどのprofile保存"""
+
+    user = models.OneToOneField(
+        "content.User", on_delete=models.CASCADE, related_name="user_setting"
+    )
+
+    class Meta:
+        db_table = "user_setting"
+        verbose_name = "ユーザー設定"
+        verbose_name_plural = "ユーザー設定"
+
+    def __str__(self):
+        return f"{self.user.username}の設定"
+
+
+class StudentInfo(models.Model):
+    """生徒固有情報を保存"""
+
+    user = models.OneToOneField(
+        "content.User", on_delete=models.CASCADE, related_name="student_info"
+    )
+    school_class = models.ForeignKey(
+        SchoolClass,
+        on_delete=models.CASCADE,
+        related_name="students",
+        db_column="school_class_id",
+    )
+
+    class Meta:
+        db_table = "student_info"
+        verbose_name = "生徒情報"
+        verbose_name_plural = "生徒情報"
+
+    def __str__(self):
+        return f"{self.user.username} ({self.school_class})"
+
+
+class TeacherInfo(models.Model):
+    """教師固有情報を保存"""
+
+    user = models.OneToOneField(
+        "content.User", on_delete=models.CASCADE, related_name="teacher_info"
+    )
+    subjects = models.ManyToManyField(
+        Subject,
+        related_name="teachers",
+        verbose_name="担当教科",
+    )
+
+    class Meta:
+        db_table = "teacher_info"
+        verbose_name = "教師情報"
+        verbose_name_plural = "教師情報"
+
+    def __str__(self):
+        return f"{self.user.username.split()[0]}先生"

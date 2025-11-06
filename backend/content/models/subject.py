@@ -18,7 +18,7 @@ class Subject(models.Model):
     code = models.CharField(max_length=10)
     subject_type = models.CharField(max_length=50)
     credits = models.PositiveIntegerField()
-    teachers = models.CharField(max_length=300)
+    teachers_str = models.CharField(max_length=300)
     textbooks = models.CharField(max_length=1000)
     url = models.CharField(max_length=200)
     school_class = models.ForeignKey(
