@@ -13,8 +13,9 @@ from ..services import (
 
 import json
 import pandas as pd
-from time import time
 from io import StringIO
+import re
+import numpy as np
 
 
 class SubjectDetailSpider(scrapy.Spider):
@@ -79,13 +80,18 @@ class SubjectDetailSpider(scrapy.Spider):
             self.process_logger.processed()
 
             quarters = response.css("th.bg-::text").getall()
-            # quarters = [quarter.strip("Q") for quarter in quarters]
+            # TODO sometimes not working
+            quarters = [re.findall(r"\d+", quarter)[0] for quarter in quarters]
             weeks = response.css(".week_number::text").getall()
             weeks = [week.strip("週") for week in weeks]
             course_contents = response.css(".week_number+ td::text").getall()
             course_contents = [content.strip() for content in course_contents]
             goals = response.css("#lessonsTable td+ td::text").getall()
             goals = [goal.strip() for goal in goals]
+
+            if len(weeks) % len(quarters) != 0:
+                print(f"weeks/quorters not multiple. {response.url}")
+            quarters = np.repeat(quarters, len(weeks) // len(quarters))
 
             for quarter, week, content, goal in zip(
                 quarters, weeks, course_contents, goals
@@ -116,6 +122,7 @@ class SubjectDetailSpider(scrapy.Spider):
         jsons = await items.get_data()
         await file.write_file("\n".join(jsons))
 
+        # TODO 100MBの書き込み、250MBまでOKにした
         items = ItemCollection(self.scrape_id, SubjectContentItem.__name__)
         file = TextFile(self.scrape_id, "subject_contents", "jsonl")
         jsons = await items.get_data()

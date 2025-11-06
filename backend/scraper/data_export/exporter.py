@@ -21,23 +21,9 @@ class Exporter:
 
     async def run(self):
         loader = DataLoader(self.scrape_id)
-        await self.delete()
         files, dfs = await loader.load()
         processor = Processor(files, dfs)
         await processor.process()
-
-    async def delete(self):
-        @sync_to_async
-        def delete_all():
-            School.objects.all().delete()
-            Department.objects.all().delete()
-            SchoolClass.objects.all().delete()
-            Exam.objects.all().delete()
-            ExamGroupe.objects.all().delete()
-            Subject.objects.all().delete()
-            SubjectGroupe.objects.all().delete()
-
-        await delete_all()
 
 
 import argparse

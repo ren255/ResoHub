@@ -24,6 +24,7 @@ shortuuid
 
 # env
 python-decouple
+ipython
 
 # scraping
 pandas
@@ -35,3 +36,7 @@ scrapy
 scrapyd
 python-scrapyd-api
 html5lib
+
+
+matplotlib
+seaborn

@@ -96,9 +96,14 @@ DATABASES = {
         "PASSWORD": "django",
         "HOST": "db",
         "PORT": "3306",
+        "OPTIONS": {
+            # MySQLクライアント側の設定
+            "connect_timeout": 600,
+            "read_timeout": 600,
+            "write_timeout": 600,
+        },
     }
 }
-
 
 CACHES = {
     "default": {

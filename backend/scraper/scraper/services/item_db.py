@@ -12,14 +12,19 @@ class ItemCollection:
 
     async def update_ids(self) -> List[str]:
         """prefix配下の全keyを取得してself.keysに格納"""
-        self.ids = await sync_to_async(list)(
-            self._storage.objects.filter(
-                scrape_id=self.scrape_id,
-                item_name=self.item_name,
+
+        @sync_to_async
+        def get_ids():
+            return list(
+                self._storage.objects.filter(
+                    scrape_id=self.scrape_id,
+                    item_name=self.item_name,
+                )
+                .order_by("unique_id")
+                .values_list("unique_id", flat=True)
             )
-            .order_by("unique_id")
-            .values_list("unique_id", flat=True)
-        )
+
+        self.ids = await get_ids()
         return self.ids
 
     async def get_data(self) -> List[str]:

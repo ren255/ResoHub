@@ -29,13 +29,12 @@ class ExamGroupe(models.Model):
 class Exam(models.Model):
     """試験モデル"""
 
-    exam_groupe = models.ForeignKey(
-        ExamGroupe,
-        on_delete=models.CASCADE,
-        db_column="exam_groupe_id",
-        related_name="exams",
-        verbose_name="試験グループ",
-    )
+    url = models.CharField(max_length=200)
+    quarter = models.PositiveIntegerField()
+    week = models.PositiveIntegerField()
+    content = models.CharField(max_length=500)
+    goal = models.CharField(max_length=500)
+
     subject = models.ForeignKey(
         Subject,
         on_delete=models.CASCADE,
@@ -43,11 +42,20 @@ class Exam(models.Model):
         related_name="exams",
         verbose_name="教科",
     )
+    exam_groupe = models.ForeignKey(
+        ExamGroupe,
+        on_delete=models.CASCADE,
+        db_column="exam_groupe_id",
+        related_name="exams",
+        verbose_name="試験グループ",
+        null=True,
+    )
     file = models.ForeignKey(
         TextFileStorage,
         on_delete=models.CASCADE,
         db_column="file_id",
         verbose_name="ファイル",
+        null=True,
     )
 
     class Meta:

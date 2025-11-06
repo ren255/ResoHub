@@ -4,6 +4,20 @@ import argparse
 import scraper.settings
 from scraper.services import TextFile
 import pandas as pd
+from IPython.terminal.embed import InteractiveShellEmbed
+
+from scraper.items import *
+from scraper.services import *
+
+from content.models import (
+    School,
+    Department,
+    SchoolClass,
+    Exam,
+    ExamGroupe,
+    Subject,
+    SubjectGroupe,
+)
 
 pd.set_option("display.unicode.east_asian_width", True)
 
@@ -50,10 +64,13 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    global scrape_id
+    scrape_id = args.scrape_id
+
     # ファイルを非同期で読み込み
-    asyncio.run(load_files(args.scrape_id))
+    asyncio.run(load_files(scrape_id))
 
-    # 対話シェルを起動
-    import code
-
-    code.interact(local=globals())
+    # 非同期対話シェルを起動
+    ipshell = InteractiveShellEmbed()
+    ipshell.autoawait = True
+    ipshell()

@@ -55,5 +55,6 @@ class SubjectContentItem(scrapy.Item):
     is_exam = scrapy.Field()
 
     def process(self):
+        # data exportでurl_source経由でsubject detail より所属を見つけるためids無し
         if "試験" in self["content"]:
             self["is_exam"] = True
