@@ -20,6 +20,7 @@ class Processor:
         self.df = df_data
 
     async def process(self):
+        print("processing...")
         # await sync_to_async(School.objects.all().delete)()
         # await sync_to_async(Department.objects.all().delete)()
         # await self.process_org()
@@ -190,6 +191,7 @@ class Processor:
                     subject = Subject.objects.get(
                         school_class=school_class,
                         name=subject_detail_row["subject_name"],
+                        code=subject_detail_row["subject_code"],
                     )
                 except:
                     subjects = Subject.objects.filter(
@@ -212,6 +214,6 @@ class Processor:
                     goal=row.goal,
                 )
                 objects.append(obj)
-            Subject.objects.bulk_create(objects)
+            Exam.objects.bulk_create(objects)
 
         await create_exams()
