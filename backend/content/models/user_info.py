@@ -34,10 +34,14 @@ class StudentInfo(models.Model):
     school_class = models.ForeignKey(
         SchoolClass,
         on_delete=models.CASCADE,
-        related_name="students",
+        related_name="now_students",
         db_column="school_class_id",
         null=True,
         blank=True,
+    )
+    school_class_history = models.ManyToManyField(
+        SchoolClass,
+        related_name="students",
     )
 
     class Meta:

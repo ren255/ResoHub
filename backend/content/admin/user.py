@@ -1,47 +1,33 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from django.utils.translation import gettext, gettext_lazy as _
-from ..models import User
+from ..models import User, UserSetting, StudentInfo, TeacherInfo
+
+
+class UserSettingInline(admin.StackedInline):
+    model = UserSetting
+    extra = 0
+
+
+class StudentInfoInline(admin.StackedInline):
+    model = StudentInfo
+    extra = 0
+
+
+class TeacherInfoInline(admin.StackedInline):
+    model = TeacherInfo
+    extra = 0
 
 
 @admin.register(User)
-class UserAdmin(UserAdmin):
-    fieldsets = (
-        (None, {"fields": ("username", "password")}),
-        (
-            _(
-                "Personal Info",
-            ),
-            {"fields": ("email",)},
-        ),
-        (
-            _(
-                "Permissions",
-            ),
-            {
-                "fields": (
-                    "is_active",
-                    "is_staff",
-                    "is_superuser",
-                )
-            },
-        ),
-        (
-            _(
-                "Important Dates",
-            ),
-            {
-                "fields": (
-                    "last_login",
-                    "date_joined",
-                )
-            },
-        ),
-    )
-
+class UserAdmin(admin.ModelAdmin):
     list_display = (
+        "name",
         "username",
         "role",
         "email",
         "is_active",
     )
+
+    list_filter = ("is_active", "role")
+    search_fields = ("username", "email", "name")
+
+    inlines = [UserSettingInline, StudentInfoInline, TeacherInfoInline]

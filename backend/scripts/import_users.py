@@ -51,17 +51,18 @@ users_del.delete()
 
 for index, row in users.iterrows():
     try:
-        role = UserRole.STUDENT if row.role == "student" else UserRole.TEACHER
+        role = UserRole.STUDENT if row["role"] == "student" else UserRole.TEACHER
         user = User(
             role=role,
-            name=row.name,
-            email=row.mail,
+            name=row["name"],
+            username=row["name"],
+            email=row["mail"],
             is_staff=False,
         )
         users_ojb.append(user)
 
         if role == UserRole.STUDENT:
-            department_id = row.student_id[:1]
+            department_id = row["student_id"][:1]
             if department_id == "m":
                 department_str = "機械工学科"
             elif department_id == "e":
@@ -76,7 +77,7 @@ for index, row in users.iterrows():
             department = Department.objects.get(
                 school=school,
                 name=department_str,
-                admission_year="20" + row.student_id[1:3],
+                admission_year="20" + row["student_id"][1:3],
             )
             grade = datetime.now().year - department.admission_year + 1
             if grade <= 5:
@@ -87,14 +88,14 @@ for index, row in users.iterrows():
                 )
                 student = StudentInfo(
                     user=user,
-                    student_id=row.student_id,
+                    student_id=row["student_id"],
                     department=department,
                     school_class=school_class,
                 )
             else:
                 student = StudentInfo(
                     user=user,
-                    student_id=row.student_id,
+                    student_id=row["student_id"],
                     department=department,
                     school_class=school_class,
                 )
@@ -104,7 +105,7 @@ for index, row in users.iterrows():
             teacher = TeacherInfo(
                 user=user,
                 school=school,
-                owner=True if row.teams_role == "owner" else False,
+                owner=True if row["teams_role"] == "owner" else False,
             )
             teachers.append(teacher)
     except Exception as e:

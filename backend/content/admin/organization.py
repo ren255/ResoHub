@@ -1,6 +1,7 @@
 from django.contrib import admin
 from ..models.organization import School, Department, SchoolClass
 from ..models.subject import Subject
+from ..models.user_info import StudentInfo
 
 
 @admin.register(School)
@@ -19,10 +20,50 @@ class DepartmentAdmin(admin.ModelAdmin):
 class SubjectInline(admin.TabularInline):
     model = Subject
     extra = 0
-    fields = ["name", "code", "subject_type", "credits", "teachers", "subject_groupe"]
-    readonly_fields = []
-    can_delete = True
+    fields = [
+        "name",
+        "code",
+        "subject_type",
+        "credits",
+        "teachers_str",
+        "subject_groupe",
+    ]
+    readonly_fields = [
+        "name",
+        "code",
+        "subject_type",
+        "credits",
+        "teachers_str",
+        "subject_groupe",
+    ]
     show_change_link = True
+
+
+class StudentsInline(admin.TabularInline):
+    model = StudentInfo
+    extra = 0
+    fields = [
+        "user_name",
+        "student_id",
+        "department",
+    ]
+    readonly_fields = [
+        "user_name",
+        "student_id",
+        "department",
+    ]
+    show_change_link = True
+
+    def user_name(self, obj):
+        """生徒の名前を表示"""
+        if obj.user:
+            return obj.user.name
+        return "-"
+
+    user_name.short_description = "生徒名"
+
+    def has_add_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(SchoolClass)
@@ -45,7 +86,7 @@ class SchoolClassAdmin(admin.ModelAdmin):
     ]
     search_fields = ["id"]
 
-    inlines = [SubjectInline]
+    inlines = [SubjectInline, StudentsInline]
 
     def subject_count(self, obj):
         return obj.subjects.count()
