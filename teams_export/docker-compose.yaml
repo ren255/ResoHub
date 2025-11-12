@@ -5,8 +5,10 @@ services:
     image: demisto/powershell:7.5.0.3759715
     container_name: teams-export
     working_dir: /code
+    stdin_open: true
+    tty: true
     volumes:
-      - ./output:/code
+      - .:/code
     environment:
       - TEAMS_GROUP_ID=a928e083-b1c3-4b41-addd-22a2e300138e
     command:
@@ -17,5 +19,3 @@ services:
         Connect-MicrosoftTeams -UseDeviceAuthentication;
         Get-TeamUser -GroupId $$env:TEAMS_GROUP_ID |
         Export-Csv -Encoding UTF8 -NoTypeInformation -Path /code/users.csv
-
-# docker compose -f docker-compose.teams-export.yaml up
