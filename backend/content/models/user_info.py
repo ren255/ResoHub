@@ -30,6 +30,8 @@ class StudentInfo(models.Model):
         Department,
         on_delete=models.CASCADE,
         related_name="students",
+        null=True,
+        blank=True,
     )
     school_class = models.ForeignKey(
         SchoolClass,
@@ -60,7 +62,11 @@ class TeacherInfo(models.Model):
         "content.User", on_delete=models.CASCADE, related_name="teacher_info"
     )
     school = models.ForeignKey(
-        School, on_delete=models.CASCADE, related_name="teachers"
+        School,
+        on_delete=models.CASCADE,
+        related_name="teachers",
+        null=True,
+        blank=True,
     )
     owner = models.BooleanField(default=False)
     subjects = models.ManyToManyField(
