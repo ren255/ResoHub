@@ -14,8 +14,11 @@ from content.models import (
     School,
     Department,
     SchoolClass,
+    Subject,
 )
-from datetime import datetime
+from typing import Dict, List
+from rapidfuzz.process import cdist
+import pandas as pd
 
 
 class UserProcessor:
@@ -123,6 +126,7 @@ class UserProcessor:
 
             for teacher in teachers:
                 try:
+                    teacher.subjects.clear()
                     teacher.school = school
                     teacher.save()
                     updated_count += 1
@@ -139,31 +143,54 @@ class UserProcessor:
 
         @sync_to_async
         def update_subjects():
-            # TODO: 担当教科の更新処理を実装
-            pass
+            subject_ctn = 0
+            teacher_ctn = 0
+            skipped_ctn = 0
+            subjects = Subject.objects.all()
+            teachers = list(User.objects.filter(role=UserRole.TEACHER))
+            choices = [teacher.name for teacher in teachers]
+            choice_teacher_map = {teacher.name: teacher for teacher in teachers}
+
+            queries = []
+            query_subject_map: Dict[str : List[Subject]] = {}
+            for subject in subjects:
+                teachers_str = [
+                    teacher.strip() for teacher in subject.teachers_str.split(",")
+                ]
+                for teacher_str in teachers_str:
+                    subject_ctn += 1
+                    if teacher_str not in query_subject_map:
+                        query_subject_map[teacher_str] = [subject]
+                    query_subject_map[teacher_str].append(subject)
+
+                    if teacher_str not in queries:
+                        queries.append(teacher_str)
+
+            # queries * choices
+            score = cdist(queries, choices)
+            score = pd.DataFrame(score, index=queries, columns=choices)
+            results = score.apply(
+                lambda row: row.idxmax() if row.max() >= 75 else None, axis=1
+            )
+            result = [(query, choice) for query, choice in zip(score.index, results)]
+
+            teachers = []
+            for name, user_name in result:
+                if subjects and user_name:
+                    subjects = query_subject_map[name]
+                    user = choice_teacher_map[user_name]
+                    teacher = TeacherInfo.objects.get(user=user)
+                    teacher.subjects.set(subjects)
+                    teacher.save()
+                    teacher_ctn += 1
+                else:
+                    skipped_ctn += 1
+
+            print(
+                f"subjects: {subject_ctn}. teacher: {teacher_ctn}. skipped: {skipped_ctn}"
+            )
 
         return await update_subjects()
-
-    # ========== 関係性更新 ==========
-    async def update_class_relations(self):
-        """教科間の関係を更新"""
-
-        @sync_to_async
-        def update_relations():
-            # TODO: 教科間の関係更新処理を実装
-            pass
-
-        return await update_relations()
-
-    async def update_exam_relations(self):
-        """試験間の関係を更新"""
-
-        @sync_to_async
-        def update_relations():
-            # TODO: 試験間の関係更新処理を実装
-            pass
-
-        return await update_relations()
 
 
 if __name__ == "__main__":

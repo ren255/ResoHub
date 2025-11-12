@@ -5,6 +5,8 @@ from django.utils import timezone
 import uuid as uuid_lib
 from django.core.mail import send_mail
 
+from rapidfuzz.process import extract, extractOne
+
 
 class UserManager(UserManager):
     def _create_user(self, email, password, **extra_fields):
@@ -77,6 +79,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "email"
 
+    def search(query):
+        users = list(User.objects.all())  # QuerySetをリストに変換
+
+        choices = [user.name for user in users]
+        results = extract(query, choices)
+        # (UserInstance, score)の形式で返す
+        return [(users[index], score) for text, score, index in results]
+
     def clean(self):
         super().clean()
         self.email = self.__class__.objects.normalize_email(self.email)
@@ -86,7 +96,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def has_full_access(self):
         """完全アクセス権限を持つか"""
-        return self.role in [UserRole.TEACHER, UserRole.STAFF, UserRole.SYSTEM]
+        return self.role in [UserRole.STAFF, UserRole.SYSTEM]
 
     def __str__(self):
-        return self.email
+        return self.name
