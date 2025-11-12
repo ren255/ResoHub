@@ -13,8 +13,9 @@ from ..services import (
 
 import json
 import pandas as pd
-from time import time
 from io import StringIO
+import re
+import numpy as np
 
 
 class SubjectDetailSpider(scrapy.Spider):
@@ -29,10 +30,17 @@ class SubjectDetailSpider(scrapy.Spider):
 
     async def start(self):
         self.process_logger.start()
-        subjects_file = TextFile(self.scrape_id, "subject_id", "jsonl")
         subject_details_file = TextFile(self.scrape_id, "subject_detail", "jsonl")
         file = TextFile(self.scrape_id, "subject_contents", "jsonl")
         await file.delete()
+
+        items = ItemCollection(self.scrape_id, SubjectDetailItem.__name__)
+        await items.delete_all()
+        items = ItemCollection(self.scrape_id, SubjectContentItem.__name__)
+        await items.delete_all()
+        print("deleted all previous data")
+
+        subjects_file = TextFile(self.scrape_id, "subject_id", "jsonl")
         subjects = await subjects_file.read_as_lines()
         if self.school_id:
             subjects = [
@@ -42,17 +50,21 @@ class SubjectDetailSpider(scrapy.Spider):
             ]
         await subject_details_file.delete()
 
-        for subject in subjects:
-            sub = json.loads(subject)
-            # TODO
-            url = sub["subject_url"]
-            # url = url_generator(
-            #     PageType.SYLLABUS,
-            #     school_id=sub["school_id"],
-            #     department_id=sub["department_id"],
-            #     subject_code=sub["subject_code"],
-            #     year=sub["url_year"],
-            # )
+        # TODO urlがない場合の処理
+        # for subject in subjects:
+        #     sub = json.loads(subject)
+        #     url = sub["subject_url"]
+        # url = url_generator(
+        #     PageType.SYLLABUS,
+        #     school_id=sub["school_id"],
+        #     department_id=sub["department_id"],
+        #     subject_code=sub["subject_code"],
+        #     year=sub["url_year"],
+        # )
+        # TODO subject_code重複(学科のミス)、同一の科目が複数出現(通常) -> URLが存在しない教科Pageを作成
+        urls = [json.loads(subject)["subject_url"] for subject in subjects]
+        urls = set(urls)
+        for url in urls:
             yield scrapy.Request(url, callback=self.parse)
 
     def parse(self, response: Response):
@@ -69,7 +81,7 @@ class SubjectDetailSpider(scrapy.Spider):
                 credit_type=credit_type,
                 credits=credits,
                 admission_year=detail_df.loc[0, 3],
-                grade=detail_df.loc[4, 3],
+                grade_str=detail_df.loc[4, 3],
                 teachers=detail_df.loc[7, 1],
                 textbooks=detail_df.loc[6, 1],
                 week_hour=detail_df.loc[5, 3],
@@ -79,13 +91,18 @@ class SubjectDetailSpider(scrapy.Spider):
             self.process_logger.processed()
 
             quarters = response.css("th.bg-::text").getall()
-            # quarters = [quarter.strip("Q") for quarter in quarters]
+            # TODO sometimes not working
+            quarters = [re.findall(r"\d+", quarter)[0] for quarter in quarters]
             weeks = response.css(".week_number::text").getall()
             weeks = [week.strip("週") for week in weeks]
             course_contents = response.css(".week_number+ td::text").getall()
             course_contents = [content.strip() for content in course_contents]
             goals = response.css("#lessonsTable td+ td::text").getall()
             goals = [goal.strip() for goal in goals]
+
+            if len(weeks) % len(quarters) != 0:
+                print(f"weeks/quorters not multiple. {response.url}")
+            quarters = np.repeat(quarters, len(weeks) // len(quarters))
 
             for quarter, week, content, goal in zip(
                 quarters, weeks, course_contents, goals
@@ -114,11 +131,14 @@ class SubjectDetailSpider(scrapy.Spider):
         items = ItemCollection(self.scrape_id, SubjectDetailItem.__name__)
         file = TextFile(self.scrape_id, "subject_detail", "jsonl")
         jsons = await items.get_data()
+        jsons = set(jsons)
         await file.write_file("\n".join(jsons))
 
+        # TODO 100MBの書き込み、250MBまでOKにした
         items = ItemCollection(self.scrape_id, SubjectContentItem.__name__)
         file = TextFile(self.scrape_id, "subject_contents", "jsonl")
         jsons = await items.get_data()
+        jsons = set(jsons)
         await file.write_file("\n".join(jsons))
 
         self.process_logger.complete()

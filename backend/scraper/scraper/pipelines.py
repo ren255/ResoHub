@@ -85,43 +85,7 @@ class SaveDB:
         return item
 
 
-class ProcessID:
+class Process:
     def process_item(self, item: scrapy.Item, spider: scrapy.Spider):
-        adapter = ItemAdapter(item)
-        item_name = item.__class__.__name__
-
-        if item_name == CollegesOverviewItem.__name__:
-            ids = url_analyzer(adapter.get("url_college"))
-            adapter["school_id"] = ids["school_id"]
-            item.pop("url_college")
-
-        if item_name == DepartmentsOverviewItem.__name__:
-            ids = url_analyzer(adapter.get("department_url"))
-            adapter["school_id"] = ids["school_id"]
-            adapter["department_id"] = ids["department_id"]
-            # item.pop("department_url")
-
-        if item_name == DepartmentDetailItem.__name__:
-            ids = url_analyzer(adapter.get("url_source"))
-            adapter["school_id"] = ids["school_id"]
-            adapter["department_id"] = ids["department_id"]
-            adapter["admission_year"] = ids["year"]
-
-        if item_name == SubjectCatalogItem.__name__:
-            ids = url_analyzer(adapter.get("subject_url"))
-            # subject_codeはtableからとり、tableのあるurlを解析対象
-            adapter["school_id"] = ids["school_id"]
-            adapter["department_id"] = ids["department_id"]
-            adapter["url_year"] = ids["year"]
-
-        if item_name == SubjectDetailItem.__name__:
-            ids = url_analyzer(adapter.get("url_source"))
-            adapter["school_id"] = ids["school_id"]
-            adapter["department_id"] = ids["department_id"]
-            adapter["url_year"] = ids["year"]
-            adapter["subject_code"] = ids["subject_id"]
-
-            adapter["admission_year"] = extract_year(adapter["admission_year"])
-
-        # item.pop("url_source")
+        item.process()
         return item

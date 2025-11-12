@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-from content.models import User
 import re
 import os
 import magic
@@ -15,7 +14,7 @@ class TextFileStorage(models.Model):
     # 主キー
     id = models.AutoField(primary_key=True)
     created_by = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="text_files"
+        "content.User", on_delete=models.CASCADE, related_name="text_files"
     )
     key = models.CharField(
         max_length=255,
