@@ -33,18 +33,6 @@ class StudentInfo(models.Model):
         null=True,
         blank=True,
     )
-    school_class = models.ForeignKey(
-        SchoolClass,
-        on_delete=models.CASCADE,
-        related_name="now_students",
-        db_column="school_class_id",
-        null=True,
-        blank=True,
-    )
-    school_class_history = models.ManyToManyField(
-        SchoolClass,
-        related_name="students",
-    )
 
     class Meta:
         db_table = "student_info"
@@ -52,7 +40,7 @@ class StudentInfo(models.Model):
         verbose_name_plural = "生徒情報"
 
     def __str__(self):
-        return f"{self.user.username} ({self.school_class})"
+        return f"{self.user.username} ({self.department})"
 
 
 class TeacherInfo(models.Model):

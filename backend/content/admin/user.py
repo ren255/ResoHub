@@ -29,5 +29,3 @@ class UserAdmin(admin.ModelAdmin):
 
     list_filter = ("is_active", "role")
     search_fields = ("username", "email", "name")
-
-    inlines = [UserSettingInline, StudentInfoInline, TeacherInfoInline]

@@ -27,22 +27,8 @@ class UserProcessor:
         )
         print("User details processing completed!")
 
-    # ========== 学生関連 ==========
-    async def process_students(self):
-        """学生情報の処理（基本情報 + ManyToMany）"""
-        await self.update_student_basic_info()
-        await self.update_student_class_history()
-
     def _parse_student_id(self, student_id: str) -> tuple[str, int] | None:
-        """
-        学生IDから学科と入学年度を解析
-
-        Args:
-            student_id: 学生ID（例: "m2101"）
-
-        Returns:
-            (学科名, 入学年度) のタプル、解析失敗時はNone
-        """
+        """学生IDから学科と入学年度を解析"""
         if not student_id or len(student_id) < 3:
             return None
 
@@ -69,26 +55,14 @@ class UserProcessor:
         return department_str, admission_year
 
     def _update_single_student(self, student: StudentInfo, school: School) -> bool:
-        """
-        単一の学生情報を更新
-
-        Args:
-            student: 更新対象の学生情報オブジェクト
-            school: 学校オブジェクト
-
-        Returns:
-            更新成功時True、失敗時False
-        """
         try:
-            student_id = student.student_id
-            if not student_id:
+            if not student.student_id:
                 return False
 
             # 学科と入学年度の解析
-            parse_result = self._parse_student_id(student_id)
+            parse_result = self._parse_student_id(student.student_id)
             if not parse_result:
                 return False
-
             department_str, admission_year = parse_result
 
             # 学科の取得
@@ -97,35 +71,15 @@ class UserProcessor:
                 name=department_str,
                 admission_year=admission_year,
             )
-
-            # 学年の計算
-            grade = datetime.now().year - admission_year + 1
-
-            # 学生情報の更新
             student.department = department
-
-            # クラスの設定（5年生以下の場合のみ）
-            if grade <= 5:
-                try:
-                    school_class = SchoolClass.objects.get(
-                        department=department,
-                        grade=grade,
-                        year=datetime.now().year,
-                    )
-                    student.school_class = school_class
-                except SchoolClass.DoesNotExist:
-                    print(
-                        f"SchoolClass not found for student {student_id}, grade {grade}"
-                    )
-
             student.save()
             return True
 
         except Exception as e:
-            print(f"Error updating student {student_id}: {e}")
+            print(f"Error updating student {student.student_id}: {e}")
             return False
 
-    async def update_student_basic_info(self):
+    async def process_students(self):
         """学生の基本情報を更新"""
 
         @sync_to_async
@@ -148,16 +102,6 @@ class UserProcessor:
             return updated_count, error_count
 
         return await update_details()
-
-    async def update_student_class_history(self):
-        """学生のクラス履歴（ManyToMany）を更新"""
-
-        @sync_to_async
-        def update_history():
-            # TODO: class_history の更新処理を実装
-            pass
-
-        return await update_history()
 
     # ========== 教師関連 ==========
     async def process_teachers(self):
