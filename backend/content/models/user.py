@@ -68,7 +68,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, blank=True, null=True)
 
     is_active = models.BooleanField(default=True)  # アクティブ権限
-    is_staff = models.BooleanField(default=True)  # スタッフ権限
+    is_staff = models.BooleanField(default=False)  # スタッフ権限
     is_superuser = models.BooleanField(default=False)  # 管理者権限
     date_joined = models.DateTimeField(default=timezone.now)  # アカウント作成日時
 

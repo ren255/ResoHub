@@ -1,5 +1,5 @@
 from django.db import models
-from .organization import SchoolClass
+from .organization import SchoolClass, School, Department
 from .subject import Subject
 
 
@@ -26,6 +26,11 @@ class StudentInfo(models.Model):
         "content.User", on_delete=models.CASCADE, related_name="student_info"
     )
     student_id = models.CharField(max_length=10)
+    department = models.ForeignKey(
+        Department,
+        on_delete=models.CASCADE,
+        related_name="students",
+    )
     school_class = models.ForeignKey(
         SchoolClass,
         on_delete=models.CASCADE,
@@ -49,6 +54,9 @@ class TeacherInfo(models.Model):
 
     user = models.OneToOneField(
         "content.User", on_delete=models.CASCADE, related_name="teacher_info"
+    )
+    school = models.ForeignKey(
+        School, on_delete=models.CASCADE, related_name="teachers"
     )
     owner = models.BooleanField(default=False)
     subjects = models.ManyToManyField(
