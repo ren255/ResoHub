@@ -61,12 +61,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name="役割",
         db_index=True,
     )
-
-    name = models.CharField(max_length=30, unique=False)  # ユーザ氏名
-    username = models.CharField(max_length=30, unique=False)
-    email = models.EmailField(
-        unique=True, blank=True, null=True
-    )  # メールアドレス = これで認証する
+    # ユーザ氏名
+    name = models.CharField(max_length=30, unique=False, blank=True)
+    username = models.CharField(max_length=30, unique=False, blank=True)
+    # メールアドレス = これで認証する
+    email = models.EmailField(unique=True, blank=True, null=True)
 
     is_active = models.BooleanField(default=True)  # アクティブ権限
     is_staff = models.BooleanField(default=True)  # スタッフ権限
@@ -77,7 +76,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "email"
-    REQUIRED_FIELD = ""
 
     def clean(self):
         super().clean()
