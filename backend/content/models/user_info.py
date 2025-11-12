@@ -25,11 +25,14 @@ class StudentInfo(models.Model):
     user = models.OneToOneField(
         "content.User", on_delete=models.CASCADE, related_name="student_info"
     )
+    student_id = models.CharField(max_length=10)
     school_class = models.ForeignKey(
         SchoolClass,
         on_delete=models.CASCADE,
         related_name="students",
         db_column="school_class_id",
+        null=True,
+        blank=True,
     )
 
     class Meta:
@@ -47,10 +50,12 @@ class TeacherInfo(models.Model):
     user = models.OneToOneField(
         "content.User", on_delete=models.CASCADE, related_name="teacher_info"
     )
+    owner = models.BooleanField(default=False)
     subjects = models.ManyToManyField(
         Subject,
         related_name="teachers",
         verbose_name="担当教科",
+        blank=True,
     )
 
     class Meta:

@@ -62,7 +62,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         db_index=True,
     )
 
-    username = models.CharField(max_length=30, unique=False)  # ユーザ氏名
+    name = models.CharField(max_length=30, unique=False)  # ユーザ氏名
+    username = models.CharField(max_length=30, unique=False)
     email = models.EmailField(
         unique=True, blank=True, null=True
     )  # メールアドレス = これで認証する

@@ -1,5 +1,5 @@
 # Core
-Django
+Django>=5.1
 djangorestframework
 django-cors-headers
 gunicorn
