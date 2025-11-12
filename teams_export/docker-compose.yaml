@@ -10,7 +10,8 @@ services:
     volumes:
       - .:/code
     environment:
-      - TEAMS_GROUP_ID=a928e083-b1c3-4b41-addd-22a2e300138e
+      # from 学生連絡 https://teams.microsoft.com/l/team/19%3Acbff82e7a06347fbbbca1e2551b2d1d5%40thread.tacv2/conversations?groupId=1e1d6188-3a9c-4659-b332-618c6c683daa&tenantId=ceb2991d-5710-405b-9a3b-3dab6a109547
+      - TEAMS_GROUP_ID=1e1d6188-3a9c-4659-b332-618c6c683daa
     command:
       - pwsh
       - -Command
