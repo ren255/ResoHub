@@ -20,9 +20,9 @@ from django.db.models import Count
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
     list_display = [
-        "school_class__department__name",
-        "school_class__department__admission_year",
-        "school_class__grade_str",
+        "grade_class__school_class__department__name",
+        "grade_class__school_class__admission_year",
+        "grade_class__grade_str",
         "name",
         "code",
         "credits",
@@ -31,8 +31,8 @@ class SubjectAdmin(admin.ModelAdmin):
         "exam_count",
     ]
     list_filter = [
-        "school_class__department__name",
-        "school_class__department__admission_year",
+        "grade_class__school_class__department__name",
+        "grade_class__school_class__admission_year",
         "name",
         "teachers_str",
     ]

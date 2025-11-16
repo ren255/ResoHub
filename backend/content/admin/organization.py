@@ -1,5 +1,5 @@
 from django.contrib import admin
-from ..models.organization import School, Department, SchoolClass
+from ..models.organization import School, Department, SchoolClass, SyllabusDepartment
 from ..models.subject import Subject
 from ..models.user_info import StudentInfo
 
@@ -10,24 +10,25 @@ class SchoolAdmin(admin.ModelAdmin):
     search_fields = ["name", "code"]
 
 
+@admin.register(SyllabusDepartment)
+class SyllabusDepartmentAdmin(admin.ModelAdmin):
+    list_display = ["school", "name", "code", "admission_year", "department"]
+    list_filter = ["school", "name", "admission_year", "department"]
+    search_fields = ["name"]
+
+
 class StudentsInline(admin.TabularInline):
     model = StudentInfo
     extra = 0
-    fields = [
-        "user_name",
-        "student_id",
-    ]
-    readonly_fields = [
-        "user_name",
-        "student_id",
-    ]
-    fk_name = "department"
+    fields = ["user_name", "student_id"]
+    readonly_fields = ["user_name", "student_id"]
+    fk_name = "school_class__department"
 
     def user_name(self, obj):
         """生徒の名前を表示"""
         if obj.user:
             return obj.user.name
-        return "-"
+        return ""
 
     user_name.short_description = "生徒名"
 
@@ -43,11 +44,11 @@ class StudentsInline(admin.TabularInline):
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
-    list_display = ["id", "school", "name", "admission_year", "url"]
-    list_filter = ["school__name", "name", "admission_year"]
-    search_fields = ["id"]
+    list_display = ["school", "name"]
+    list_filter = ["school", "name"]
+    search_fields = ["name"]
 
-    inlines = [StudentsInline]
+    # inlines = [StudentsInline]
 
 
 class SubjectInline(admin.TabularInline):
@@ -59,7 +60,6 @@ class SubjectInline(admin.TabularInline):
         "subject_type",
         "credits",
         "teachers_str",
-        "subject_groupe",
     ]
     readonly_fields = [
         "name",
@@ -67,9 +67,7 @@ class SubjectInline(admin.TabularInline):
         "subject_type",
         "credits",
         "teachers_str",
-        "subject_groupe",
     ]
-    show_change_link = True
 
 
 @admin.register(SchoolClass)
@@ -78,22 +76,15 @@ class SchoolClassAdmin(admin.ModelAdmin):
         "id",
         "department__school__name",
         "department__name",
-        "department__admission_year",
-        "grade",
-        "grade_str",
-        "year",
         "subject_count",
         "student_count",
     ]
     list_filter = [
-        "grade_str",
         "department__name",
-        "department__admission_year",
-        "year",
     ]
     search_fields = ["id"]
 
-    inlines = [SubjectInline]
+    # inlines = [SubjectInline]
 
     def subject_count(self, obj):
         return obj.subjects.count()

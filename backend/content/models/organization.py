@@ -51,7 +51,7 @@ class SyllabusDepartment(models.Model):
         School,
         on_delete=models.CASCADE,
         db_column="school_id",
-        related_name="departments",
+        related_name="syllabus_departments",
         verbose_name="学校",
     )
     department = models.ForeignKey(
