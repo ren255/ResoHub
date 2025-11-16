@@ -1,5 +1,5 @@
 from django.db import models
-from .organization import SchoolClass
+from .organization import SchoolClass, GradeClass
 
 
 class SubjectGroupe(models.Model):
@@ -21,8 +21,8 @@ class Subject(models.Model):
     teachers_str = models.CharField(max_length=300)
     textbooks = models.CharField(max_length=1000)
     url = models.CharField(max_length=200)
-    school_class = models.ForeignKey(
-        SchoolClass,
+    grade_class = models.ForeignKey(
+        GradeClass,
         on_delete=models.CASCADE,
         db_column="class_id",
         related_name="subjects",
