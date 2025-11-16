@@ -58,7 +58,7 @@ class SyllabusDepartment(models.Model):
         Department,
         on_delete=models.CASCADE,
         related_name="syllabus_departments",
-        blank=True,
+        null=True,
     )
 
     def __str__(self):

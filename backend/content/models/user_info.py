@@ -29,7 +29,7 @@ class StudentInfo(models.Model):
     school_class = models.ForeignKey(
         SchoolClass,
         on_delete=models.CASCADE,
-        blank=True,
+        null=True,
     )
 
     class Meta:
@@ -52,7 +52,6 @@ class TeacherInfo(models.Model):
         on_delete=models.CASCADE,
         related_name="teachers",
         null=True,
-        blank=True,
     )
     owner = models.BooleanField(default=False)
     subdomain = models.CharField(max_length=10)
@@ -60,7 +59,7 @@ class TeacherInfo(models.Model):
         Subject,
         related_name="teachers",
         verbose_name="担当教科",
-        blank=True,
+        null=True,
     )
 
     class Meta:
