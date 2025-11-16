@@ -1,7 +1,9 @@
 from content.models import (
     School,
+    SyllabusDepartment,
     Department,
     SchoolClass,
+    GradeClass,
     Exam,
     ExamGroupe,
     Subject,
@@ -59,13 +61,14 @@ class Processor:
 
         @sync_to_async
         def create_departments():
+            # syllabus department 作成
             objects = []
             for department in self.file.department_detail.split("\n"):
                 if not department.strip():
                     continue
                 data = json.loads(department)
                 school = School.objects.get(code=data["school_id"])
-                obj = Department(
+                obj = SyllabusDepartment(
                     school=school,
                     name=data["name"],
                     admission_year=data["admission_year"],
@@ -73,6 +76,19 @@ class Processor:
                     code=data["department_id"],
                 )
                 objects.append(obj)
+            SyllabusDepartment.objects.bulk_create(objects)
+
+            # department 作成
+            objects = []
+            # TODO 1:1対応でない高専へ対応
+            for syl_dep in SyllabusDepartment.objects.all():
+                obj = Department(
+                    name=syl_dep.name,
+                    school=syl_dep.school,
+                )
+                objects.append(obj)
+                syl_dep.department = obj
+                syl_dep.save()
             Department.objects.bulk_create(objects)
 
         await create_departments()
@@ -80,10 +96,10 @@ class Processor:
     async def process_class(self):
         @sync_to_async
         def create_classes():
-            objects = []
-
-            departments_list = self.df.subject_detail["department_id"].unique()
-            for department_id in departments_list:
+            grade_classes = []
+            school_classes = []
+            departmentID_list = self.df.subject_detail["department_id"].unique()
+            for department_id in departmentID_list:
                 df_sub_dep = self.df.subject_detail[
                     self.df.subject_detail["department_id"] == department_id
                 ]
@@ -92,26 +108,33 @@ class Processor:
                 ].to_dict()
 
                 for fixed_grade, grade_str in grade_mapping.items():
-                    departments = Department.objects.filter(code=department_id)
-                    for department in departments:
+                    syl_deps = SyllabusDepartment.objects.filter(code=department_id)
+                    for syl_dep in syl_deps:
+                        school_class = SchoolClass(
+                            syllabus_department=syl_dep,
+                            department=syl_dep.department,
+                            admission_year=syl_dep.admission_year,
+                        )
+                        school_classes.append(school_class)
+
                         year = int(
                             self.df.subject_detail[
                                 (
                                     self.df.subject_detail["admission_year"]
-                                    == department.admission_year
+                                    == syl_dep.admission_year
                                 )
                                 & (self.df.subject_detail["fixed_grade"] == fixed_grade)
                             ].iloc[0]["year"]
                         )
-                        obj = SchoolClass(
-                            department=department,
+                        grade_class = GradeClass(
+                            school_class=school_class,
                             grade_str=grade_str,
                             grade=fixed_grade,
                             year=year,
                         )
-                        objects.append(obj)
-
-            SchoolClass.objects.bulk_create(objects)
+                        grade_classes.append(grade_class)
+            SchoolClass.objects.bulk_create(school_classes)
+            GradeClass.objects.bulk_create(grade_classes)
 
         await create_classes()
 
@@ -122,13 +145,17 @@ class Processor:
             for subject in self.file.subject_detail.split("\n"):
                 data = json.loads(subject)
                 school = School.objects.get(code=data["school_id"])
-                department = Department.objects.get(
+                syl_dep = SyllabusDepartment.objects.get(
                     school=school,
                     code=data["department_id"],
                     admission_year=data["admission_year"],
                 )
                 school_class = SchoolClass.objects.get(
-                    department=department,
+                    syllabus_department=syl_dep,
+                    grade_str=data["grade_str"],
+                )
+                grade_class = GradeClass.objects.get(
+                    school_class=school_class,
                     grade_str=data["grade_str"],
                 )
 
@@ -140,7 +167,7 @@ class Processor:
                     credits=data["credits"],
                     teachers_str=data["teachers"],
                     textbooks=data["textbooks"],
-                    school_class=school_class,
+                    grade_class=grade_class,
                 )
                 objects.append(obj)
             Subject.objects.bulk_create(objects)
@@ -199,7 +226,7 @@ class Processor:
                         name=subject_detail_row["subject_name"],
                     )
                     print(
-                        f"school_class: admisstion year {school_class.department.admission_year}, {school_class.department.name}"
+                        f"school_class: admisstion year {school_class.admission_year}, {school_class.department.name}"
                     )
                     for subject in subjects:
                         print(f"name : {subject.name} code: {subject.code}")

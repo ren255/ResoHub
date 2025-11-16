@@ -22,7 +22,6 @@ class School(models.Model):
 class Department(models.Model):
     """学部モデル 名前"""
 
-    url = models.CharField(max_length=100)  # SyllabusDepartment's best match
     name = models.CharField(max_length=100)
     school = models.ForeignKey(
         School,
@@ -59,6 +58,7 @@ class SyllabusDepartment(models.Model):
         Department,
         on_delete=models.CASCADE,
         related_name="syllabus_departments",
+        blank=True,
     )
 
     def __str__(self):
