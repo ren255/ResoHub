@@ -36,14 +36,12 @@ class Exam(models.Model):
     subject = models.ForeignKey(
         Subject,
         on_delete=models.CASCADE,
-        db_column="subject_id",
         related_name="exams",
         verbose_name="教科",
     )
     exam_groupe = models.ForeignKey(
         ExamGroupe,
         on_delete=models.CASCADE,
-        db_column="exam_groupe_id",
         related_name="exams",
         verbose_name="試験グループ",
         null=True,
@@ -51,7 +49,6 @@ class Exam(models.Model):
     file = models.ForeignKey(
         TextFileStorage,
         on_delete=models.CASCADE,
-        db_column="file_id",
         verbose_name="ファイル",
         null=True,
     )

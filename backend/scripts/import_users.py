@@ -31,7 +31,11 @@ users.loc[users["subdomain"] == "a", "role"] = "other"
 users.loc[users["subdomain"] == "inc", "role"] = "student"
 
 # 既存のSTUDENTまたはTEACHERのroleを持つUserを削除
-users_del = User.objects.filter(Q(role=UserRole.STUDENT) | Q(role=UserRole.TEACHER))
+users_del = User.objects.filter(
+    Q(role=UserRole.STUDENT)
+    | Q(role=UserRole.TEACHER)
+    | Q(role=UserRole.STUDENT_AFFAIRS)
+)
 users_del.delete()
 
 # Userオブジェクトの作成
@@ -46,7 +50,7 @@ for index, row in users.iterrows():
         elif row["role"] == "teacher":
             role = UserRole.TEACHER
         else:
-            role = UserRole.STAFF
+            role = UserRole.STUDENT_AFFAIRS
 
         user = User(
             role=role,
