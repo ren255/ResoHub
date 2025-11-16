@@ -29,6 +29,7 @@ class StudentInfo(models.Model):
     school_class = models.ForeignKey(
         SchoolClass,
         on_delete=models.CASCADE,
+        blank=True,
     )
 
     class Meta:
@@ -54,6 +55,7 @@ class TeacherInfo(models.Model):
         blank=True,
     )
     owner = models.BooleanField(default=False)
+    subdomain = models.CharField(max_length=10)
     subjects = models.ManyToManyField(
         Subject,
         related_name="teachers",

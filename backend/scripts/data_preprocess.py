@@ -115,6 +115,11 @@ class UserProcessor:
     async def update_teacher_basic_info(self):
         """教師の基本情報を更新"""
 
+        # a 学生課
+        # 学科なし
+        # h 人文学部
+        # n 理数
+
         @sync_to_async
         def update_details():
             school = School.objects.get(name__contains="木更津")
