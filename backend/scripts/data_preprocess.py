@@ -110,7 +110,11 @@ class UserProcessor:
                 school=school,
                 name=department_str,
             )
-            student.department = department
+            school_class = SchoolClass.objects.get(
+                department=department,
+                admission_year=admission_year,
+            )
+            student.school_class = school_class
             student.save()
             return True
 
@@ -156,6 +160,24 @@ class UserProcessor:
         # h 人文学部
         # n 理数
 
+        department_type_map = {
+            "h": "人文学部",
+            "n": "理数学部",
+            "m": "機械",
+            "d": "制御",
+            "e": "電気",
+            "c": "環境",
+            "j": "情報",
+            "nan": "なし",
+        }
+        department_subdomain_map = {
+            "m": "機械工学科",
+            "d": "電子制御工学科",
+            "e": "情報工学科",
+            "c": "環境都市工学科",
+            "j": "情報工学科",
+        }
+
         @sync_to_async
         def update_details():
             school = School.objects.get(name__contains="木更津")
@@ -164,11 +186,16 @@ class UserProcessor:
             )
 
             updated_count = 0
-
             for teacher in teachers:
                 try:
                     teacher.subjects.clear()
-                    teacher.school = school
+                    if teacher.subdomain in department_subdomain_map.keys():
+                        department = Department.objects.get(
+                            school=school,
+                            name=department_subdomain_map[teacher.subdomain],
+                        )
+                        teacher.department = department
+                    teacher.department_type = department_type_map[teacher.subdomain]
                     teacher.save()
                     updated_count += 1
                 except Exception as e:

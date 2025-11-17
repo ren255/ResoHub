@@ -53,6 +53,7 @@ class TeacherInfo(models.Model):
         related_name="teachers",
         null=True,
     )
+    department_type = models.CharField(max_length=20, default="")
     owner = models.BooleanField(default=False)
     subdomain = models.CharField(max_length=10)
     subjects = models.ManyToManyField(
