@@ -28,7 +28,7 @@ class StudentsInline(admin.TabularInline):
     extra = 0
     fields = ["user_name", "student_id"]
     readonly_fields = ["user_name", "student_id"]
-    fk_name = "school_class__department"
+    # fk_name = "school_class__department"
 
     def user_name(self, obj):
         """生徒の名前を表示"""
@@ -79,27 +79,22 @@ class SubjectInline(admin.TabularInline):
 @admin.register(SchoolClass)
 class SchoolClassAdmin(admin.ModelAdmin):
     list_display = [
-        "id",
         "department__school__name",
         "department__name",
-        "subject_count",
+        "admission_year",
         "student_count",
     ]
     list_filter = [
         "department__name",
+        "admission_year",
     ]
-    search_fields = ["id"]
+    search_fields = ["department__name"]
 
-    # inlines = [SubjectInline]
-
-    def subject_count(self, obj):
-        return obj.subjects.count()
-
-    subject_count.short_description = "教科数"
+    inlines = [StudentsInline]
 
     def student_count(self, obj):
         """この学科に所属する生徒数を表示"""
-        return obj.department.students.count()
+        return obj.students.count()
 
     student_count.short_description = "生徒数"
 
@@ -108,6 +103,7 @@ class SchoolClassAdmin(admin.ModelAdmin):
 class GradeClassAdmin(admin.ModelAdmin):
     list_display = [
         "school_class",
+        "subject_count",
         "grade_str",
         "grade",
         "year",
@@ -122,3 +118,10 @@ class GradeClassAdmin(admin.ModelAdmin):
     search_fields = [
         "school_class__department__name",
     ]
+
+    inlines = [SubjectInline]
+
+    def subject_count(self, obj):
+        return obj.subjects.count()
+
+    subject_count.short_description = "教科数"

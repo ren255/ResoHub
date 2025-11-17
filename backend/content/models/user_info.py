@@ -29,7 +29,8 @@ class StudentInfo(models.Model):
     school_class = models.ForeignKey(
         SchoolClass,
         on_delete=models.CASCADE,
-        null=True,
+        related_name="students",
+        blank=True,
     )
 
     class Meta:
@@ -60,7 +61,6 @@ class TeacherInfo(models.Model):
         Subject,
         related_name="teachers",
         verbose_name="担当教科",
-        null=True,
     )
 
     class Meta:
@@ -69,4 +69,4 @@ class TeacherInfo(models.Model):
         verbose_name_plural = "教師情報"
 
     def __str__(self):
-        return f"{self.user.username.split()[0]}先生"
+        return f"{self.department_type}学部 {self.user.username.split()[0]}先生"

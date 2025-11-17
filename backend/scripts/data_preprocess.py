@@ -161,8 +161,8 @@ class UserProcessor:
         # n 理数
 
         department_type_map = {
-            "h": "人文学部",
-            "n": "理数学部",
+            "h": "人文",
+            "n": "理数",
             "m": "機械",
             "d": "制御",
             "e": "電気",
