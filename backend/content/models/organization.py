@@ -93,7 +93,7 @@ class SchoolClass(models.Model):
 
 
 class GradeClass(models.Model):
-    """学科 * 入学年 * 学年"""
+    """(学科 * 入学年) * 学年"""
 
     school_class = models.ForeignKey(
         SchoolClass,

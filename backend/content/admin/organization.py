@@ -1,5 +1,11 @@
 from django.contrib import admin
-from ..models.organization import School, Department, SchoolClass, SyllabusDepartment
+from ..models.organization import (
+    School,
+    Department,
+    SchoolClass,
+    SyllabusDepartment,
+    GradeClass,
+)
 from ..models.subject import Subject
 from ..models.user_info import StudentInfo
 
@@ -96,3 +102,23 @@ class SchoolClassAdmin(admin.ModelAdmin):
         return obj.department.students.count()
 
     student_count.short_description = "生徒数"
+
+
+@admin.register(GradeClass)
+class GradeClassAdmin(admin.ModelAdmin):
+    list_display = [
+        "school_class",
+        "grade_str",
+        "grade",
+        "year",
+    ]
+    list_filter = [
+        "school_class__department__name",
+        "school_class__admission_year",
+        "grade_str",
+        "grade",
+        "year",
+    ]
+    search_fields = [
+        "school_class__department__name",
+    ]

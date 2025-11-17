@@ -23,18 +23,18 @@ class Processor:
 
     async def process(self):
         print("processing...")
-        # await sync_to_async(School.objects.all().delete)()
-        # await sync_to_async(Department.objects.all().delete)()
-        # await self.process_org()
-        # print("org done. class...")
+        await sync_to_async(School.objects.all().delete)()
+        await sync_to_async(Department.objects.all().delete)()
+        await self.process_org()
+        print("org done. class...")
 
-        # await sync_to_async(SchoolClass.objects.all().delete)()
-        # await self.process_class()
-        # print("class done. subject...")
+        await sync_to_async(SchoolClass.objects.all().delete)()
+        await self.process_class()
+        print("class done. subject...")
 
-        # await sync_to_async(Subject.objects.all().delete)()
-        # await self.process_subject()
-        # print("subject done. exam...")
+        await sync_to_async(Subject.objects.all().delete)()
+        await self.process_subject()
+        print("subject done. exam...")
 
         await sync_to_async(Exam.objects.all().delete)()
         await self.process_exam()
@@ -79,61 +79,88 @@ class Processor:
             SyllabusDepartment.objects.bulk_create(objects)
 
             # department 作成
-            objects = []
-            # TODO 1:1対応でない高専へ対応
+            department_objects = []
+            names = []
             for syl_dep in SyllabusDepartment.objects.all():
-                obj = Department(
+                if syl_dep.name in names:
+                    continue
+                names.append(syl_dep.name)
+                dep = Department(
                     name=syl_dep.name,
                     school=syl_dep.school,
                 )
-                objects.append(obj)
-                syl_dep.department = obj
-                syl_dep.save()
-            Department.objects.bulk_create(objects)
+                department_objects.append(dep)
+
+            Department.objects.bulk_create(department_objects)
+
+            # bulk_update用にidを取得して紐付け
+            syl_deps_to_update = []
+            dep_map = {
+                (dep.school_id, dep.name): dep for dep in Department.objects.all()
+            }
+            for syl_dep in SyllabusDepartment.objects.all():
+                key = (syl_dep.school_id, syl_dep.name)
+                if key in dep_map:
+                    syl_dep.department = dep_map[key]
+                    syl_deps_to_update.append(syl_dep)
+
+            # bulk_updateで一括更新
+            SyllabusDepartment.objects.bulk_update(syl_deps_to_update, ["department"])
 
         await create_departments()
 
     async def process_class(self):
         @sync_to_async
         def create_classes():
-            grade_classes = []
+            # 第1段階: SchoolClassの作成
             school_classes = []
             departmentID_list = self.df.subject_detail["department_id"].unique()
+
             for department_id in departmentID_list:
+                syl_deps = SyllabusDepartment.objects.filter(code=department_id)
+                for syl_dep in syl_deps:
+                    school_class = SchoolClass(
+                        syllabus_department=syl_dep,
+                        department=syl_dep.department,
+                        admission_year=syl_dep.admission_year,
+                    )
+                    school_classes.append(school_class)
+
+            SchoolClass.objects.bulk_create(school_classes)
+
+            # 第2段階: GradeClassの作成
+            grade_classes = []
+            saved_school_classes = SchoolClass.objects.all()
+            self.df.subject_detail["department_id"] = self.df.subject_detail[
+                "department_id"
+            ].astype(str)
+            for school_class in saved_school_classes:
                 df_sub_dep = self.df.subject_detail[
-                    self.df.subject_detail["department_id"] == department_id
+                    self.df.subject_detail["department_id"]
+                    == school_class.syllabus_department.code
                 ]
                 grade_mapping: dict = df_sub_dep.set_index("fixed_grade")[
                     "grade_str"
                 ].to_dict()
 
                 for fixed_grade, grade_str in grade_mapping.items():
-                    syl_deps = SyllabusDepartment.objects.filter(code=department_id)
-                    for syl_dep in syl_deps:
-                        school_class = SchoolClass(
-                            syllabus_department=syl_dep,
-                            department=syl_dep.department,
-                            admission_year=syl_dep.admission_year,
-                        )
-                        school_classes.append(school_class)
+                    year = int(
+                        self.df.subject_detail[
+                            (
+                                self.df.subject_detail["admission_year"]
+                                == school_class.admission_year
+                            )
+                            & (self.df.subject_detail["fixed_grade"] == fixed_grade)
+                        ].iloc[0]["year"]
+                    )
+                    grade_class = GradeClass(
+                        school_class=school_class,
+                        grade_str=grade_str,
+                        grade=fixed_grade,
+                        year=year,
+                    )
+                    grade_classes.append(grade_class)
 
-                        year = int(
-                            self.df.subject_detail[
-                                (
-                                    self.df.subject_detail["admission_year"]
-                                    == syl_dep.admission_year
-                                )
-                                & (self.df.subject_detail["fixed_grade"] == fixed_grade)
-                            ].iloc[0]["year"]
-                        )
-                        grade_class = GradeClass(
-                            school_class=school_class,
-                            grade_str=grade_str,
-                            grade=fixed_grade,
-                            year=year,
-                        )
-                        grade_classes.append(grade_class)
-            SchoolClass.objects.bulk_create(school_classes)
             GradeClass.objects.bulk_create(grade_classes)
 
         await create_classes()
@@ -152,7 +179,7 @@ class Processor:
                 )
                 school_class = SchoolClass.objects.get(
                     syllabus_department=syl_dep,
-                    grade_str=data["grade_str"],
+                    admission_year=syl_dep.admission_year,
                 )
                 grade_class = GradeClass.objects.get(
                     school_class=school_class,
@@ -205,28 +232,30 @@ class Processor:
                     self.df.subject_detail["url_source"] == row.url_source
                 ].iloc[0]
                 school = School.objects.get(code=subject_detail_row["school_id"])
-                department = Department.objects.get(
+                syl_dep = SyllabusDepartment.objects.get(
                     school=school,
                     code=subject_detail_row["department_id"],
                     admission_year=subject_detail_row["admission_year"],
                 )
-
                 school_class = SchoolClass.objects.get(
-                    department=department, grade_str=subject_detail_row["grade_str"]
+                    syllabus_department=syl_dep, admission_year=syl_dep.admission_year
+                )
+                grade_class = GradeClass.objects.get(
+                    school_class=school_class, grade_str=subject_detail_row["grade_str"]
                 )
                 try:
                     subject = Subject.objects.get(
-                        school_class=school_class,
+                        grade_class=grade_class,
                         name=subject_detail_row["subject_name"],
                         code=subject_detail_row["subject_code"],
                     )
                 except:
                     subjects = Subject.objects.filter(
-                        school_class=school_class,
+                        grade_class=grade_class,
                         name=subject_detail_row["subject_name"],
                     )
                     print(
-                        f"school_class: admisstion year {school_class.admission_year}, {school_class.department.name}"
+                        f"school_class: admisstion year {grade_class.admission_year}, {school_class.department.name}"
                     )
                     for subject in subjects:
                         print(f"name : {subject.name} code: {subject.code}")
