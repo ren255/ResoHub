@@ -38,7 +38,7 @@ class StudentInfo(models.Model):
         verbose_name_plural = "生徒情報"
 
     def __str__(self):
-        return f"{self.user.username} ({self.department})"
+        return f"{self.user} ({self.student_id})"
 
 
 class TeacherInfo(models.Model):
