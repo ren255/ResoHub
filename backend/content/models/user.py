@@ -45,7 +45,8 @@ class UserRole(models.TextChoices):
     TEACHER = "teacher", "教師"
     STAFF = "staff", "管理者"
     SYSTEM = "system", "System"
-    OTHER = "other", "その他"
+    STUDENT_AFFAIRS = "student_affairs", "学生課"
+    UNREGISTERED = "unregistered", "未登録"  # 追加
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -59,7 +60,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     role = models.CharField(
         max_length=20,
         choices=UserRole.choices,
-        default=UserRole.OTHER,
+        default=UserRole.UNREGISTERED,
         verbose_name="役割",
         db_index=True,
     )

@@ -1,6 +1,9 @@
 from django.contrib import admin
+from django.db.models import Count
+
 from ..models.subject import SubjectGroupe, Subject
 from ..models.exam import Exam
+from ..models.user_info import TeacherInfo
 
 
 @admin.register(SubjectGroupe)
@@ -14,30 +17,33 @@ class ExamInline(admin.TabularInline):
     extra = 0  # no extra empty forms
 
 
-from django.db.models import Count
+class TeacherInline(admin.TabularInline):
+    model = Subject.teachers.through
+    extra = 0
 
 
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
     list_display = [
-        "school_class__department__name",
-        "school_class__department__admission_year",
-        "school_class__grade_str",
+        "grade_class__school_class__department__name",
+        "grade_class__school_class__admission_year",
+        "grade_class__grade_str",
         "name",
         "code",
         "credits",
         "teachers_str",
+        "teacher_count",
         "textbooks",
         "exam_count",
     ]
     list_filter = [
-        "school_class__department__name",
-        "school_class__department__admission_year",
+        "grade_class__school_class__department__name",
+        "grade_class__school_class__admission_year",
+        "teachers",
         "name",
-        "teachers_str",
     ]
     search_fields = ["id"]
-    inlines = [ExamInline]
+    inlines = [ExamInline, TeacherInline]
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -45,6 +51,9 @@ class SubjectAdmin(admin.ModelAdmin):
 
     def exam_count(self, obj):
         return obj._exam_count
+
+    def teacher_count(self, obj):
+        return obj.teachers.count()
 
     exam_count.admin_order_field = "_exam_count"
     exam_count.short_description = "Exam数"

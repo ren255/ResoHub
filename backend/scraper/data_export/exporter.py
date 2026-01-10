@@ -1,14 +1,4 @@
 import scraper.settings
-from content.models import (
-    School,
-    Department,
-    SchoolClass,
-    Exam,
-    ExamGroupe,
-    Subject,
-    SubjectGroupe,
-)
-from asgiref.sync import sync_to_async
 from .loader import DataLoader
 from .processors import Processor
 

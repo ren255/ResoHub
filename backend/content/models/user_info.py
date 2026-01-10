@@ -1,5 +1,5 @@
 from django.db import models
-from .organization import SchoolClass, School, Department
+from .organization import SchoolClass, School, Department, SyllabusDepartment
 from .subject import Subject
 
 
@@ -26,11 +26,10 @@ class StudentInfo(models.Model):
         "content.User", on_delete=models.CASCADE, related_name="student_info"
     )
     student_id = models.CharField(max_length=10)
-    department = models.ForeignKey(
-        Department,
+    school_class = models.ForeignKey(
+        SchoolClass,
         on_delete=models.CASCADE,
         related_name="students",
-        null=True,
         blank=True,
     )
 
@@ -40,7 +39,7 @@ class StudentInfo(models.Model):
         verbose_name_plural = "生徒情報"
 
     def __str__(self):
-        return f"{self.user.username} ({self.department})"
+        return f"{self.user} ({self.student_id})"
 
 
 class TeacherInfo(models.Model):
@@ -49,19 +48,19 @@ class TeacherInfo(models.Model):
     user = models.OneToOneField(
         "content.User", on_delete=models.CASCADE, related_name="teacher_info"
     )
-    school = models.ForeignKey(
-        School,
+    department = models.ForeignKey(
+        Department,
         on_delete=models.CASCADE,
         related_name="teachers",
         null=True,
-        blank=True,
     )
+    department_type = models.CharField(max_length=20, default="")
     owner = models.BooleanField(default=False)
+    subdomain = models.CharField(max_length=10)
     subjects = models.ManyToManyField(
         Subject,
         related_name="teachers",
         verbose_name="担当教科",
-        blank=True,
     )
 
     class Meta:
@@ -70,4 +69,4 @@ class TeacherInfo(models.Model):
         verbose_name_plural = "教師情報"
 
     def __str__(self):
-        return f"{self.user.username.split()[0]}先生"
+        return f"{self.department_type}学部 {self.user.username.split()[0]}先生"

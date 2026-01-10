@@ -20,17 +20,22 @@ rename = {
 users = users.rename(columns=rename)
 
 # ロールの判定
-users["role"] = "teacher"
-inc_mask = users["mail"].str.endswith("@inc.kisarazu.ac.jp")
-users.loc[inc_mask, "student_id"] = users.loc[inc_mask, "mail"].str.replace(
+
+users["subdomain"] = users["mail"].str.extract(r"[\.@]([^\.@]+?)\.kisarazu")
+mask = users["mail"].str.contains("@inc.kisarazu.ac.jp", na=False)
+users.loc[mask, "student_id"] = users.loc[mask, "mail"].str.replace(
     "@inc.kisarazu.ac.jp", "", regex=False
 )
-student_pattern = r"^[a-zA-Z]\d{5}$"
-is_valid_student = users["student_id"].fillna("").str.match(student_pattern)
-users.loc[inc_mask & is_valid_student, "role"] = "student"
+users["role"] = "teacher"
+users.loc[users["subdomain"] == "a", "role"] = "other"
+users.loc[users["subdomain"] == "inc", "role"] = "student"
 
 # 既存のSTUDENTまたはTEACHERのroleを持つUserを削除
-users_del = User.objects.filter(Q(role=UserRole.STUDENT) | Q(role=UserRole.TEACHER))
+users_del = User.objects.filter(
+    Q(role=UserRole.STUDENT)
+    | Q(role=UserRole.TEACHER)
+    | Q(role=UserRole.STUDENT_AFFAIRS)
+)
 users_del.delete()
 
 # Userオブジェクトの作成
@@ -40,13 +45,18 @@ teachers = []
 
 for index, row in users.iterrows():
     try:
-        role = UserRole.STUDENT if row["role"] == "student" else UserRole.TEACHER
+        if row["role"] == "student":
+            role = UserRole.STUDENT
+        elif row["role"] == "teacher":
+            role = UserRole.TEACHER
+        else:
+            role = UserRole.STUDENT_AFFAIRS
+
         user = User(
             role=role,
             name=row["name"],
             username=row["name"],
             email=row["mail"],
-            is_staff=False,
         )
         users_obj.append(user)
 
@@ -60,6 +70,7 @@ for index, row in users.iterrows():
             teacher = TeacherInfo(
                 user=user,
                 owner=True if row["teams_role"] == "owner" else False,
+                subdomain=row["subdomain"],
             )
             teachers.append(teacher)
     except Exception as e:

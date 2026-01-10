@@ -1,5 +1,4 @@
 from django.db import models
-from .organization import SchoolClass
 from .subject import Subject, SubjectGroupe
 from core.models import TextFileStorage
 
@@ -7,10 +6,9 @@ from core.models import TextFileStorage
 class ExamGroupe(models.Model):
     """試験モデル"""
 
-    school_class = models.ForeignKey(
-        SchoolClass,
+    subject = models.ForeignKey(
+        Subject,
         on_delete=models.CASCADE,
-        db_column="school_class_id",
         verbose_name="教科グループ",
     )
     subject_groupe = models.ForeignKey(
@@ -38,14 +36,12 @@ class Exam(models.Model):
     subject = models.ForeignKey(
         Subject,
         on_delete=models.CASCADE,
-        db_column="subject_id",
         related_name="exams",
         verbose_name="教科",
     )
     exam_groupe = models.ForeignKey(
         ExamGroupe,
         on_delete=models.CASCADE,
-        db_column="exam_groupe_id",
         related_name="exams",
         verbose_name="試験グループ",
         null=True,
@@ -53,7 +49,6 @@ class Exam(models.Model):
     file = models.ForeignKey(
         TextFileStorage,
         on_delete=models.CASCADE,
-        db_column="file_id",
         verbose_name="ファイル",
         null=True,
     )

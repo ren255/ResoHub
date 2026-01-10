@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   teams-export:
     image: demisto/powershell:7.5.0.3759715
@@ -10,12 +8,17 @@ services:
     volumes:
       - .:/code
     environment:
-      - TEAMS_GROUP_ID=a928e083-b1c3-4b41-addd-22a2e300138e
+      # from 学生連絡(学友会には専攻科生が含まれないため) https://teams.microsoft.com/l/team/19%3Acbff82e7a06347fbbbca1e2551b2d1d5%40thread.tacv2/conversations?groupId=1e1d6188-3a9c-4659-b332-618c6c683daa&tenantId=ceb2991d-5710-405b-9a3b-3dab6a109547
+      - SCHOOL_GROUP_ID=1e1d6188-3a9c-4659-b332-618c6c683daa
+      # from 学寮からの連絡 https://teams.microsoft.com/l/team/19%3Ab72628d0e8b146e1b99ea21a63589721%40thread.tacv2/conversations?groupId=4a878d6a-e4c7-485b-b260-d570c8d564bc&tenantId=ceb2991d-5710-405b-9a3b-3dab6a109547
+      - DORM_GROUP_ID=4a878d6a-e4c7-485b-b260-d570c8d564bc
     command:
       - pwsh
       - -Command
       - |
         Install-Module MicrosoftTeams -Force -AllowClobber -Confirm:$$false;
         Connect-MicrosoftTeams -UseDeviceAuthentication;
-        Get-TeamUser -GroupId $$env:TEAMS_GROUP_ID |
+        Get-TeamUser -GroupId $$env:SCHOOL_GROUP_ID |
         Export-Csv -Encoding UTF8 -NoTypeInformation -Path /code/users.csv
+        Get-TeamUser -GroupId $$env:DORM_GROUP_ID |
+        Export-Csv -Encoding UTF8 -NoTypeInformation -Path /code/dorm_members.csv
