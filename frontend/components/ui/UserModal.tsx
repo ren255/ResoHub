@@ -1,13 +1,4 @@
-import { useState } from "react";
-
-interface User {
-  uuid: string;
-  username: string;
-  email: string;
-  is_staff: boolean;
-  is_superuser: boolean;
-  date_joined: string;
-}
+import { User } from "../../types/User";
 
 interface UserModalProps {
   user: User | null;
@@ -15,103 +6,63 @@ interface UserModalProps {
   onClose: () => void;
 }
 
-const UserModal: React.FC<UserModalProps> = ({ user, isOpen, onClose }) => {
+export default function UserModal({ user, isOpen, onClose }: UserModalProps) {
   if (!user) return null;
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("ja-JP", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
   return (
-    <>
-      <input
-        type="checkbox"
-        id="user-modal"
-        className="modal-toggle"
-        checked={isOpen}
-        onChange={() => {}}
-      />
-      <div className="modal modal-bottom sm:modal-middle">
-        <div className="modal-box">
-          <h3 className="font-bold text-lg mb-4">ユーザー詳細</h3>
+    <dialog className={`modal ${isOpen ? "modal-open" : ""}`}>
+      <div className="modal-box">
+        <h3 className="font-bold text-lg mb-4">ユーザー詳細</h3>
 
-          <div className="space-y-3">
-            <div>
-              <span className="font-semibold text-sm text-gray-500">UUID</span>
-              <p className="text-sm font-mono bg-base-200 p-2 rounded mt-1 break-all">
-                {user.uuid}
-              </p>
-            </div>
+        <div className="space-y-3">
+          <div>
+            <span className="text-sm text-gray-500">ユーザー名</span>
+            <p className="font-medium">{user.username}</p>
+          </div>
 
-            <div>
-              <span className="font-semibold text-sm text-gray-500">
-                ユーザー名
-              </span>
-              <p className="text-base mt-1">{user.username}</p>
-            </div>
+          <div>
+            <span className="text-sm text-gray-500">メールアドレス</span>
+            <p className="font-medium">{user.email}</p>
+          </div>
 
-            <div>
-              <span className="font-semibold text-sm text-gray-500">
-                メールアドレス
-              </span>
-              <p className="text-base mt-1">{user.email}</p>
-            </div>
+          <div>
+            <span className="text-sm text-gray-500">UUID</span>
+            <p className="font-mono text-sm">{user.uuid}</p>
+          </div>
 
-            <div className="flex gap-4">
-              <div>
-                <span className="font-semibold text-sm text-gray-500">
-                  スタッフ権限
-                </span>
-                <div className="mt-1">
-                  {user.is_staff ? (
-                    <span className="badge badge-success">有効</span>
-                  ) : (
-                    <span className="badge badge-ghost">無効</span>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <span className="font-semibold text-sm text-gray-500">
-                  スーパーユーザー
-                </span>
-                <div className="mt-1">
-                  {user.is_superuser ? (
-                    <span className="badge badge-error">有効</span>
-                  ) : (
-                    <span className="badge badge-ghost">無効</span>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <span className="font-semibold text-sm text-gray-500">
-                登録日時
-              </span>
-              <p className="text-base mt-1">{formatDate(user.date_joined)}</p>
+          <div>
+            <span className="text-sm text-gray-500">権限</span>
+            <div className="flex gap-2 mt-1">
+              {user.is_staff && (
+                <span className="badge badge-success">スタッフ</span>
+              )}
+              {user.is_superuser && (
+                <span className="badge badge-error">スーパーユーザー</span>
+              )}
+              {!user.is_staff && !user.is_superuser && (
+                <span className="badge badge-ghost">一般ユーザー</span>
+              )}
             </div>
           </div>
 
-          <div className="modal-action">
-            <button className="btn" onClick={onClose}>
-              閉じる
-            </button>
+          <div>
+            <span className="text-sm text-gray-500">登録日</span>
+            <p className="font-medium">
+              {new Date(user.date_joined).toLocaleString("ja-JP")}
+            </p>
           </div>
         </div>
-        <label className="modal-backdrop" onClick={onClose}>
-          閉じる
-        </label>
-      </div>
-    </>
-  );
-};
 
-export default UserModal;
+        <div className="modal-action">
+          <button className="btn" onClick={onClose}>
+            閉じる
+          </button>
+        </div>
+      </div>
+
+      <form method="dialog" className="modal-backdrop">
+        <button onClick={onClose}>close</button>
+      </form>
+    </dialog>
+  );
+}
