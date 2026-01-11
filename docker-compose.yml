@@ -5,7 +5,9 @@ services:
       dockerfile: Dockerfile
     container_name: resohub-frontend
     ports:
-      - 8000:3000
+      - 8000:3000      # Vike
+      - 9060:61000    # Ladle
+    command: npm run dev:all
     volumes:
       - ./frontend/:/app
       - /app/node_modules

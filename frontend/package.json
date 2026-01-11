@@ -4,7 +4,9 @@
     "build": "vike build",
     "preview": "vike preview",
     "lint": "biome lint --write .",
-    "format": "biome format --write ."
+    "format": "biome format --write .",
+    "ladle": "npx ladle serve --host 0.0.0.0",
+    "dev:all": "npx concurrently \"npm run dev\" \"npm run ladle\""
   },
   "dependencies": {
     "@sentry/browser": "^10.20.0",
@@ -19,10 +21,12 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.3",
+    "@ladle/react": "^5.1.1",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.13",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
+    "concurrently": "^9.2.1",
     "daisyui": "^5.1.8",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2",
