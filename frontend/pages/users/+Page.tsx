@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import UserModal from "../../components/UserModal";
+import UserModal from "../../components/ui/UserModal";
 
 interface User {
   uuid: string;
