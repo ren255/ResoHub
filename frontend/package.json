@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@sentry/browser": "^10.20.0",
+    "@tanstack/react-table": "^8.21.3",
     "@vitejs/plugin-react": "^5.0.2",
     "axios": "^1.12.2",
     "react": "^19.1.1",
