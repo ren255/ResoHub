@@ -1,5 +1,5 @@
-import { Card } from "./Card";
-import UserModal from "./UserModal";
+import { Card } from "../ui/Card";
+import UserModal from "../features/user/UserModal";
 
 export const Card_ = () => <Card />;
 

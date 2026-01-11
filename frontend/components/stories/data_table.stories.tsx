@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { DataTable } from "./DataTable";
+import { DataTable } from "../ui/DataTable";
 
 // データ型定義
 interface User {
