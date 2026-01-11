@@ -17,7 +17,6 @@ export default function App() {
 
   return (
     <div className="w-full min-h-screen flex flex-col py-8">
-   <button onClick={methodDoesNotExist}>Break the world</button>;
       <div>
         <div className="gap-4 mb-8 flex">
           <button className="btn" onClick={() => setSelected("main")}>
