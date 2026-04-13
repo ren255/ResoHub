@@ -96,7 +96,6 @@ class TextFileStorage(models.Model):
         """
         super().clean()
         self.validate_key(self.key)
-        self.file_size = len(self.body.encode("utf-8")) if self.body else 0
 
     def save(self, *args, **kwargs):
         """
@@ -104,9 +103,11 @@ class TextFileStorage(models.Model):
         """
         self.full_clean()
         try:
+            self.file_size = len(self.body.encode("utf-8")) if self.body else 0
             buffer = self.body.encode("utf-8")
             mime_type = magic.from_buffer(buffer[:2048], mime=True)
             self.mime_type = mime_type
+
         except Exception:
             self.mime_type = "application/x"
 

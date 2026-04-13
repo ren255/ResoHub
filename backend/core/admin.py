@@ -51,7 +51,7 @@ class TextFileStorageAdmin(admin.ModelAdmin):
         "id",
         "key",
         "extension_display",
-        "created_by__username",
+        # "created_by__username",
         "file_size_display",
         "mime_type",
         "status_display",
@@ -68,7 +68,7 @@ class TextFileStorageAdmin(admin.ModelAdmin):
     # 検索
     search_fields = [
         "key",
-        "created_by__username",
+        # "created_by__username",
         "body",
     ]
 
@@ -118,10 +118,11 @@ class TextFileStorageAdmin(admin.ModelAdmin):
     file_size_display.short_description = "サイズ"
 
     def status_display(self, obj):
-        """削除状態を視覚的に表示"""
         if obj.is_deleted:
-            return format_html('<span style="color: red;">●</span> 削除済み')
-        return format_html('<span style="color: green;">●</span> 有効')
+            return format_html(
+                '<span style="color: {};">●</span> {}', "red", "削除済み"
+            )
+        return format_html('<span style="color: {};">●</span> {}', "green", "有効")
 
     status_display.short_description = "ステータス"
 
