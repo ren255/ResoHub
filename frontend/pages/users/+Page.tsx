@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import UserTable from "../../components/ui/UserTable";
-import UserModal from "../../components/ui/UserModal";
+import UserTable from "../../components/features/user/UserTable";
+import UserModal from "../../components/features/user/UserModal";
 import { User } from "../../types/User";
 
 export default function Page() {

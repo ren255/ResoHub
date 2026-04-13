@@ -1,20 +1,32 @@
 import { ChartColumnBig, Home, Info } from "lucide-react";
 
 export const SideBar = () => (
-  <ul className="menu bg-base-200 rounded-box h-screen fixed left-0 top-0">
+  <ul className="menu gap-4 w-16 bg-base-200 border-r h-screen fixed left-0 top-0 p-2">
     <li>
-      <a className="tooltip tooltip-right" data-tip="Home">
-        <Home />
+      <a
+        href="#home"
+        className="tooltip tooltip-right flex items-center justify-center w-8 h-8"
+        data-tip="Home"
+      >
+        <Home size={24} />
       </a>
     </li>
     <li>
-      <a className="tooltip tooltip-right" data-tip="Details">
-        <Info />
+      <a
+        href="#details"
+        className="tooltip tooltip-right flex items-center justify-center w-8 h-8"
+        data-tip="Details"
+      >
+        <Info size={24} />
       </a>
     </li>
     <li>
-      <a className="tooltip tooltip-right" data-tip="Stats">
-        <ChartColumnBig />
+      <a
+        href="#stats"
+        className="tooltip tooltip-right flex items-center justify-center w-8 h-8"
+        data-tip="Stats"
+      >
+        <ChartColumnBig size={24} />
       </a>
     </li>
   </ul>
