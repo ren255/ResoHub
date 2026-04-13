@@ -66,19 +66,36 @@ services:
       - app-network
 
   garage:
-    image: dxflrs/garage:v1.0.1
-    container_name: resohub-garage
-    ports:
-      - "3900:3900" # S3 API
-      - "3901:3901" # Admin API
-      - "3902:3902" # RPC
+    image: dxflrs/garage:v2.0.0
+    container_name: garage
     volumes:
       - ./garage/garage.toml:/etc/garage.toml:ro
-      - garage-data:/var/lib/garage/data
-      - garage-meta:/var/lib/garage/meta
+      - ./garage/meta:/var/lib/garage/meta
+      - ./garage/data:/var/lib/garage/data
+    restart: unless-stopped
+    ports:
+      - "3900:3900" # S3 API
+      - "3901:3901" # S3 Web
+      - "3902:3902" # RPC
+      - "3903:3903" # Admin API
     networks:
       - app-network
+
+  garage-webui:
+    image: khairul169/garage-webui:latest
+    container_name: garage-webui
     restart: unless-stopped
+    volumes:
+      - ./garage/garage.toml:/etc/garage.toml:ro
+    ports:
+      - "3909:3909"
+    environment:
+      API_BASE_URL: "http://garage:3903"
+      S3_ENDPOINT_URL: "http://garage:3900"
+    depends_on:
+      - garage
+    networks:
+      - app-network
 
   nginx:
     image: nginx:latest
@@ -95,8 +112,6 @@ services:
 
 volumes:
   postgres_data:
-  garage-data:
-  garage-meta:
 
 
 networks:

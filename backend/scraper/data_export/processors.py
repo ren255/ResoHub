@@ -25,6 +25,7 @@ class Processor:
         print("processing...")
         await sync_to_async(School.objects.all().delete)()
         await sync_to_async(Department.objects.all().delete)()
+        await sync_to_async(SyllabusDepartment.objects.all().delete)()
         await self.process_org()
         print("org done. class...")
 

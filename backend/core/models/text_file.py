@@ -102,8 +102,8 @@ class TextFileStorage(models.Model):
         保存前にバリデーションとサイズ計算を実行
         """
         self.full_clean()
+        self.file_size = len(self.body.encode("utf-8")) if self.body else 0
         try:
-            self.file_size = len(self.body.encode("utf-8")) if self.body else 0
             buffer = self.body.encode("utf-8")
             mime_type = magic.from_buffer(buffer[:2048], mime=True)
             self.mime_type = mime_type

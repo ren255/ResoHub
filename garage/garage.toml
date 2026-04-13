@@ -3,10 +3,9 @@ data_dir = "/var/lib/garage/data"
 
 replication_factor = 1
 
-rpc_bind_addr = "[::]:3901"
-rpc_public_addr = "127.0.0.1:3901"
+rpc_bind_addr = "[::]:3902"
+rpc_public_addr = "127.0.0.1:3902"
 rpc_secret = "3571429dd5bb00d15b6915d8e34b0480d2c6d308f0547dd722bf281b6a8ae93e"
-
 
 [s3_api]
 s3_region = "us-east-1"
@@ -14,9 +13,11 @@ api_bind_addr = "0.0.0.0:3900"
 root_domain = ".s3.garage.localhost"
 
 [s3_web]
-bind_addr = "0.0.0.0:3902"
+bind_addr = "0.0.0.0:3901"
 root_domain = ".web.garage.localhost"
 index = "index.html"
 
 [admin]
-api_bind_addr = "0.0.0.0:3901"
+api_bind_addr = "0.0.0.0:3903"
+admin_token = "6e8918fc95679e25c30b3539.sod0eF2fgsgAQUQB2kcI5hz49KVDIbyStDRAP5mbaVY"
+metrics_token = "fa68f9bc55c96cd5255000dffa5f5e858519eba6ff77ef032480ed26869ca6cb"

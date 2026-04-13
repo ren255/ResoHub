@@ -20,7 +20,7 @@ class File(models.Model):
     MinIO (S3互換ストレージ) に保存されるまずは media/{year}/{user_name}/
     """
 
-    # ファイル本体（MinIOに自動保存）
+    # ファイル本体
     file = models.FileField(upload_to=upload_to_uuid, verbose_name="ファイル")
 
     # アップロードユーザー（ユーザー削除時もファイルは保持）
