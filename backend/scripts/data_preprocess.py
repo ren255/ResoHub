@@ -244,15 +244,16 @@ class UserProcessor:
 
             teachers = []
             for name, user_name in result:
-                if subjects and user_name:
-                    subjects = query_subject_map[name]
-                    user = choice_teacher_map[user_name]
-                    teacher = TeacherInfo.objects.get(user=user)
-                    teacher.subjects.set(subjects)
-                    teacher.save()
-                    teacher_ctn += 1
-                else:
+                if pd.isna(user_name):
                     skipped_ctn += 1
+                    continue
+
+                subjects_for_teacher = query_subject_map.get(name, [])
+                user = choice_teacher_map[user_name]
+                teacher = TeacherInfo.objects.get(user=user)
+                teacher.subjects.set(subjects_for_teacher)
+                teacher.save()
+                teacher_ctn += 1
 
             print(
                 f"subjects: {subject_ctn}. teacher: {teacher_ctn}. skipped: {skipped_ctn}"

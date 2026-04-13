@@ -51,5 +51,7 @@ if __name__ == "__main__":
         print(result.stdout)
         print(f"Data export completed successfully for scrape ID: {scrape_id}")
     except subprocess.CalledProcessError as e:
-        print(f"Error during data export: {e}")
+        print(
+            f"Error during data export :{e}\n retry with: python -m data_export.exporter --scrape-id {scrape_id}\n"
+        )
         print(e.stderr)

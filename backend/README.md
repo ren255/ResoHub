@@ -20,19 +20,48 @@ scrapyd
 ```
 https://alioguzhan.medium.com/how-to-use-scrapy-with-django-application-c16fabd0e62e
 
+### create ER diagram
+
+```
+python manage.py graph_models -a --group-models -o image/er_diagram.png
+```
+
 
 ## import user
 
-```
+```sh
 cd teams_export
 docker compose up
 ```
 
-```
+```sh
 cd backend
 docker compose exec backend python -m scripts.import_users
 ```
 
+## run scrapy
+
+```sh
+cd bachend
+docker compose exec zsh
+```
+
+```sh
+backend python manage.py shell -c \
+  "from django.contrib.auth import get_user_model; \
+  User = get_user_model(); \
+  User.objects.create_user('scrapy@example.com', 'scrapy', username='scrapy')"
+```
+
+```sh
+cd /app/scrapy
+python -m launch.syllabus
+```
+
+```sh
+cd /app
+python -m scripts.data_preprocess
+```
 
 
 この手法を具体例で追ってみます。
