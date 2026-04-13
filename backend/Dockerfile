@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -yq --no-install-recommends \
     libgraphviz-dev \
     graphviz-dev \
     libpq-dev \        
+    postgresql-client \
     zsh \
     wget \
     && apt-get clean \
