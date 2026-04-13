@@ -31,6 +31,7 @@ class StudentInfo(models.Model):
         on_delete=models.CASCADE,
         related_name="students",
         blank=True,
+        null=True,
     )
 
     class Meta:

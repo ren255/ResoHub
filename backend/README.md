@@ -20,6 +20,21 @@ scrapyd
 ```
 https://alioguzhan.medium.com/how-to-use-scrapy-with-django-application-c16fabd0e62e
 
+
+## import user
+
+```
+cd teams_export
+docker compose up
+```
+
+```
+cd backend
+docker compose exec backend python -m scripts.import_users
+```
+
+
+
 この手法を具体例で追ってみます。
 
 ## 処理の流れ
