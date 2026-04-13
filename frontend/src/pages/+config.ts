@@ -1,6 +1,6 @@
 import type { Config } from "vike/types";
 import vikeReact from "vike-react/config";
-import Layout from "../layouts/LayoutDefault.js";
+import Layout from "@/layouts/LayoutDefault.js";
 import * as Sentry from "@sentry/browser";
 
 // Sentryの初期化

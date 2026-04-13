@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { DataTable } from "../ui/DataTable";
+import { DataTable } from "@ui/DataTable";
 
 // データ型定義
 interface User {
@@ -110,9 +110,8 @@ const generateProducts = (): Product[] => {
 
   return Array.from({ length: 1000 }, (_, i) => ({
     id: i + 1,
-    name: `${productNames[Math.floor(Math.random() * productNames.length)]} ${
-      i + 1
-    }`,
+    name: `${productNames[Math.floor(Math.random() * productNames.length)]} ${i + 1
+      }`,
     price: Math.floor(Math.random() * 50000) + 1000,
     stock: Math.floor(Math.random() * 100),
   }));

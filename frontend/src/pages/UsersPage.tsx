@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import UserTable from "../../components/features/user/UserTable";
-import UserModal from "../../components/features/user/UserModal";
-import { User } from "../../types/User";
+import UserTable from "@features/user/UserTable";
+import UserModal from "@features/user/UserModal";
+import { User } from "@/types/User";
 
 export default function Page() {
   const [users, setUsers] = useState<User[]>([]);

@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
-import LayoutDefault from "./layouts/LayoutDefault";
-import ErrorPage from "./pages/ErrorPage";
-import IndexPage from "./pages/IndexPage";
-import UsersPage from "./pages/UsersPage";
+import LayoutDefault from "@/layouts/LayoutDefault";
+import ErrorPage from "@/pages/ErrorPage";
+import IndexPage from "@/pages/IndexPage";
+import UsersPage from "@/pages/UsersPage";
 
 export default function App() {
     return (

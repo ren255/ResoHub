@@ -2,9 +2,9 @@ import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import mainMD from "../../readme/README.md?raw";
-import backendMD from "../../readme/backend-README.md?raw";
-import frontendMD from "../../readme/frontend-README.md?raw";
+import mainMD from "@/../readme/README.md?raw";
+import backendMD from "@/../readme/backend-README.md?raw";
+import frontendMD from "@/../readme/frontend-README.md?raw";
 
 export default function App() {
   const [selected, setSelected] = useState("main");

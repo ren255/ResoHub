@@ -1,7 +1,7 @@
 import { useState } from "react";
-import UserTable from "../features/user/UserTable";
-import UserModal from "../features/user/UserModal";
-import { User } from "../../types/User";
+import UserTable from "@features/user/UserTable";
+import UserModal from "@features/user/UserModal";
+import { User } from "@/types/User";
 
 const mockUsers: User[] = [
   {

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { DataTable } from "../../ui/DataTable";
-import { User } from "../../../types/User";
+import { DataTable } from "@ui/DataTable";
+import { User } from "@/types/User";
 
 interface UserTableProps {
   users: User[];
