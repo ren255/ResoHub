@@ -39,11 +39,11 @@ pip install -r requirements.txt
 ```
 - db初期化
 ```sh
-docker compose exec backend python manager.py migrate
+docker compose exec backend python manage.py migrate
 docker compose exec backend python manage.py shell -c \
   "from django.contrib.auth import get_user_model; \
   User = get_user_model(); \
-  User.objects.create_superuser('admin@example.com', 'admin')"com', 'admin')"
+  User.objects.create_superuser('admin@example.com', 'admin')"
 ```
 
 ### filesystem
