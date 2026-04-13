@@ -90,18 +90,12 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
+        "ENGINE": "django.db.backends.postgresql",
         "NAME": "django-db",
         "USER": "django",
         "PASSWORD": "django",
         "HOST": "db",
-        "PORT": "3306",
-        "OPTIONS": {
-            # MySQLクライアント側の設定
-            "connect_timeout": 600,
-            "read_timeout": 600,
-            "write_timeout": 600,
-        },
+        "PORT": "5432",
     }
 }
 

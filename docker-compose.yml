@@ -5,8 +5,8 @@ services:
       dockerfile: Dockerfile
     container_name: resohub-frontend
     ports:
-      - 8000:3000      # Vike
-      - 9060:61000    # Ladle
+      - 8000:3000 # Vike
+      - 9060:61000 # Ladle
     volumes:
       - ./frontend/:/app
       - /app/node_modules
@@ -23,7 +23,7 @@ services:
     networks:
       - app-network
     restart: unless-stopped
-  
+
   backend:
     build:
       context: ./backend
@@ -41,31 +41,20 @@ services:
     tty: true
     networks:
       - app-network
-      - glitchtip_default
     depends_on:
       db:
         condition: service_healthy
 
   db:
-    image: mysql:9.4.0
+    image: postgres:16
     container_name: resohub-db
-    environment:                  
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: django-db
-      MYSQL_USER: django
-      MYSQL_PASSWORD: django
+    environment:
+      POSTGRES_DB: django-db
+      POSTGRES_USER: django
+      POSTGRES_PASSWORD: django
       TZ: 'Asia/Tokyo'
-    command:
-      - mysqld
-      - --max-allowed-packet=250000000      # 250MB
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-      - --wait-timeout=600
-      - --interactive-timeout=600
-      - --net-read-timeout=600
-      - --net-write-timeout=600
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "django", "-pdjango"]
+      test: [ "CMD-SHELL", "pg_isready -U django -d django-db" ]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -86,7 +75,7 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -95,15 +84,9 @@ services:
   minio-client:
     image: minio/mc:latest
     entrypoint: >
-      /bin/sh -c "
-      /usr/bin/mc alias rm expo || true;
-      /usr/bin/mc alias set local http://localhost:9000 minio minio123 --api s3v4;
-      /usr/bin/mc mb local/resohub-bucket --ignore-existing;
-      /usr/bin/mc anonymous set public local/resohub-bucket;
-      echo 'Bucket setup completed successfully';
-      "
+      /bin/sh -c " /usr/bin/mc alias rm expo || true; /usr/bin/mc alias set local http://localhost:9000 minio minio123 --api s3v4; /usr/bin/mc mb local/resohub-bucket --ignore-existing; /usr/bin/mc anonymous set public local/resohub-bucket; echo 'Bucket setup completed successfully'; "
     depends_on:
-      minio: 
+      minio:
         condition: service_healthy
     networks:
       - app-network
@@ -124,8 +107,7 @@ services:
 volumes:
   minio-data:
 
+
 networks:
   app-network:
     driver: bridge
-  glitchtip_default:
-    external: true
