@@ -6,7 +6,7 @@
     "lint": "biome lint --write .",
     "format": "biome format --write .",
     "ladle": "npx ladle serve --host 0.0.0.0",
-    "dev:all": "npx concurrently \"npm run dev\" \"npm run ladle\""
+    "dev:all": "concurrently -n vite,ladle \"npm run dev\" \"npx wait-on http://localhost:5173 && npm run ladle\""
   },
   "dependencies": {
     "@sentry/browser": "^10.20.0",
@@ -32,10 +32,13 @@
     "baseline-browser-mapping": "^2.9.14",
     "concurrently": "^9.2.1",
     "daisyui": "^5.1.8",
+    "i": "^0.3.7",
+    "npm": "^11.12.1",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.2",
-    "vite": "^7.1.4"
+    "vite": "^7.1.4",
+    "wait-on": "^9.0.5"
   },
   "type": "module"
 }

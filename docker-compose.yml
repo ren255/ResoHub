@@ -18,6 +18,7 @@ services:
       - VITE_HOST=0.0.0.0
     env_file:
       - .env
+    command: npm run dev:all
     stdin_open: true
     tty: true
     networks:

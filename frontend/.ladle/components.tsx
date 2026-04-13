@@ -1,2 +1,2 @@
 // .ladle/components.tsx
-import "../layouts/tailwind.css";
+import "src/layouts/tailwind.css";
