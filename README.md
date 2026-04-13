@@ -5,7 +5,7 @@
 ![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?logo=typescript&logoColor=white)
 ![npm](https://img.shields.io/badge/-npm-CB3837?logo=npm&logoColor=white)
 
-![Vike](https://img.shields.io/badge/-Vike-646CFF?logo=vite&logoColor=white)
+![vite](https://img.shields.io/badge/-vite-646CFF?logo=vite&logoColor=white)
 ![React](https://img.shields.io/badge/-React-61DAFB?logo=react&logoColor=black)
 ![Tailwind CSS](https://img.shields.io/badge/-Tailwind%20CSS-38B2AC?logo=tailwind-css&logoColor=white)
 ![DaisyUI](https://img.shields.io/badge/-daisyui-1AD1A5?logo=daisyui&logoColor=black)
@@ -39,8 +39,42 @@ pip install -r requirements.txt
 ```
 - db初期化
 ```sh
-python manager.py migrate
-cd ../
+docker compose exec backend python manage.py migrate
+docker compose exec backend python manage.py shell -c \
+  "from django.contrib.auth import get_user_model; \
+  User = get_user_model(); \
+  User.objects.create_superuser('admin@example.com', 'admin')"
+```
+
+### filesystem
+```sh
+# ノードIDを確認（取得済み）
+docker compose exec garage /garage node id
+
+# レイアウトを設定（ノードIDの最初の数文字でOK）
+docker compose exec garage /garage layout assign -z dc1 -c 1G 1419efd5d2ae5a52791affd7328c557dc1d5e0c6996d09032f0e838db556b730
+
+# レイアウトを適用
+docker compose exec garage /garage layout apply --version 1
+
+# アクセスキーを作成
+docker compose exec garage /garage key create resohub-key
+
+# 表示されたKey IDとSecret Keyを.envに設定
+# AWS_ACCESS_KEY_ID=<表示されたKey ID>
+# AWS_SECRET_ACCESS_KEY=<表示されたSecret Key>
+
+# バケットを作成
+docker compose exec garage /garage bucket create resohub-bucket
+
+# キーにバケットへのアクセス権を付与
+docker compose exec garage /garage bucket allow \
+  --read --write --owner \
+  --key resohub-key \
+  resohub-bucket
+
+# パブリックアクセスを許可（webサイト公開設定）
+docker compose exec garage /garage bucket website --allow resohub-bucket
 ```
 
 # 起動

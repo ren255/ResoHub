@@ -1,32 +1,44 @@
 {
   "scripts": {
-    "dev": "vike dev",
-    "build": "vike build",
-    "preview": "vike preview",
+    "dev": "vite dev --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview",
     "lint": "biome lint --write .",
-    "format": "biome format --write ."
+    "format": "biome format --write .",
+    "ladle": "npx ladle serve --host 0.0.0.0",
+    "dev:all": "concurrently -n vite,ladle \"npm run dev\" \"npx wait-on http://localhost:5173 && npm run ladle\""
   },
   "dependencies": {
     "@sentry/browser": "^10.20.0",
+    "@tanstack/react-table": "^8.21.3",
     "@vitejs/plugin-react": "^5.0.2",
     "axios": "^1.12.2",
+    "lucide-react": "^0.562.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-markdown": "^10.1.0",
-    "remark-gfm": "^4.0.1",
-    "vike": "^0.4.239",
-    "vike-react": "^0.6.5"
+    "react-router-dom": "^7.14.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.3",
+    "@ladle/react": "^5.1.1",
+    "@tailwindcss/postcss": "^4.1.18",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.13",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
+    "autoprefixer": "^10.4.23",
+    "baseline-browser-mapping": "^2.9.14",
+    "concurrently": "^9.2.1",
     "daisyui": "^5.1.8",
-    "tailwindcss": "^4.1.13",
+    "i": "^0.3.7",
+    "npm": "^11.12.1",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
     "typescript": "^5.9.2",
-    "vite": "^7.1.4"
+    "vite": "^7.1.4",
+    "wait-on": "^9.0.5"
   },
   "type": "module"
 }

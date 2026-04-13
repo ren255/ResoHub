@@ -90,18 +90,12 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
+        "ENGINE": "django.db.backends.postgresql",
         "NAME": "django-db",
         "USER": "django",
         "PASSWORD": "django",
         "HOST": "db",
-        "PORT": "3306",
-        "OPTIONS": {
-            # MySQLクライアント側の設定
-            "connect_timeout": 600,
-            "read_timeout": 600,
-            "write_timeout": 600,
-        },
+        "PORT": "5432",
     }
 }
 
@@ -158,20 +152,19 @@ STORAGES = {
     },
 }
 
+
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
 
 AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_URL")
-MINIO_ACCESS_URL = os.getenv("MINIO_ACCESS_URL")
-AWS_S3_REGION_NAME = "us-east-1"  # MinIOだから適当に
+AWS_S3_CUSTOM_URL = os.getenv("AWS_S3_PUBLIC_URL")
 
+AWS_S3_REGION_NAME = "us-east-1"
 AWS_DEFAULT_ACL = "public-read"
-SECURE_SSL_REDIRECT = False
-SECURE_PROXY_SSL_HEADER = None
 
-STATIC_URL = f"{AWS_S3_ENDPOINT_URL}/{STATICFILES_LOCATION}/"
-MEDIA_URL = "/media/"
+STATIC_URL = f"{AWS_S3_CUSTOM_URL}/{AWS_STORAGE_BUCKET_NAME}/{STATICFILES_LOCATION}/"
+MEDIA_URL = f"{AWS_S3_CUSTOM_URL}/{AWS_STORAGE_BUCKET_NAME}/media/"
 
 
 DATA_FILE_MAX_MEMORY_SIZE = 104857600  # 100MB in bytes

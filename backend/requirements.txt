@@ -8,14 +8,13 @@ sentry-sdk
 
 # doc
 pydotplus
-pygraphviz
 docutils
 drf-spectacular
 black
 sentry_sdk
 
 # database
-mysqlclient
+psycopg2-binary
 django-storages
 boto3
 python-magic
