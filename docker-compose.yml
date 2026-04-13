@@ -61,35 +61,20 @@ services:
     networks:
       - app-network
 
-  minio:
-    image: minio/minio:latest
+  garage:
+    image: dxflrs/garage:v1.0.1
+    container_name: resohub-garage
     ports:
-      - 9000:9000
-      - 9001:9001
-    environment:
-      MINIO_ACCESS_KEY: minio
-      MINIO_SECRET_KEY: minio123
-    command: server /data --console-address ":9001"
+      - "3900:3900" # S3 API
+      - "3901:3901" # Admin API
+      - "3902:3902" # RPC
     volumes:
-      - minio-data:/data
+      - ./garage/garage.toml:/etc/garage.toml:ro
+      - garage-data:/var/lib/garage/data
+      - garage-meta:/var/lib/garage/meta
     networks:
       - app-network
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-
-  minio-client:
-    image: minio/mc:latest
-    entrypoint: >
-      /bin/sh -c " /usr/bin/mc alias rm expo || true; /usr/bin/mc alias set local http://localhost:9000 minio minio123 --api s3v4; /usr/bin/mc mb local/resohub-bucket --ignore-existing; /usr/bin/mc anonymous set public local/resohub-bucket; echo 'Bucket setup completed successfully'; "
-    depends_on:
-      minio:
-        condition: service_healthy
-    networks:
-      - app-network
+    restart: unless-stopped
 
   nginx:
     image: nginx:latest
@@ -100,12 +85,13 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ./nginx/certs:/etc/nginx/certs:ro
     depends_on:
-      - minio
+      - garage
     networks:
       - app-network
 
 volumes:
-  minio-data:
+  garage-data:
+  garage-meta:
 
 
 networks:
