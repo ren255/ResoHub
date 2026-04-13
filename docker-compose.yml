@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: resohub-frontend
     ports:
-      - 8000:3000 # Vike
+      - 8000:5173 # vite
       - 9060:61000 # Ladle
     volumes:
       - ./frontend/:/app
@@ -53,6 +53,8 @@ services:
       POSTGRES_USER: django
       POSTGRES_PASSWORD: django
       TZ: 'Asia/Tokyo'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U django -d django-db" ]
       interval: 5s
@@ -90,6 +92,7 @@ services:
       - app-network
 
 volumes:
+  postgres_data:
   garage-data:
   garage-meta:
 

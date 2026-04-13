@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "dev": "vike dev",
-    "build": "vike build",
-    "preview": "vike preview",
+    "dev": "vite dev --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview",
     "lint": "biome lint --write .",
     "format": "biome format --write .",
     "ladle": "npx ladle serve --host 0.0.0.0",
@@ -17,9 +17,8 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-markdown": "^10.1.0",
-    "remark-gfm": "^4.0.1",
-    "vike": "^0.4.239",
-    "vike-react": "^0.6.5"
+    "react-router-dom": "^7.14.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.3",

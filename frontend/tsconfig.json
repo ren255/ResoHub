@@ -16,11 +16,28 @@
       "ESNext"
     ],
     "types": [
-      "vite/client",
-      "vike-react"
+      "vite/client"
     ],
     "jsx": "react-jsx",
-    "jsxImportSource": "react"
+    "jsxImportSource": "react",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "@features/*": [
+        "src/components/features/*"
+      ],
+      "@layouts/*": [
+        "src/components/layouts/*"
+      ],
+      "@stories/*": [
+        "src/components/stories/*"
+      ],
+      "@ui/*": [
+        "src/components/ui/*"
+      ]
+    }
   },
   "exclude": [
     "dist"

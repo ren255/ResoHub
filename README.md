@@ -5,7 +5,7 @@
 ![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?logo=typescript&logoColor=white)
 ![npm](https://img.shields.io/badge/-npm-CB3837?logo=npm&logoColor=white)
 
-![Vike](https://img.shields.io/badge/-Vike-646CFF?logo=vite&logoColor=white)
+![vite](https://img.shields.io/badge/-vite-646CFF?logo=vite&logoColor=white)
 ![React](https://img.shields.io/badge/-React-61DAFB?logo=react&logoColor=black)
 ![Tailwind CSS](https://img.shields.io/badge/-Tailwind%20CSS-38B2AC?logo=tailwind-css&logoColor=white)
 ![DaisyUI](https://img.shields.io/badge/-daisyui-1AD1A5?logo=daisyui&logoColor=black)

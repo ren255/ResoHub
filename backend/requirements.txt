@@ -8,7 +8,6 @@ sentry-sdk
 
 # doc
 pydotplus
-pygraphviz
 docutils
 drf-spectacular
 black
