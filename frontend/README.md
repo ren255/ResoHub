@@ -12,7 +12,7 @@ ResoHubのフロントエンドアプリケーションです。
 | スタイリング | [Tailwind CSS](https://tailwindcss.com/) v4 + [DaisyUI](https://daisyui.com/) |
 | UIコンポーネントカタログ | [Ladle](https://ladle.dev/) |
 | リンター/フォーマッター | [Biome](https://biomejs.dev/) |
-| 型システム | TypeScript（Django APIからの型定義を使用） |
+| 型システム | [@hey-api/openapi-ts](https://heyapi.dev/) |
 
 ## 開発環境のセットアップ
 
@@ -67,6 +67,7 @@ frontend/
 │   └── main.tsx          # エントリーポイント
 ├── vite.config.ts        # Vite設定
 ├── ladle-vite.config.ts  # Ladle設定
+├── openapi-ts.config.ts  # API型定義生成設定
 ├── biome.json            # Biome設定
 └── package.json
 ```
@@ -90,6 +91,37 @@ frontend/
 
 DjangoバックエンドのAPIレスポンスに合わせた型定義を使用しています。
 
+### API型の生成
+
+[@hey-api/openapi-ts](https://heyapi.dev/) を使用して、DjangoのOpenAPIスキーマからTypeScript型とaxiosクライアントを自動生成します。
+
+```sh
+# API型とクライアントの生成
+npm run generate:api
+```
+
+生成されたファイルは `src/types/api/` に出力されます：
+- `types.gen.ts` - TypeScript型定義
+- `client.gen.ts` - axiosクライアント
+- `sdk.gen.ts` - API操作関数
+
+### 設定
+
+`openapi-ts.config.ts` で設定を変更できます：
+- 入力: `http://resohub-backend:8000/api/schema/`
+- 出力: `src/types/api/`
+
+### 使用例
+
+```ts
+import { client } from "@/types/api/client.gen";
+import { userList, userRetrieve } from "@/types/api/sdk.gen";
+
+
+// API呼び出し
+const { data: users } = await userList();
+const { data: user } = await userRetrieve({ path: { uuid: "xxx" } });
+```
 
 ## Ladle（コンポーネントカタログ）
 
@@ -101,6 +133,11 @@ npm run ladle
 ```
 
 ストーリーファイルは `src/components/stories/` に配置しています。
+
+ladleが真っ白で描画されたときはキャッシュを消してから試してみてください。
+```sh
+rm -rf node_modules/.vite
+```
 
 ## エイリアス設定
 

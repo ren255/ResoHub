@@ -6,7 +6,8 @@
     "lint": "biome lint --write .",
     "format": "biome format --write .",
     "ladle": "npx ladle serve --host 0.0.0.0",
-    "dev:all": "concurrently -n vite,ladle \"npm run dev\" \"npx wait-on http://localhost:5173 && npm run ladle\""
+    "dev:all": "concurrently -n vite,ladle \"npm run dev\" \"npx wait-on http://localhost:5173 && npm run ladle\"",
+    "generate:api": "openapi-ts"
   },
   "dependencies": {
     "@sentry/browser": "^10.20.0",
@@ -22,6 +23,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.3",
+    "@hey-api/client-axios": "^0.9.1",
+    "@hey-api/openapi-ts": "^0.96.1",
     "@ladle/react": "^5.1.1",
     "@tailwindcss/postcss": "^4.1.18",
     "@tailwindcss/typography": "^0.5.19",
