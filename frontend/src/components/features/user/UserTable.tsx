@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@ui/DataTable";
-import { User } from "@/types/User";
+import type { User } from "@/types/api/types.gen";
 
 interface UserTableProps {
   users: User[];
@@ -51,7 +51,9 @@ export default function UserTable({
         accessorKey: "date_joined",
         header: "登録日",
         cell: ({ row }) =>
-          new Date(row.original.date_joined).toLocaleDateString("ja-JP"),
+          row.original.date_joined
+            ? new Date(row.original.date_joined).toLocaleDateString("ja-JP")
+            : "-",
       },
       {
         id: "actions",

@@ -1,4 +1,4 @@
-import { User } from "@/types/User";
+import type { User } from "@/types/api/types.gen";
 
 interface UserModalProps {
   user: User | null;
@@ -48,7 +48,9 @@ export default function UserModal({ user, isOpen, onClose }: UserModalProps) {
           <div>
             <span className="text-sm text-gray-500">登録日</span>
             <p className="font-medium">
-              {new Date(user.date_joined).toLocaleString("ja-JP")}
+              {user.date_joined
+                ? new Date(user.date_joined).toLocaleString("ja-JP")
+                : "-"}
             </p>
           </div>
         </div>
