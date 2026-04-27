@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@ui/DataTable";
 import type { User } from "@/types/api/types.gen";
 
