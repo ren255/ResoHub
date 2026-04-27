@@ -18,6 +18,14 @@
 
 ## Quick Start
 
+
+backend admin: http://localhost:8001/admin
+api docs: http://localhost:8001/api/docs
+scrapy: http://127.0.0.1:6800/
+garage webUI: http://localhost:3909
+ladle: http://localhost:9060
+web : http://localhost:8000
+
 ### docker install
 windowsの場合WSLとdocker desktop
 linuxの場合はdocker
