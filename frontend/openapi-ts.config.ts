@@ -4,7 +4,10 @@ export default defineConfig({
 	input: "http://resohub-backend:8000/api/schema/",
 	output: "src/types/api/",
 	plugins: [
-		"@hey-api/client-axios",
+		{
+			name: "@hey-api/client-axios",
+			runtimeConfigPath: "@/lib/hey-api.ts",
+		},
 		'@hey-api/sdk',
 		"@hey-api/typescript",
 	],
