@@ -58,16 +58,12 @@ docker compose exec backend python manage.py shell -c \
 ```sh
 # ノードIDを確認
 docker compose exec garage /garage node id
-
 # レイアウトを設定（ノードIDの最初の数文字でOK）
-docker compose exec garage /garage layout assign -z dc1 -c 1G 
-
+docker compose exec garage /garage layout assign [ID] -z dc1 -c 10G 
 # レイアウトを適用
 docker compose exec garage /garage layout apply --version 1
-
 # アクセスキーを作成
 docker compose exec garage /garage key create resohub-key
-
 # 表示されたKey IDとSecret Keyを.envに設定
 # AWS_ACCESS_KEY_ID=<表示されたKey ID>
 # AWS_SECRET_ACCESS_KEY=<表示されたSecret Key>
