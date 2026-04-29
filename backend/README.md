@@ -81,6 +81,12 @@ cd /app/scraper
 python -m launch.syllabus
 ```
 
+dbへ読み込み再試行
+```sh
+cd /app/scraper
+python -m data_export.exporter --scrape-id 
+```
+
 ### 4. データ前処理
 
 ```bash
