@@ -1,53 +1,160 @@
-Generated with [vike.dev/new](https://vike.dev/new) ([version 476](https://www.npmjs.com/package/create-vike/v/0.0.476)) using this command:
+# ResoHub Frontend
+
+ResoHubのフロントエンドアプリケーションです。
+
+## 技術スタック
+
+| 項目 | 技術 |
+|------|------|
+| ビルドツール | [Vite](https://vitejs.dev/) |
+| フレームワーク | [React](https://react.dev/) 19 |
+| ルーティング | [React Router](https://reactrouter.com/) v7 |
+| スタイリング | [Tailwind CSS](https://tailwindcss.com/) v4 + [DaisyUI](https://daisyui.com/) |
+| UIコンポーネントカタログ | [Ladle](https://ladle.dev/) |
+| リンター/フォーマッター | [Biome](https://biomejs.dev/) |
+| 型システム | [@hey-api/openapi-ts](https://heyapi.dev/) |
+
+## 開発環境のセットアップ
 
 ```sh
-npm create vike@latest --- --react --tailwindcss --daisyui --biome
+npm install
 ```
 
-## Contents
+## 開発サーバーの起動
 
-* [React](#react)
+```sh
+# 開発サーバー（Vite）
+npm run dev
 
-  * [`/pages/+config.ts`](#pagesconfigts)
-  * [Routing](#routing)
-  * [`/pages/_error/+Page.jsx`](#pages_errorpagejsx)
-  * [`/pages/+onPageTransitionStart.ts` and `/pages/+onPageTransitionEnd.ts`](#pagesonpagetransitionstartts-and-pagesonpagetransitionendts)
-  * [SSR](#ssr)
-  * [HTML Streaming](#html-streaming)
+# Storybook（Ladle）
+npm run ladle
 
-## React
+# 両方同時に起動
+npm run dev:all
+```
 
-This app is ready to start. It's powered by [Vike](https://vike.dev) and [React](https://react.dev/learn).
+## ビルド
 
-### `/pages/+config.ts`
+```sh
+npm run build
+```
 
-Such `+` files are [the interface](https://vike.dev/config) between Vike and your code. It defines:
+## コード品質
 
-* A default [`<Layout>` component](https://vike.dev/Layout) (that wraps your [`<Page>` components](https://vike.dev/Page)).
-* A default [`title`](https://vike.dev/title).
-* Global [`<head>` tags](https://vike.dev/head-tags).
+```sh
+# リント
+npm run lint
 
-### Routing
+# フォーマット
+npm run format
+```
 
-[Vike's built-in router](https://vike.dev/routing) lets you choose between:
+## プロジェクト構成
 
-* [Filesystem Routing](https://vike.dev/filesystem-routing) (the URL of a page is determined based on where its `+Page.jsx` file is located on the filesystem)
-* [Route Strings](https://vike.dev/route-string)
-* [Route Functions](https://vike.dev/route-function)
+```
+frontend/
+├── src/
+│   ├── components/
+│   │   ├── features/     # 機能別コンポーネント
+│   │   ├── layouts/      # レイアウトコンポーネント
+│   │   ├── stories/      # Ladle用ストーリー
+│   │   └── ui/           # 共通UIコンポーネント
+│   ├── hooks/            # カスタムフック
+│   ├── layouts/          # ページレイアウト
+│   ├── pages/            # ページコンポーネント
+│   ├── types/            # TypeScript型定義（Django API準拠）
+│   ├── App.tsx           # アプリケーションルート
+│   └── main.tsx          # エントリーポイント
+├── vite.config.ts        # Vite設定
+├── ladle-vite.config.ts  # Ladle設定
+├── openapi-ts.config.ts  # API型定義生成設定
+├── biome.json            # Biome設定
+└── package.json
+```
 
-### `/pages/_error/+Page.jsx`
+## ルーティング
 
-The [error page](https://vike.dev/error-page) which is rendered when errors occur.
+[React Router](https://reactrouter.com/) v7を使用しています。
 
-### `/pages/+onPageTransitionStart.ts` and `/pages/+onPageTransitionEnd.ts`
+```tsx
+// src/App.tsx
+<Routes>
+    <Route element={<LayoutDefault />}>
+        <Route path="/" element={<IndexPage />} />
+        <Route path="/users" element={<UsersPage />} />
+        <Route path="*" element={<ErrorPage />} />
+    </Route>
+</Routes>
+```
 
-The [`onPageTransitionStart()` hook](https://vike.dev/onPageTransitionStart), together with [`onPageTransitionEnd()`](https://vike.dev/onPageTransitionEnd), enables you to implement page transition animations.
+## 型定義
 
-### SSR
+DjangoバックエンドのAPIレスポンスに合わせた型定義を使用しています。
 
-SSR is enabled by default. You can [disable it](https://vike.dev/ssr) for all your pages or only for some pages.
+### API型の生成
 
-### HTML Streaming
+[@hey-api/openapi-ts](https://heyapi.dev/) を使用して、DjangoのOpenAPIスキーマからTypeScript型とaxiosクライアントを自動生成します。
 
-You can enable/disable [HTML streaming](https://vike.dev/stream) for all your pages, or only for some pages while still using it for others.
+```sh
+# API型とクライアントの生成
+npm run generate:api
+```
 
+生成されたファイルは `src/types/api/` に出力されます：
+- `types.gen.ts` - TypeScript型定義
+- `client.gen.ts` - axiosクライアント
+- `sdk.gen.ts` - API操作関数
+
+### 設定
+
+`openapi-ts.config.ts` で設定を変更できます：
+- 入力: `http://resohub-backend:8000/api/schema/`
+- 出力: `src/types/api/`
+
+### 使用例
+
+```ts
+import { client } from "@/types/api/client.gen";
+import { userList, userRetrieve } from "@/types/api/sdk.gen";
+
+
+// API呼び出し
+const { data: users } = await userList();
+const { data: user } = await userRetrieve({ path: { uuid: "xxx" } });
+```
+
+## Ladle（コンポーネントカタログ）
+
+[Ladle](https://ladle.dev/)を使用して、コンポーネントの開発とテストを行います。
+
+```sh
+# Ladleサーバーの起動
+npm run ladle
+```
+
+ストーリーファイルは `src/components/stories/` に配置しています。
+
+ladleが真っ白で描画されたときはキャッシュを消してから試してみてください。
+```sh
+rm -rf node_modules/.vite
+```
+
+## エイリアス設定
+
+Viteの設定で以下のパスエイリアスを定義しています：
+
+| エイリアス | パス |
+|-----------|------|
+| `@` | `./src` |
+| `@features` | `./src/components/features` |
+| `@layouts` | `./src/components/layouts` |
+| `@stories` | `./src/components/stories` |
+| `@ui` | `./src/components/ui` |
+
+## プロキシ設定
+
+開発時、APIリクエストは axiosを使用し`http://resohub-backend:8000` にプロキシされます。
+
+```ts
+await axios.get("/api/user/");
+```

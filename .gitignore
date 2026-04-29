@@ -266,3 +266,6 @@ cdk.out
 # added  ------------------------------------------------------------
 .history/
 .wakatime-project
+
+garage/data
+garage/meta

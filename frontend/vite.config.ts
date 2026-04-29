@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 import { resolve } from "path";
 
 export default defineConfig({
+  logLevel: "info",
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
@@ -20,7 +21,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://resohub-backend:8000",
+        target: "http://localhost:8001",
         changeOrigin: true,
       },
     },

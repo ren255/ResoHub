@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { userList } from "@/types/api/sdk.gen";
 import UserTable from "@features/user/UserTable";
 import UserModal from "@features/user/UserModal";
-import { User } from "@/types/User";
+import type { User } from "@/types/api/types.gen";
 
 export default function Page() {
   const [users, setUsers] = useState<User[]>([]);
@@ -16,8 +16,10 @@ export default function Page() {
       try {
         setLoading(true);
         setError(null);
-        const response = await axios.get("/api/user/");
-        setUsers(response.data);
+        const { data } = await userList();
+        if (data) {
+          setUsers(data);
+        }
       } catch (err) {
         setError("ユーザー情報の取得に失敗しました");
         console.error("Error fetching users:", err);

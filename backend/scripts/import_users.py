@@ -5,12 +5,20 @@ import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
 django.setup()
 
-from content.models import User, StudentInfo, TeacherInfo, UserRole
+from content.models import (
+    User,
+    StudentInfo,
+    TeacherInfo,
+    UserRole,
+    Department,
+    School,
+    SchoolClass,
+)
 from django.db.models import Q
 import pandas as pd
 
 # CSVファイルの読み込みと整形
-users = pd.read_csv("../teams_export/users.csv")
+users = pd.read_csv("/teams_export/users.csv")
 users = users.drop("UserId", axis=1)
 rename = {
     "User": "mail",

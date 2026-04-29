@@ -31,11 +31,12 @@
       "!**/*.ts.build-*.mjs",
       "!dist/*",
       "!node_modules/*",
-      "!**/.DS_Store"
+      "!**/.DS_Store",
+      "!src/types/api/*"
     ]
   },
   "vcs": {
-    "enabled": true,
+    "enabled": false,
     "clientKind": "git",
     "useIgnoreFile": true
   },

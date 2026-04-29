@@ -5,8 +5,8 @@ import {
   getSortedRowModel,
   getPaginationRowModel,
   flexRender,
-  ColumnDef,
-  SortingState,
+  type ColumnDef,
+  type SortingState,
 } from "@tanstack/react-table";
 
 interface DataTableProps<T> {

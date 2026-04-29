@@ -25,6 +25,7 @@ class Processor:
         print("processing...")
         await sync_to_async(School.objects.all().delete)()
         await sync_to_async(Department.objects.all().delete)()
+        await sync_to_async(SyllabusDepartment.objects.all().delete)()
         await self.process_org()
         print("org done. class...")
 
@@ -63,10 +64,43 @@ class Processor:
         def create_departments():
             # syllabus department 作成
             objects = []
+            departments_data = []
+
+            # 1. 全データをパース
             for department in self.file.department_detail.split("\n"):
                 if not department.strip():
                     continue
-                data = json.loads(department)
+                departments_data.append(json.loads(department))
+
+            if not departments_data:
+                return
+
+            # 2. 学科キー(name, dept_id, school_id)ごとに、最小年度を特定する辞書を作成
+            # { (name, id, school): min_year }
+            dept_min_years = {}
+            for d in departments_data:
+                key = (d["name"], d["department_id"], d["school_id"])
+                year = int(d["admission_year"])
+                if key not in dept_min_years or year < dept_min_years[key]:
+                    dept_min_years[key] = year
+
+            # 3. 各学科ごとに補完ロジックを実行
+            for (name, dept_id, school_id), min_year in dept_min_years.items():
+                school = School.objects.get(code=school_id)
+
+                # その学科の最小年度 - 6 から -1 までを作成
+                for year in range(min_year - 6, min_year):
+                    obj = SyllabusDepartment(
+                        school=school,
+                        name=name,
+                        admission_year=year,
+                        url="",  # 補完データはURLなし
+                        code=dept_id,
+                    )
+                    objects.append(obj)
+
+            # 4. 元のデータをオブジェクト化
+            for data in departments_data:
                 school = School.objects.get(code=data["school_id"])
                 obj = SyllabusDepartment(
                     school=school,
@@ -76,6 +110,8 @@ class Processor:
                     code=data["department_id"],
                 )
                 objects.append(obj)
+
+            # 5. 一括作成
             SyllabusDepartment.objects.bulk_create(objects)
 
             # department 作成
@@ -93,7 +129,7 @@ class Processor:
 
             Department.objects.bulk_create(department_objects)
 
-            # bulk_update用にidを取得して紐付け
+            # SyllabusDepartmentにDepartmentを紐づける
             syl_deps_to_update = []
             dep_map = {
                 (dep.school_id, dep.name): dep for dep in Department.objects.all()
@@ -104,7 +140,6 @@ class Processor:
                     syl_dep.department = dep_map[key]
                     syl_deps_to_update.append(syl_dep)
 
-            # bulk_updateで一括更新
             SyllabusDepartment.objects.bulk_update(syl_deps_to_update, ["department"])
 
         await create_departments()
@@ -135,24 +170,30 @@ class Processor:
                 "department_id"
             ].astype(str)
             for school_class in saved_school_classes:
+                # 学科ID * 入学年度
                 df_sub_dep = self.df.subject_detail[
-                    self.df.subject_detail["department_id"]
-                    == school_class.syllabus_department.code
+                    (
+                        self.df.subject_detail["department_id"]
+                        == school_class.syllabus_department.code
+                    )
+                    & (
+                        self.df.subject_detail["url_year"].astype(int)
+                        == school_class.admission_year
+                    )
                 ]
+
+                # その入学年度のデータが存在しない場合はスキップ
+                if df_sub_dep.empty:
+                    continue
                 grade_mapping: dict = df_sub_dep.set_index("fixed_grade")[
                     "grade_str"
                 ].to_dict()
 
                 for fixed_grade, grade_str in grade_mapping.items():
-                    year = int(
-                        self.df.subject_detail[
-                            (
-                                self.df.subject_detail["admission_year"]
-                                == school_class.admission_year
-                            )
-                            & (self.df.subject_detail["fixed_grade"] == fixed_grade)
-                        ].iloc[0]["year"]
-                    )
+                    target_row = df_sub_dep[
+                        df_sub_dep["fixed_grade"] == fixed_grade
+                    ].iloc[0]
+                    year = int(target_row["academic_year"])
                     grade_class = GradeClass(
                         school_class=school_class,
                         grade_str=grade_str,
@@ -175,7 +216,7 @@ class Processor:
                 syl_dep = SyllabusDepartment.objects.get(
                     school=school,
                     code=data["department_id"],
-                    admission_year=data["admission_year"],
+                    admission_year=data["url_year"],
                 )
                 school_class = SchoolClass.objects.get(
                     syllabus_department=syl_dep,
@@ -235,7 +276,7 @@ class Processor:
                 syl_dep = SyllabusDepartment.objects.get(
                     school=school,
                     code=subject_detail_row["department_id"],
-                    admission_year=subject_detail_row["admission_year"],
+                    admission_year=subject_detail_row["url_year"],
                 )
                 school_class = SchoolClass.objects.get(
                     syllabus_department=syl_dep, admission_year=syl_dep.admission_year
@@ -255,7 +296,7 @@ class Processor:
                         name=subject_detail_row["subject_name"],
                     )
                     print(
-                        f"school_class: admisstion year {grade_class.admission_year}, {school_class.department.name}"
+                        f"school_class: admisstion year {grade_class.school_class.admission_year}, {school_class.department.name}"
                     )
                     for subject in subjects:
                         print(f"name : {subject.name} code: {subject.code}")

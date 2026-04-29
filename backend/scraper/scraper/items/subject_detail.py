@@ -9,7 +9,7 @@ class SubjectDetailItem(scrapy.Item):
     scrape_id = scrapy.Field()
     school_id = scrapy.Field()  # URLより
     department_id = scrapy.Field()  # URLより
-    url_year = scrapy.Field()  # URLより
+    url_year = scrapy.Field()  # 入学年
     subject_code = scrapy.Field()  # URLより
     subject_type = scrapy.Field()
     subject_classification = scrapy.Field()
@@ -17,14 +17,14 @@ class SubjectDetailItem(scrapy.Item):
     credit_type = scrapy.Field()
     credits = scrapy.Field()
     # new
-    admission_year = scrapy.Field()
+    academic_year = scrapy.Field()  # 開講年度(実施年度)
     grade_str = scrapy.Field()
     fixed_grade = scrapy.Field()
-    year = scrapy.Field()
     teachers = scrapy.Field()
     textbooks = scrapy.Field()
     week_hour = scrapy.Field()
     open_period = scrapy.Field()
+    # year = scrapy.Field() 削除(admission_yearがacademic_yearになりurl_yearが入学年であったため)
 
     def process(self):
         ids = url_analyzer(self.get("url_source"))
@@ -34,15 +34,15 @@ class SubjectDetailItem(scrapy.Item):
         self["subject_code"] = ids["subject_code"] if ids["subject_code"] else ""
         self["textbooks"] = self["textbooks"] if self["textbooks"] else ""
 
-        self["admission_year"] = extract_year(self["admission_year"])
+        self["academic_year"] = extract_year(self["academic_year"])
 
         try:
             self["fixed_grade"] = int(self["grade_str"])
-            self["year"] = self["admission_year"] + self["fixed_grade"] - 1
+            # self["year"] = self["admission_year"] + self["fixed_grade"] - 1
         except ValueError:
             # 専攻科生 "専2" admission_yearはresetされる
             self["fixed_grade"] = int(self["grade_str"][1:]) + 5
-            self["year"] = self["admission_year"] + int(self["grade_str"][1:]) - 1
+            # self["year"] = self["admission_year"] + int(self["grade_str"][1:]) - 1
 
 
 class SubjectContentItem(scrapy.Item):

@@ -76,11 +76,11 @@ class SubjectDetailSpider(scrapy.Spider):
             yield SubjectDetailItem(
                 scrape_id=self.scrape_id,
                 subject_name=detail_df.loc[1, 1],
-                subject_type=detail_df.loc[3, 1],
-                subject_classification=detail_df.loc[2, 3],
+                subject_type=detail_df.loc[3, 1],  # 授業形態
+                subject_classification=detail_df.loc[2, 3],  # 科目区分
                 credit_type=credit_type,
                 credits=credits,
-                admission_year=detail_df.loc[0, 3],
+                academic_year=detail_df.loc[0, 3],  # 開講年度
                 grade_str=detail_df.loc[4, 3],
                 teachers=detail_df.loc[7, 1],
                 textbooks=detail_df.loc[6, 1],
