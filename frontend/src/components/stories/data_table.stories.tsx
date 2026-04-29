@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@ui/DataTable";
 
 // データ型定義

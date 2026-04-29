@@ -1,140 +1,95 @@
-backend admin: http://localhost:8001/admin
-miniIO dash board: http://localhost:9001/
-api docs: http://localhost:8001/api/docs
-scrapy: http://127.0.0.1:6800/
+# ResoHub バックエンド
 
-```
-dce -it db  bash
-```
+Django + Django REST Framework で構築されたResoHubのバックエンドAPIサーバーです。
 
-```
+## アクセスURL
+
+| サービス | URL |
+|---------|-----|
+| Django Admin | http://localhost:8001/admin |
+| APIドキュメント | http://localhost:8001/api/docs |
+| MinIOダッシュボード | http://localhost:9001/ |
+| Scrapyd | http://127.0.0.1:6800/ |
+
+## 開発環境
+
+### データベース接続
+
+```bash
+# DBコンテナに入る
+docker compose exec -it db bash
+
+# MySQLクライアントで接続
 mysql -u root -proot
-```
 
-```
+# データベース一覧を表示
 show databases;
 ```
 
-```
+### Scrapydの起動
+
+```bash
 scrapyd
 ```
-https://alioguzhan.medium.com/how-to-use-scrapy-with-django-application-c16fabd0e62e
 
-この手法を具体例で追ってみます。
+参考: [How to use Scrapy with Django Application](https://alioguzhan.medium.com/how-to-use-scrapy-with-django-application-c16fabd0e62e)
 
-## 処理の流れ
+## ER図の生成
 
-### 初期状態
-```
-前回重複: "" (空)
-ツリー: (空)
+```bash
+python manage.py graph_models -a --group-models -o image/er_diagram.png
 ```
 
-### Step 1: '日本事情Ⅲ' vs '日本文化論'
-- 重複部分: "日本"
-- 前回重複 "" との差分: "日本" (全体)
-- **動作**: ルートから "日本" の枝を追加
+## ユーザーインポート
 
-```
-日本
-```
+### 1. Teamsエクスポートサービスの起動
 
-### Step 2: '日本文化論' vs '日本語IA'
-- 重複部分: "日本"
-- 前回重複 "日本" との差分: なし (同じ)
-- **動作**: "日本" ノードから2つの子を追加
-  - "事情Ⅲ" (1つ目の科目の残り)
-  - "文化論" (2つ目の科目の残り)
-
-```
-日本
-├─ 事情Ⅲ [日本事情Ⅲ]
-└─ 文化論 [日本文化論]
+```bash
+cd teams_export
+docker compose up
 ```
 
-### Step 3: '日本語IA' vs '日本語IB'
-- 重複部分: "日本語I"
-- 前回重複 "日本" との差分: "語I" (新しい部分)
-- **動作**: "日本" ノードから "語" の枝を追加し、その下に構築
+### 2. ユーザーインポートスクリプトの実行
 
-```
-日本
-├─ 事情Ⅲ [日本事情Ⅲ]
-├─ 文化論 [日本文化論]
-└─ 語
-   └─ I
+```bash
+cd backend
+docker compose exec backend python -m scripts.import_users
 ```
 
-前回重複を "日本語I" に更新
+## Scrapyの実行
 
-### Step 4: '日本語IB' vs '日本語IIA'
-- 重複部分: "日本語I"
-- 前回重複 "日本語I" との差分: なし (同じ)
-- **動作**: "日本語I" ノードに2つの子を追加
-  - "A" (前の科目の残り)
-  - "B" (現在の科目の残り)
+### 1. バックエンドコンテナに入る
 
-```
-日本
-├─ 事情Ⅲ [日本事情Ⅲ]
-├─ 文化論 [日本文化論]
-└─ 語
-   └─ I
-      ├─ A [日本語IA]
-      └─ B [日本語IB]
+```bash
+cd backend
+docker compose exec backend zsh
 ```
 
-### Step 5: '日本語IIA' vs '日本語IIB'
-- 重複部分: "日本語II"
-- 前回重複 "日本語I" との比較
-- **遡り処理**: "日本語II" は "日本語I" の子孫ではない
-- 共通部分: "日本語" まで遡る
-- **動作**: "日本語" (つまり"語"ノード)から "II" の枝を追加
+### 2. Scrapy用ユーザーの作成（初回のみ）
 
-```
-日本
-├─ 事情Ⅲ [日本事情Ⅲ]
-├─ 文化論 [日本文化論]
-└─ 語
-   ├─ I
-   │  ├─ A [日本語IA]
-   │  └─ B [日本語IB]
-   └─ II
+```bash
+python manage.py shell -c \
+  "from django.contrib.auth import get_user_model; \
+  User = get_user_model(); \
+  User.objects.create_user('scrapy@example.com', 'scrapy', username='scrapy')"
 ```
 
-前回重複を "日本語II" に更新
+### 3. シラバスクローラーの実行
 
-### Step 6: '日本語IIB' (最後の科目)
-- これは2つ目の科目なので、"日本語II" ノードに追加
-- **動作**: "日本語II" に2つの子
-  - "A" 
-  - "B"
-
-## 最終ツリー構造
-
-```
-日本
-├─ 事情Ⅲ [日本事情Ⅲ]
-├─ 文化論 [日本文化論]
-└─ 語
-   ├─ I
-   │  ├─ A [日本語IA]
-   │  └─ B [日本語IB]
-   └─ II
-      ├─ A [日本語IIA]
-      └─ B [日本語IIB]
+```bash
+cd /app/scraper
+python -m launch.syllabus
 ```
 
-**全6科目がツリーに存在**しています。
+dbへ読み込み再試行
+```sh
+cd /app/scraper
+python -m data_export.exporter --scrape-id 
+```
 
-## アルゴリズムの要点
+### 4. データ前処理
 
-1. **2つずつペアで処理**
-2. **共通接頭辞を検出**
-3. **前回の共通接頭辞と比較**して差分を枝として追加
-4. **遡り**: 今回の接頭辞が前回の子孫でない場合、共通祖先まで戻る
-5. **科目名の登録**: ペアの両方を必ずツリーに追加
-
-この方法で1001個すべてを処理できます。
-
-pyvisで可視化
+```bash
+cd /app
+python -m scripts.data_preprocess
+```

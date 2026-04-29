@@ -17,6 +17,7 @@ from scraper.spiders import (
 from shortuuid import uuid
 import subprocess
 import sys
+import argparse
 
 
 @defer.inlineCallbacks
@@ -34,8 +35,11 @@ def crawl(scrape_id):
 
 if __name__ == "__main__":
     install_reactor("twisted.internet.asyncioreactor.AsyncioSelectorReactor")
+    parser = argparse.ArgumentParser(description="crawl and run data exporter")
+    parser.add_argument("--scrape-id", type=str, required=False)
+    args = parser.parse_args()
 
-    scrape_id = uuid()[-8:]
+    scrape_id = args.scrape_id or uuid()[-8:]
     crawl(scrape_id)
     from twisted.internet import reactor
 
@@ -51,5 +55,7 @@ if __name__ == "__main__":
         print(result.stdout)
         print(f"Data export completed successfully for scrape ID: {scrape_id}")
     except subprocess.CalledProcessError as e:
-        print(f"Error during data export: {e}")
+        print(
+            f"Error during data export :{e}\n retry with: python -m data_export.exporter --scrape-id {scrape_id}\n"
+        )
         print(e.stderr)

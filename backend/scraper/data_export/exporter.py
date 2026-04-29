@@ -1,7 +1,8 @@
 import scraper.settings
 from .loader import DataLoader
 from .processors import Processor
-
+import argparse
+import asyncio
 import time
 
 
@@ -15,9 +16,6 @@ class Exporter:
         processor = Processor(files, dfs)
         await processor.process()
 
-
-import argparse
-import asyncio
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run data exporter")

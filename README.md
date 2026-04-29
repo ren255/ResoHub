@@ -18,6 +18,14 @@
 
 ## Quick Start
 
+
+backend admin: http://localhost:8001/admin
+api docs: http://localhost:8001/api/docs
+scrapy: http://127.0.0.1:6800/
+garage webUI: http://localhost:3909
+ladle: http://localhost:9060
+web : http://localhost:8000
+
 ### docker install
 windowsの場合WSLとdocker desktop
 linuxの場合はdocker
@@ -48,11 +56,11 @@ docker compose exec backend python manage.py shell -c \
 
 ### filesystem
 ```sh
-# ノードIDを確認（取得済み）
+# ノードIDを確認
 docker compose exec garage /garage node id
 
 # レイアウトを設定（ノードIDの最初の数文字でOK）
-docker compose exec garage /garage layout assign -z dc1 -c 1G 1419efd5d2ae5a52791affd7328c557dc1d5e0c6996d09032f0e838db556b730
+docker compose exec garage /garage layout assign -z dc1 -c 1G 
 
 # レイアウトを適用
 docker compose exec garage /garage layout apply --version 1
@@ -75,6 +83,10 @@ docker compose exec garage /garage bucket allow \
 
 # パブリックアクセスを許可（webサイト公開設定）
 docker compose exec garage /garage bucket website --allow resohub-bucket
+```
+
+```sh
+docker compose exec backend python manage.py collectstatic --noinput      
 ```
 
 # 起動
