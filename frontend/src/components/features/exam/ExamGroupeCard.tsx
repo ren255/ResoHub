@@ -2,7 +2,7 @@ import type { ExamGroupe } from "@/types/api/types.gen";
 import { Link } from "react-router-dom";
 
 export const ExamGroupeCard = ({ examGroupe }: { examGroupe: ExamGroupe }) => (
-    <div className="card bg-base-100 shadow-sm border border-base-300">
+    <div className="card bg-base-100 shadow-sm border border-base-300 max-w-100">
         <div className="card-body">
             <h2 className="card-title text-xl">試験グループ {examGroupe.id}</h2>
             <div className="space-y-1 text-sm">
