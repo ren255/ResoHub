@@ -5,6 +5,13 @@ from .organization import SchoolClass, GradeClass
 class SubjectGroupe(models.Model):
     """教科モデル"""
 
+    name = models.CharField(max_length=50)
+    teachers = models.ManyToManyField(
+        "content.TeacherInfo",
+        related_name="subject_groupes",
+        verbose_name="担当講師陣",
+    )
+
     class Meta:
         db_table = "subject_groupe"
         verbose_name = "教科グループ"
@@ -29,7 +36,7 @@ class Subject(models.Model):
     )
     subject_groupe = models.ForeignKey(
         SubjectGroupe,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         db_column="subject_groupe_id",
         related_name="subjects",
         verbose_name="教科グループ",

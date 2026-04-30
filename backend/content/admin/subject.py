@@ -6,10 +6,21 @@ from ..models.exam import Exam
 from ..models.user_info import TeacherInfo
 
 
+class SubjectInline(admin.TabularInline):
+    model = Subject
+    extra = 0
+
+
 @admin.register(SubjectGroupe)
 class SubjectGroupeAdmin(admin.ModelAdmin):
-    list_display = ["id"]
-    search_fields = ["id"]
+    list_display = ["name", "subject_count"]
+    search_fields = ["name"]
+    inlines = [SubjectInline]
+
+    def subject_count(self, obj):
+        return obj.subjects.count()
+
+    subject_count.short_description = "科目数"
 
 
 class ExamInline(admin.TabularInline):

@@ -26,6 +26,16 @@ mysql -u root -proot
 show databases;
 ```
 
+### migration
+
+```sh
+python manage.py makemigrations content
+```
+
+```sh
+python manage.py migrate
+```
+
 ### Scrapydの起動
 
 ```bash
@@ -84,7 +94,7 @@ python -m launch.syllabus
 dbへ読み込み再試行
 ```sh
 cd /app/scraper
-python -m data_export.exporter --scrape-id 
+python -m data_export.exporter --scrape-id
 ```
 
 ### 4. データ前処理
@@ -92,4 +102,8 @@ python -m data_export.exporter --scrape-id
 ```bash
 cd /app
 python -m scripts.data_preprocess
+```
+
+```sh
+python -m scripts.update_groupe
 ```

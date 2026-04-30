@@ -227,9 +227,7 @@ class UserProcessor:
                 ]
                 for teacher_str in teachers_str:
                     subject_ctn += 1
-                    if teacher_str not in query_subject_map:
-                        query_subject_map[teacher_str] = [subject]
-                    query_subject_map[teacher_str].append(subject)
+                    query_subject_map.setdefault(teacher_str, []).append(subject)
 
                     if teacher_str not in queries:
                         queries.append(teacher_str)
