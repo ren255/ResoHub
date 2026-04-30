@@ -611,7 +611,7 @@ export const subjectGroupeList = <ThrowOnError extends boolean = false>(options?
     ...options
 });
 
-export const subjectGroupeCreate = <ThrowOnError extends boolean = false>(options?: Options<SubjectGroupeCreateData, ThrowOnError>) => (options?.client ?? client).post<SubjectGroupeCreateResponses, unknown, ThrowOnError>({
+export const subjectGroupeCreate = <ThrowOnError extends boolean = false>(options: Options<SubjectGroupeCreateData, ThrowOnError>) => (options.client ?? client).post<SubjectGroupeCreateResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{
             in: 'cookie',
@@ -622,7 +622,7 @@ export const subjectGroupeCreate = <ThrowOnError extends boolean = false>(option
     ...options,
     headers: {
         'Content-Type': 'application/json',
-        ...options?.headers
+        ...options.headers
     }
 });
 

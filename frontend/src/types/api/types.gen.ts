@@ -183,6 +183,11 @@ export type PatchedSubject = {
 
 export type PatchedSubjectGroupe = {
     readonly id?: number;
+    name?: string;
+    /**
+     * 担当講師陣
+     */
+    teachers?: Array<number>;
 };
 
 export type PatchedSyllabusDepartment = {
@@ -308,6 +313,24 @@ export type Subject = {
 
 export type SubjectGroupe = {
     readonly id: number;
+    name: string;
+    /**
+     * 担当講師陣
+     */
+    teachers: Array<number>;
+};
+
+export type SubjectGroupeDetail = {
+    readonly id: number;
+    name: string;
+    readonly subjects: Array<Subject>;
+    readonly teachers: Array<TeacherInfo>;
+};
+
+export type SubjectGroupeList = {
+    readonly id: number;
+    name: string;
+    readonly subject_count: number;
 };
 
 export type SyllabusDepartment = {
@@ -516,6 +539,14 @@ export type PatchedSubjectWritable = {
     subject_groupe?: number | null;
 };
 
+export type PatchedSubjectGroupeWritable = {
+    name?: string;
+    /**
+     * 担当講師陣
+     */
+    teachers?: Array<number>;
+};
+
 export type PatchedSyllabusDepartmentWritable = {
     url?: string;
     name?: string;
@@ -607,6 +638,22 @@ export type SubjectWritable = {
      * 教科グループ
      */
     subject_groupe?: number | null;
+};
+
+export type SubjectGroupeWritable = {
+    name: string;
+    /**
+     * 担当講師陣
+     */
+    teachers: Array<number>;
+};
+
+export type SubjectGroupeDetailWritable = {
+    name: string;
+};
+
+export type SubjectGroupeListWritable = {
+    name: string;
 };
 
 export type SyllabusDepartmentWritable = {
@@ -1413,13 +1460,13 @@ export type SubjectGroupeListData = {
 };
 
 export type SubjectGroupeListResponses = {
-    200: Array<SubjectGroupe>;
+    200: Array<SubjectGroupeList>;
 };
 
 export type SubjectGroupeListResponse = SubjectGroupeListResponses[keyof SubjectGroupeListResponses];
 
 export type SubjectGroupeCreateData = {
-    body?: SubjectGroupe;
+    body: SubjectGroupeWritable;
     path?: never;
     query?: never;
     url: '/api/subject-groupe/';
@@ -1465,13 +1512,13 @@ export type SubjectGroupeRetrieveData = {
 };
 
 export type SubjectGroupeRetrieveResponses = {
-    200: SubjectGroupe;
+    200: SubjectGroupeDetail;
 };
 
 export type SubjectGroupeRetrieveResponse = SubjectGroupeRetrieveResponses[keyof SubjectGroupeRetrieveResponses];
 
 export type SubjectGroupePartialUpdateData = {
-    body?: PatchedSubjectGroupe;
+    body?: PatchedSubjectGroupeWritable;
     path: {
         /**
          * A unique integer value identifying this 教科グループ.
@@ -1489,7 +1536,7 @@ export type SubjectGroupePartialUpdateResponses = {
 export type SubjectGroupePartialUpdateResponse = SubjectGroupePartialUpdateResponses[keyof SubjectGroupePartialUpdateResponses];
 
 export type SubjectGroupeUpdateData = {
-    body?: SubjectGroupe;
+    body: SubjectGroupeWritable;
     path: {
         /**
          * A unique integer value identifying this 教科グループ.
