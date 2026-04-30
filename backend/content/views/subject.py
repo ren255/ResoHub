@@ -3,8 +3,6 @@ from ..models import Subject, SubjectGroupe
 from ..serializers import (
     SubjectSerializer,
     SubjectGroupeSerializer,
-    SubjectGroupeListSerializer,
-    SubjectGroupeDetailSerializer,
 )
 
 
@@ -16,10 +14,3 @@ class SubjectViewSet(viewsets.ModelViewSet):
 class SubjectGroupeViewSet(viewsets.ModelViewSet):
     queryset = SubjectGroupe.objects.all()
     serializer_class = SubjectGroupeSerializer
-
-    def get_serializer_class(self):
-        if self.action == "list":
-            return SubjectGroupeListSerializer
-        elif self.action == "retrieve":
-            return SubjectGroupeDetailSerializer
-        return SubjectGroupeSerializer

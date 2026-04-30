@@ -129,6 +129,9 @@ const mockSubject: Subject = {
 
 const mockSubjectGroupe: SubjectGroupe = {
     id: 1,
+    name: "基礎数学",
+    teachers: [1, 2, 3, 4],
+    subjects: [1, 2, 3, 4],
 };
 
 // Exam mocks

@@ -186,27 +186,10 @@ class TeacherInfoSerializer(serializers.ModelSerializer):
         )
 
 
-class SubjectGroupeListSerializer(serializers.ModelSerializer):
-    subject_count = serializers.IntegerField(source="subjects.count", read_only=True)
-
-    class Meta:
-        model = SubjectGroupe
-        fields = ("id", "name", "subject_count")
-
-
-class SubjectGroupeDetailSerializer(serializers.ModelSerializer):
-    subjects = SubjectSerializer(many=True, read_only=True)
-    teachers = TeacherInfoSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = SubjectGroupe
-        fields = ("id", "name", "subjects", "teachers")
-
-
 class SubjectGroupeSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubjectGroupe
-        fields = ("id", "name", "teachers")
+        fields = ("id", "name", "teachers", "subjects")
 
 
 class UserSettingSerializer(serializers.ModelSerializer):
