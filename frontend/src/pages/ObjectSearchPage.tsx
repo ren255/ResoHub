@@ -194,57 +194,39 @@ export default function ObjectSearchPage() {
                 ));
             case "userSetting":
                 return userSettings.map((setting) => (
-                    <Link key={setting.id} to={`/profile/${setting.user}`} className="block hover:opacity-80 transition-opacity">
-                        <UserSettingCard setting={setting} />
-                    </Link>
+                    <UserSettingCard key={setting.id} setting={setting} />
                 ));
             case "studentInfo":
                 return studentInfos.map((info) => (
-                    <Link key={info.id} to={`/profile/${info.user}`} className="block hover:opacity-80 transition-opacity">
-                        <StudentInfoCard info={info} />
-                    </Link>
+                    <StudentInfoCard key={info.id} info={info} />
                 ));
             case "teacherInfo":
                 return teacherInfos.map((info) => (
-                    <Link key={info.id} to={`/profile/${info.user}`} className="block hover:opacity-80 transition-opacity">
-                        <TeacherInfoCard info={info} />
-                    </Link>
+                    <TeacherInfoCard key={info.id} info={info} />
                 ));
             case "school":
                 return schools.map((school) => (
-                    <Link key={school.id} to={`/schools/${school.id}`} className="block hover:opacity-80 transition-opacity">
-                        <SchoolCard school={school} />
-                    </Link>
+                    <SchoolCard key={school.id} school={school} />
                 ));
             case "department":
                 return departments.map((department) => (
-                    <Link key={department.id} to={`/departments/${department.id}`} className="block hover:opacity-80 transition-opacity">
-                        <DepartmentCard department={department} />
-                    </Link>
+                    <DepartmentCard key={department.id} department={department} />
                 ));
             case "syllabusDepartment":
                 return syllabusDepartments.map((sd) => (
-                    <Link key={sd.id} to={`/syllabus-departments/${sd.id}`} className="block hover:opacity-80 transition-opacity">
-                        <SyllabusDepartmentCard syllabusDepartment={sd} />
-                    </Link>
+                    <SyllabusDepartmentCard key={sd.id} syllabusDepartment={sd} />
                 ));
             case "schoolClass":
                 return schoolClasses.map((sc) => (
-                    <Link key={sc.id} to={`/school-classes/${sc.id}`} className="block hover:opacity-80 transition-opacity">
-                        <SchoolClassCard schoolClass={sc} />
-                    </Link>
+                    <SchoolClassCard key={sc.id} schoolClass={sc} />
                 ));
             case "gradeClass":
                 return gradeClasses.map((gc) => (
-                    <Link key={gc.id} to={`/grade-classes/${gc.id}`} className="block hover:opacity-80 transition-opacity">
-                        <GradeClassCard gradeClass={gc} />
-                    </Link>
+                    <GradeClassCard key={gc.id} gradeClass={gc} />
                 ));
             case "subject":
                 return subjects.map((subject) => (
-                    <Link key={subject.id} to={`/subjects/${subject.id}`} className="block hover:opacity-80 transition-opacity">
-                        <SubjectCard subject={subject} />
-                    </Link>
+                    <SubjectCard key={subject.id} subject={subject} />
                 ));
             case "subjectGroupe":
                 return subjectGroupes.map((sg) => (
@@ -254,15 +236,11 @@ export default function ObjectSearchPage() {
                 ));
             case "exam":
                 return exams.map((exam) => (
-                    <Link key={exam.id} to={`/exams/${exam.id}`} className="block hover:opacity-80 transition-opacity">
-                        <ExamCard exam={exam} />
-                    </Link>
+                    <ExamCard key={exam.id} exam={exam} />
                 ));
             case "examGroupe":
                 return examGroupes.map((eg) => (
-                    <Link key={eg.id} to={`/exam-groupes/${eg.id}`} className="block hover:opacity-80 transition-opacity">
-                        <ExamGroupeCard examGroupe={eg} />
-                    </Link>
+                    <ExamGroupeCard key={eg.id} examGroupe={eg} />
                 ));
             default:
                 return null;

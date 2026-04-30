@@ -1,5 +1,4 @@
 import type { SubjectGroupe } from "@/types/api/types.gen";
-import { Link } from "react-router-dom";
 
 export const SubjectGroupeCard = ({
     subjectGroupe,

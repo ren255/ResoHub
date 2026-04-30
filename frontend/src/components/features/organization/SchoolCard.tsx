@@ -1,5 +1,4 @@
 import type { School } from "@/types/api/types.gen";
-import { Link } from "react-router-dom";
 
 export const SchoolCard = ({ school }: { school: School }) => (
     <div className="card bg-base-100 shadow-sm border border-base-300">
