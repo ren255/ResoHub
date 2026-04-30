@@ -48,11 +48,7 @@ export default function SchoolDetailPage() {
 
     return (
         <div className="p-8 max-w-4xl mx-auto">
-            <div className="mb-6">
-                <Link to="/obj-search" className="link link-primary text-sm">
-                    ← オブジェクト検索に戻る
-                </Link>
-            </div>
+
 
             <div className="card bg-base-100 shadow-lg border border-base-300">
                 <div className="card-body">

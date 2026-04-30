@@ -5,16 +5,12 @@ export const SubjectGroupeCard = ({
 }: {
     subjectGroupe: SubjectGroupe;
 }) => (
-    <div className="card bg-base-100 shadow-sm border border-base-300">
+    <div className="card bg-base-100 shadow-sm border border-base-300 max-w-100">
         <div className="card-body">
             <h2 className="card-title text-xl"> {subjectGroupe.name}</h2>
-            <div className="space-y-1 text-sm">
-                <p>
-                    <span className="text-gray-500">subject ctn:</span> {subjectGroupe.subjects?.length || 0}
-                </p>
-                <p>
-                    <span className="text-gray-500">teacher ctn:</span> {subjectGroupe.teachers?.length || 0}
-                </p>
+            <div className="flex gap-2 items-center text-sm">
+                <span className="text-gray-500">subject ctn:</span> {subjectGroupe.subjects?.length || 0}
+                <span className="text-gray-500"> teacher ctn:</span> {subjectGroupe.teachers?.length || 0}
             </div>
         </div>
     </div>

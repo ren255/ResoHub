@@ -52,7 +52,7 @@ const mockStudentInfo: StudentInfo = {
     user_name: "学生 花子",
     student_id: "20240001",
     school_class: 1,
-    school_class_str: "情報工学科 2024",
+    school_class_str: "2021年入学環境建設工学専攻",
 };
 
 const mockTeacherInfo: TeacherInfo = {
@@ -61,7 +61,7 @@ const mockTeacherInfo: TeacherInfo = {
     user_name: "教員 一郎",
     department: 1,
     department_name: "情報工学部",
-    department_type: "教授",
+    department_type: "理数",
     owner: true,
     subdomain: "teacher1",
     subjects: [1, 2, 3],
@@ -85,7 +85,7 @@ const mockDepartment: Department = {
 const mockSyllabusDepartment: SyllabusDepartment = {
     id: 1,
     url: "https://example.com/syllabus",
-    name: "情報工学科 2024",
+    name: "電気電子工学科",
     admission_year: 2024,
     code: "I2024",
     school: 1,
@@ -106,8 +106,8 @@ const mockSchoolClass: SchoolClass = {
 const mockGradeClass: GradeClass = {
     id: 1,
     school_class: 1,
-    school_class_str: "情報工学科 2024",
-    grade_str: "1年",
+    school_class_str: "2021年入学情報工学科",
+    grade_str: "1",
     grade: 1,
     year: 2024,
 };
