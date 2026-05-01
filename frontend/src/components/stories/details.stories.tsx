@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { UserDetail } from "@features/user/UserDetail";
 import { TeacherInfoDetail } from "@features/user/TeacherInfoDetail";
 import { StudentInfoDetail } from "@features/user/StudentInfoDetail";
@@ -11,6 +12,32 @@ import { SubjectGroupeDetail } from "@features/subject/SubjectGroupeDetail";
 import { ExamDetail } from "@features/exam/ExamDetail";
 import { ExamGroupeDetail } from "@features/exam/ExamGroupeDetail";
 import { DetailPage, DetailSection, LinkField, ExternalLinkField } from "@ui/DetailPage";
+import {
+    userList,
+    departmentList,
+    schoolList,
+    schoolClassList,
+    syllabusDepartmentList,
+    gradeClassList,
+    subjectList,
+    subjectGroupeList,
+    examList,
+    examGroupeList,
+} from "@/types/api/sdk.gen";
+
+// Helper to get random item from array
+function getRandomId<T extends { id: number }>(items: T[]): number | null {
+    if (!items || items.length === 0) return null;
+    const randomItem = items[Math.floor(Math.random() * items.length)];
+    return randomItem.id;
+}
+
+// Helper to get random UUID from array
+function getRandomUuid<T extends { uuid: string }>(items: T[]): string | null {
+    if (!items || items.length === 0) return null;
+    const randomItem = items[Math.floor(Math.random() * items.length)];
+    return randomItem.uuid;
+}
 
 // DetailPage Base Component Stories
 export function DetailPageBaseStory() {
@@ -72,148 +99,532 @@ export function LinkFieldStory() {
 
 // User Detail Stories
 export function UserDetailStory() {
+    const [uuid, setUuid] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        userList({ query: { page: 1 } })
+            .then((response) => {
+                const results = response.data?.results || [];
+                const randomUuid = getRandomUuid(results);
+                setUuid(randomUuid);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">UserDetail (実データ)</h2>
+                <div className="alert alert-info">読み込み中...</div>
+            </div>
+        );
+    }
+
+    if (!uuid) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">UserDetail (実データ)</h2>
+                <div className="alert alert-warning">データが見つかりません</div>
+            </div>
+        );
+    }
+
     return (
         <div className="p-4">
             <h2 className="text-xl font-bold mb-4">UserDetail (実データ)</h2>
             <p className="text-sm text-gray-500 mb-4">
-                注意: このコンポーネントは実際のAPIを呼び出します
+                注意: このコンポーネントは実際のAPIを呼び出します (UUID: {uuid})
             </p>
-            <UserDetail uuid="ffaf3eee-5a9e-49d5-9440-0afa8d63e4e9" />
+            <UserDetail uuid={uuid} />
         </div>
     );
 }
 
 export function TeacherInfoDetailStory() {
+    const [uuid, setUuid] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        userList({ query: { page: 1 } })
+            .then((response) => {
+                const results = response.data?.results || [];
+                const randomUuid = getRandomUuid(results);
+                setUuid(randomUuid);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">TeacherInfoDetail (実データ)</h2>
+                <div className="alert alert-info">読み込み中...</div>
+            </div>
+        );
+    }
+
+    if (!uuid) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">TeacherInfoDetail (実データ)</h2>
+                <div className="alert alert-warning">データが見つかりません</div>
+            </div>
+        );
+    }
+
     return (
         <div className="p-4">
             <h2 className="text-xl font-bold mb-4">TeacherInfoDetail (実データ)</h2>
             <p className="text-sm text-gray-500 mb-4">
-                注意: このコンポーネントは実際のAPIを呼び出します
+                注意: このコンポーネントは実際のAPIを呼び出します (UUID: {uuid})
             </p>
-            <TeacherInfoDetail userUuid="f2329aee-890f-4aa5-9422-acdf85e40f61" />
+            <TeacherInfoDetail userUuid={uuid} />
         </div>
     );
 }
 
 export function StudentInfoDetailStory() {
+    const [uuid, setUuid] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        userList({ query: { page: 1 } })
+            .then((response) => {
+                const results = response.data?.results || [];
+                const randomUuid = getRandomUuid(results);
+                setUuid(randomUuid);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">StudentInfoDetail (実データ)</h2>
+                <div className="alert alert-info">読み込み中...</div>
+            </div>
+        );
+    }
+
+    if (!uuid) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">StudentInfoDetail (実データ)</h2>
+                <div className="alert alert-warning">データが見つかりません</div>
+            </div>
+        );
+    }
+
     return (
         <div className="p-4">
             <h2 className="text-xl font-bold mb-4">StudentInfoDetail (実データ)</h2>
             <p className="text-sm text-gray-500 mb-4">
-                注意: このコンポーネントは実際のAPIを呼び出します
+                注意: このコンポーネントは実際のAPIを呼び出します (UUID: {uuid})
             </p>
-            <StudentInfoDetail userUuid="ffaf3eee-5a9e-49d5-9440-0afa8d63e4e9" />
+            <StudentInfoDetail userUuid={uuid} />
         </div>
     );
 }
 
 // Organization Detail Stories
 export function DepartmentDetailStory() {
+    const [id, setId] = useState<number | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        departmentList({ query: { page: 1 } })
+            .then((response) => {
+                const results = response.data?.results || [];
+                const randomId = getRandomId(results);
+                setId(randomId);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">DepartmentDetail (実データ)</h2>
+                <div className="alert alert-info">読み込み中...</div>
+            </div>
+        );
+    }
+
+    if (!id) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">DepartmentDetail (実データ)</h2>
+                <div className="alert alert-warning">データが見つかりません</div>
+            </div>
+        );
+    }
+
     return (
         <div className="p-4">
             <h2 className="text-xl font-bold mb-4">DepartmentDetail (実データ)</h2>
             <p className="text-sm text-gray-500 mb-4">
-                注意: このコンポーネントは実際のAPIを呼び出します
+                注意: このコンポーネントは実際のAPIを呼び出します (ID: {id})
             </p>
-            <DepartmentDetail id={20} />
+            <DepartmentDetail id={id} />
         </div>
     );
 }
 
 export function SchoolDetailStory() {
+    const [id, setId] = useState<number | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        schoolList({ query: { page: 1 } })
+            .then((response) => {
+                const results = response.data?.results || [];
+                const randomId = getRandomId(results);
+                setId(randomId);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">SchoolDetail (実データ)</h2>
+                <div className="alert alert-info">読み込み中...</div>
+            </div>
+        );
+    }
+
+    if (!id) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">SchoolDetail (実データ)</h2>
+                <div className="alert alert-warning">データが見つかりません</div>
+            </div>
+        );
+    }
+
     return (
         <div className="p-4">
             <h2 className="text-xl font-bold mb-4">SchoolDetail (実データ)</h2>
             <p className="text-sm text-gray-500 mb-4">
-                注意: このコンポーネントは実際のAPIを呼び出します
+                注意: このコンポーネントは実際のAPIを呼び出します (ID: {id})
             </p>
-            <SchoolDetail id={1} />
+            <SchoolDetail id={id} />
         </div>
     );
 }
 
 export function SchoolClassDetailStory() {
+    const [id, setId] = useState<number | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        schoolClassList({ query: { page: 1 } })
+            .then((response) => {
+                const results = response.data?.results || [];
+                const randomId = getRandomId(results);
+                setId(randomId);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">SchoolClassDetail (実データ)</h2>
+                <div className="alert alert-info">読み込み中...</div>
+            </div>
+        );
+    }
+
+    if (!id) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">SchoolClassDetail (実データ)</h2>
+                <div className="alert alert-warning">データが見つかりません</div>
+            </div>
+        );
+    }
+
     return (
         <div className="p-4">
             <h2 className="text-xl font-bold mb-4">SchoolClassDetail (実データ)</h2>
             <p className="text-sm text-gray-500 mb-4">
-                注意: このコンポーネントは実際のAPIを呼び出します
+                注意: このコンポーネントは実際のAPIを呼び出します (ID: {id})
             </p>
-            <SchoolClassDetail id={1} />
+            <SchoolClassDetail id={id} />
         </div>
     );
 }
 
 export function SyllabusDepartmentDetailStory() {
+    const [id, setId] = useState<number | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        syllabusDepartmentList({ query: { page: 1 } })
+            .then((response) => {
+                const results = response.data?.results || [];
+                const randomId = getRandomId(results);
+                setId(randomId);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">SyllabusDepartmentDetail (実データ)</h2>
+                <div className="alert alert-info">読み込み中...</div>
+            </div>
+        );
+    }
+
+    if (!id) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">SyllabusDepartmentDetail (実データ)</h2>
+                <div className="alert alert-warning">データが見つかりません</div>
+            </div>
+        );
+    }
+
     return (
         <div className="p-4">
             <h2 className="text-xl font-bold mb-4">SyllabusDepartmentDetail (実データ)</h2>
             <p className="text-sm text-gray-500 mb-4">
-                注意: このコンポーネントは実際のAPIを呼び出します
+                注意: このコンポーネントは実際のAPIを呼び出します (ID: {id})
             </p>
-            <SyllabusDepartmentDetail id={1} />
+            <SyllabusDepartmentDetail id={id} />
         </div>
     );
 }
 
 export function GradeClassDetailStory() {
+    const [id, setId] = useState<number | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        gradeClassList({ query: { page: 1 } })
+            .then((response) => {
+                const results = response.data?.results || [];
+                const randomId = getRandomId(results);
+                setId(randomId);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">GradeClassDetail (実データ)</h2>
+                <div className="alert alert-info">読み込み中...</div>
+            </div>
+        );
+    }
+
+    if (!id) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">GradeClassDetail (実データ)</h2>
+                <div className="alert alert-warning">データが見つかりません</div>
+            </div>
+        );
+    }
+
     return (
         <div className="p-4">
             <h2 className="text-xl font-bold mb-4">GradeClassDetail (実データ)</h2>
             <p className="text-sm text-gray-500 mb-4">
-                注意: このコンポーネントは実際のAPIを呼び出します
+                注意: このコンポーネントは実際のAPIを呼び出します (ID: {id})
             </p>
-            <GradeClassDetail id={1} />
+            <GradeClassDetail id={id} />
         </div>
     );
 }
 
 // Subject Detail Stories
 export function SubjectDetailStory() {
+    const [id, setId] = useState<number | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        subjectList({ query: { page: 1 } })
+            .then((response) => {
+                const results = response.data?.results || [];
+                const randomId = getRandomId(results);
+                setId(randomId);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">SubjectDetail (実データ)</h2>
+                <div className="alert alert-info">読み込み中...</div>
+            </div>
+        );
+    }
+
+    if (!id) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">SubjectDetail (実データ)</h2>
+                <div className="alert alert-warning">データが見つかりません</div>
+            </div>
+        );
+    }
+
     return (
         <div className="p-4">
             <h2 className="text-xl font-bold mb-4">SubjectDetail (実データ)</h2>
             <p className="text-sm text-gray-500 mb-4">
-                注意: このコンポーネントは実際のAPIを呼び出します
+                注意: このコンポーネントは実際のAPIを呼び出します (ID: {id})
             </p>
-            <SubjectDetail id={1} />
+            <SubjectDetail id={id} />
         </div>
     );
 }
 
 export function SubjectGroupeDetailStory() {
+    const [id, setId] = useState<number | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        subjectGroupeList({ query: { page: 1 } })
+            .then((response) => {
+                const results = response.data?.results || [];
+                const randomId = getRandomId(results);
+                setId(randomId);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">SubjectGroupeDetail (実データ)</h2>
+                <div className="alert alert-info">読み込み中...</div>
+            </div>
+        );
+    }
+
+    if (!id) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">SubjectGroupeDetail (実データ)</h2>
+                <div className="alert alert-warning">データが見つかりません</div>
+            </div>
+        );
+    }
+
     return (
         <div className="p-4">
             <h2 className="text-xl font-bold mb-4">SubjectGroupeDetail (実データ)</h2>
             <p className="text-sm text-gray-500 mb-4">
-                注意: このコンポーネントは実際のAPIを呼び出します
+                注意: このコンポーネントは実際のAPIを呼び出します (ID: {id})
             </p>
-            <SubjectGroupeDetail id={1} />
+            <SubjectGroupeDetail id={id} />
         </div>
     );
 }
 
 // Exam Detail Stories
 export function ExamDetailStory() {
+    const [id, setId] = useState<number | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        examList({ query: { page: 1 } })
+            .then((response) => {
+                const results = response.data?.results || [];
+                const randomId = getRandomId(results);
+                setId(randomId);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">ExamDetail (実データ)</h2>
+                <div className="alert alert-info">読み込み中...</div>
+            </div>
+        );
+    }
+
+    if (!id) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">ExamDetail (実データ)</h2>
+                <div className="alert alert-warning">データが見つかりません</div>
+            </div>
+        );
+    }
+
     return (
         <div className="p-4">
             <h2 className="text-xl font-bold mb-4">ExamDetail (実データ)</h2>
             <p className="text-sm text-gray-500 mb-4">
-                注意: このコンポーネントは実際のAPIを呼び出します
+                注意: このコンポーネントは実際のAPIを呼び出します (ID: {id})
             </p>
-            <ExamDetail id={1} />
+            <ExamDetail id={id} />
         </div>
     );
 }
 
 export function ExamGroupeDetailStory() {
+    const [id, setId] = useState<number | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        examGroupeList({ query: { page: 1 } })
+            .then((response) => {
+                const results = response.data?.results || [];
+                const randomId = getRandomId(results);
+                setId(randomId);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">ExamGroupeDetail (実データ)</h2>
+                <div className="alert alert-info">読み込み中...</div>
+            </div>
+        );
+    }
+
+    if (!id) {
+        return (
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-4">ExamGroupeDetail (実データ)</h2>
+                <div className="alert alert-warning">データが見つかりません</div>
+            </div>
+        );
+    }
+
     return (
         <div className="p-4">
             <h2 className="text-xl font-bold mb-4">ExamGroupeDetail (実データ)</h2>
             <p className="text-sm text-gray-500 mb-4">
-                注意: このコンポーネントは実際のAPIを呼び出します
+                注意: このコンポーネントは実際のAPIを呼び出します (ID: {id})
             </p>
-            <ExamGroupeDetail id={1} />
+            <ExamGroupeDetail id={id} />
         </div>
     );
 }

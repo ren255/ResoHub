@@ -187,6 +187,16 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
 }
 
+# CORS settings
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://localhost:9060",
+    "http://127.0.0.1:8000",
+    "http://127.0.0.1:9060",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
