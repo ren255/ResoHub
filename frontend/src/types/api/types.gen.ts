@@ -64,6 +64,97 @@ export type GradeClass = {
     year: number;
 };
 
+export type PaginatedDepartmentList = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<Department>;
+};
+
+export type PaginatedExamGroupeList = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<ExamGroupe>;
+};
+
+export type PaginatedExamList = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<Exam>;
+};
+
+export type PaginatedGradeClassList = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<GradeClass>;
+};
+
+export type PaginatedSchoolClassList = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<SchoolClass>;
+};
+
+export type PaginatedSchoolList = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<School>;
+};
+
+export type PaginatedStudentInfoList = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<StudentInfo>;
+};
+
+export type PaginatedSubjectGroupeList = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<SubjectGroupe>;
+};
+
+export type PaginatedSubjectList = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<Subject>;
+};
+
+export type PaginatedSyllabusDepartmentList = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<SyllabusDepartment>;
+};
+
+export type PaginatedTeacherInfoList = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<TeacherInfo>;
+};
+
+export type PaginatedUserList = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<User>;
+};
+
+export type PaginatedUserSettingList = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<UserSetting>;
+};
+
 export type PatchedDepartment = {
     readonly id?: number;
     name?: string;
@@ -428,6 +519,97 @@ export type GradeClassWritable = {
     year: number;
 };
 
+export type PaginatedDepartmentListWritable = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<DepartmentWritable>;
+};
+
+export type PaginatedExamGroupeListWritable = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<ExamGroupeWritable>;
+};
+
+export type PaginatedExamListWritable = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<ExamWritable>;
+};
+
+export type PaginatedGradeClassListWritable = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<GradeClassWritable>;
+};
+
+export type PaginatedSchoolClassListWritable = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<SchoolClassWritable>;
+};
+
+export type PaginatedSchoolListWritable = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<SchoolWritable>;
+};
+
+export type PaginatedStudentInfoListWritable = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<StudentInfoWritable>;
+};
+
+export type PaginatedSubjectGroupeListWritable = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<SubjectGroupeWritable>;
+};
+
+export type PaginatedSubjectListWritable = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<SubjectWritable>;
+};
+
+export type PaginatedSyllabusDepartmentListWritable = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<SyllabusDepartmentWritable>;
+};
+
+export type PaginatedTeacherInfoListWritable = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<TeacherInfoWritable>;
+};
+
+export type PaginatedUserListWritable = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<UserWritable>;
+};
+
+export type PaginatedUserSettingListWritable = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<UserSettingWritable>;
+};
+
 export type PatchedDepartmentWritable = {
     name?: string;
     /**
@@ -687,12 +869,17 @@ export type UserSettingWritable = {
 export type DepartmentListData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * A page number within the paginated result set.
+         */
+        page?: number;
+    };
     url: '/api/department/';
 };
 
 export type DepartmentListResponses = {
-    200: Array<Department>;
+    200: PaginatedDepartmentList;
 };
 
 export type DepartmentListResponse = DepartmentListResponses[keyof DepartmentListResponses];
@@ -788,12 +975,17 @@ export type DepartmentUpdateResponse = DepartmentUpdateResponses[keyof Departmen
 export type ExamListData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * A page number within the paginated result set.
+         */
+        page?: number;
+    };
     url: '/api/exam/';
 };
 
 export type ExamListResponses = {
-    200: Array<Exam>;
+    200: PaginatedExamList;
 };
 
 export type ExamListResponse = ExamListResponses[keyof ExamListResponses];
@@ -814,12 +1006,17 @@ export type ExamCreateResponse = ExamCreateResponses[keyof ExamCreateResponses];
 export type ExamGroupeListData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * A page number within the paginated result set.
+         */
+        page?: number;
+    };
     url: '/api/exam-groupe/';
 };
 
 export type ExamGroupeListResponses = {
-    200: Array<ExamGroupe>;
+    200: PaginatedExamGroupeList;
 };
 
 export type ExamGroupeListResponse = ExamGroupeListResponses[keyof ExamGroupeListResponses];
@@ -990,12 +1187,17 @@ export type ExamUpdateResponse = ExamUpdateResponses[keyof ExamUpdateResponses];
 export type GradeClassListData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * A page number within the paginated result set.
+         */
+        page?: number;
+    };
     url: '/api/grade-class/';
 };
 
 export type GradeClassListResponses = {
-    200: Array<GradeClass>;
+    200: PaginatedGradeClassList;
 };
 
 export type GradeClassListResponse = GradeClassListResponses[keyof GradeClassListResponses];
@@ -1109,12 +1311,17 @@ export type SchemaRetrieveResponse = SchemaRetrieveResponses[keyof SchemaRetriev
 export type SchoolListData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * A page number within the paginated result set.
+         */
+        page?: number;
+    };
     url: '/api/school/';
 };
 
 export type SchoolListResponses = {
-    200: Array<School>;
+    200: PaginatedSchoolList;
 };
 
 export type SchoolListResponse = SchoolListResponses[keyof SchoolListResponses];
@@ -1135,12 +1342,17 @@ export type SchoolCreateResponse = SchoolCreateResponses[keyof SchoolCreateRespo
 export type SchoolClassListData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * A page number within the paginated result set.
+         */
+        page?: number;
+    };
     url: '/api/school-class/';
 };
 
 export type SchoolClassListResponses = {
-    200: Array<SchoolClass>;
+    200: PaginatedSchoolClassList;
 };
 
 export type SchoolClassListResponse = SchoolClassListResponses[keyof SchoolClassListResponses];
@@ -1311,12 +1523,17 @@ export type SchoolUpdateResponse = SchoolUpdateResponses[keyof SchoolUpdateRespo
 export type StudentInfoListData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * A page number within the paginated result set.
+         */
+        page?: number;
+    };
     url: '/api/student-info/';
 };
 
 export type StudentInfoListResponses = {
-    200: Array<StudentInfo>;
+    200: PaginatedStudentInfoList;
 };
 
 export type StudentInfoListResponse = StudentInfoListResponses[keyof StudentInfoListResponses];
@@ -1412,12 +1629,17 @@ export type StudentInfoUpdateResponse = StudentInfoUpdateResponses[keyof Student
 export type SubjectListData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * A page number within the paginated result set.
+         */
+        page?: number;
+    };
     url: '/api/subject/';
 };
 
 export type SubjectListResponses = {
-    200: Array<Subject>;
+    200: PaginatedSubjectList;
 };
 
 export type SubjectListResponse = SubjectListResponses[keyof SubjectListResponses];
@@ -1438,12 +1660,17 @@ export type SubjectCreateResponse = SubjectCreateResponses[keyof SubjectCreateRe
 export type SubjectGroupeListData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * A page number within the paginated result set.
+         */
+        page?: number;
+    };
     url: '/api/subject-groupe/';
 };
 
 export type SubjectGroupeListResponses = {
-    200: Array<SubjectGroupe>;
+    200: PaginatedSubjectGroupeList;
 };
 
 export type SubjectGroupeListResponse = SubjectGroupeListResponses[keyof SubjectGroupeListResponses];
@@ -1614,12 +1841,17 @@ export type SubjectUpdateResponse = SubjectUpdateResponses[keyof SubjectUpdateRe
 export type SyllabusDepartmentListData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * A page number within the paginated result set.
+         */
+        page?: number;
+    };
     url: '/api/syllabus-department/';
 };
 
 export type SyllabusDepartmentListResponses = {
-    200: Array<SyllabusDepartment>;
+    200: PaginatedSyllabusDepartmentList;
 };
 
 export type SyllabusDepartmentListResponse = SyllabusDepartmentListResponses[keyof SyllabusDepartmentListResponses];
@@ -1715,12 +1947,17 @@ export type SyllabusDepartmentUpdateResponse = SyllabusDepartmentUpdateResponses
 export type TeacherInfoListData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * A page number within the paginated result set.
+         */
+        page?: number;
+    };
     url: '/api/teacher-info/';
 };
 
 export type TeacherInfoListResponses = {
-    200: Array<TeacherInfo>;
+    200: PaginatedTeacherInfoList;
 };
 
 export type TeacherInfoListResponse = TeacherInfoListResponses[keyof TeacherInfoListResponses];
@@ -1816,12 +2053,17 @@ export type TeacherInfoUpdateResponse = TeacherInfoUpdateResponses[keyof Teacher
 export type UserListData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * A page number within the paginated result set.
+         */
+        page?: number;
+    };
     url: '/api/user/';
 };
 
 export type UserListResponses = {
-    200: Array<User>;
+    200: PaginatedUserList;
 };
 
 export type UserListResponse = UserListResponses[keyof UserListResponses];
@@ -1842,12 +2084,17 @@ export type UserCreateResponse = UserCreateResponses[keyof UserCreateResponses];
 export type UserSettingListData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * A page number within the paginated result set.
+         */
+        page?: number;
+    };
     url: '/api/user-setting/';
 };
 
 export type UserSettingListResponses = {
-    200: Array<UserSetting>;
+    200: PaginatedUserSettingList;
 };
 
 export type UserSettingListResponse = UserSettingListResponses[keyof UserSettingListResponses];
